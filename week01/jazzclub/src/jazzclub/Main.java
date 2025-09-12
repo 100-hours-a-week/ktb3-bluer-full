@@ -5,17 +5,14 @@ public class Main {
         Guest guest = new Guest(100);
         Seat seat = new Seat(10);
         Cashier cashier = new Cashier();
+        Drink[] menu = {
+                new Cocktail("Tequila", 30, 0.4f),
+                new Cocktail("Mojito", 25, 0.3f),
+                new Coffee("Americano", 20, "Java")
+        };
 
-        System.out.println("Cashier default sales: " + cashier.getSales());
-        System.out.println("Guest default cash: " + guest.getCash());
+        JazzClub jazzclub = new JazzClub(guest, seat, cashier, menu);
 
-        System.out.println("Customer buy Cocktail");
-
-        int cocktail = 10;
-        guest.spendCash(cocktail);
-        cashier.addSale(cocktail);
-
-        System.out.println("Cashier total sales: " + cashier.getSales());
-        System.out.println("Guest current cash: " + guest.getCash());
+        jazzclub.run();
     }
 }
