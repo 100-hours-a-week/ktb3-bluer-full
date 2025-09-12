@@ -14,7 +14,20 @@ public class Seat {
         return this.seats[seatNumber - 1] == isEmptySeat;
     }
 
+    public boolean isValidSeatNumber(int seatNumber) {
+        return seatNumber >= 1 && seatNumber <= this.seats.length;
+    }
+
+    public void printIsWrongSeatNumber(int seatNumber) {
+        System.out.println("\n=====\n잘못된 입력입니다. 유효한 숫자: 1 ~ " + this.seats.length);
+        System.out.println("입력한 숫자: " + seatNumber + "\n");
+    }
+
     public void occupySeat(int seatNumber) {
+        if (!isValidSeatNumber(seatNumber)) {
+            printIsWrongSeatNumber(seatNumber);
+            return;
+        }
         if (isSeatAvailable(seatNumber)) {
             this.seats[seatNumber - 1] = isOccupiedSeat;
         } else {
@@ -23,6 +36,10 @@ public class Seat {
     }
 
     public void releaseSeat(int seatNumber) {
+        if (!isValidSeatNumber(seatNumber)) {
+            printIsWrongSeatNumber(seatNumber);
+            return;
+        }
         this.seats[seatNumber - 1] = isEmptySeat;
     }
 

@@ -28,7 +28,7 @@ public class Main {
         seat.showSeatsExcluding(currentSeat);
 
         System.out.println("좌석 점유: 1");
-        currentSeat = 1;
+        currentSeat = 0;
         seat.occupySeat(currentSeat);
         seat.showSeatsExcluding(currentSeat);
 
