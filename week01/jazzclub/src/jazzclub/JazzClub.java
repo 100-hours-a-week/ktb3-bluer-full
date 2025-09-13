@@ -48,17 +48,8 @@ public class JazzClub {
             this.guest.setCurrentSeat(selectedSeatNumber);
 
             System.out.println("좌석 선택이 완료되었습니다. 발급받은 입장권을 갖고 들어가 주세요.\n\n");
-            String ticket = String.format("""
-                    =====================================
-                    |               Ticket              |
-                    |-----------------------------------|
-                    | 좌석: %d번                            |
-                    |-----------------------------------|
-                    |  <Bluer Jazz Club>                |
-                    =====================================
-                    """, selectedSeatNumber);
+            Utils.printTicket(selectedSeatNumber);
 
-            System.out.println(ticket);
             break;
         }
     }
@@ -135,44 +126,22 @@ public class JazzClub {
             System.out.println("\n🎉 음료 구매 완료! 🎉");
             System.out.println("선택한 음료: " + selectedMenu.getName() + " (" + selectedMenu.getDetail() + ")\n");
 
-            String art = "";
-
             if (selectedMenu instanceof Coffee) {
-                art = """
-                         ( (  ) )
-                          ) (
-                        ........
-                        |      |
-                        |      |
-                        |      |
-                        '------'
-                        """;
+                Utils.printCoffeeASCII();
             } else if (selectedMenu instanceof Cocktail) {
-                art = """
-                           _______
-                          /       \\
-                         |  🍹   |
-                         |       |
-                         |_______|
-                            | |
-                            | |
-                           '---'
-                        """;
+                Utils.printCoffeeASCII();
             }
-
-            System.out.println(art);
             return;
         }
-
     }
 
     public void handleExit() {
-        System.out.println("퇴장");
-        /*
-         * [퇴장]
-         *
-         * 오늘의 매출 출력
-         */
+        System.out.println("찾아주셔서 감사합니다. 또 오세요.");
+
+        int sales = this.cashier.getSales();
+        if (sales > 0) {
+            System.out.println("총 사용하신 금액: " + sales);
+        }
     }
 
     public void run() {
@@ -181,21 +150,7 @@ public class JazzClub {
         boolean isRunning = true;
 
         while (isRunning) {
-            System.out.println(
-                    """
-                                                        
-                            -------------------
-                            원하시는 동작을 입력하세요
-                                    
-                            (1) 좌석 선택
-                            (2) 좌석 이동
-                            (3) 음료 주문
-                                
-                            (0) 퇴장
-                            -------------------
-                                                        
-                            """
-            );
+            Utils.printMainMenu();
 
             int input = sc.nextInt();
 
