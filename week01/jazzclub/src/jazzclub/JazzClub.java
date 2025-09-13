@@ -3,6 +3,7 @@ package jazzclub;
 import java.util.Scanner;
 
 public class JazzClub {
+    private final int NONE_SELECT = -1;
     private Guest guest;
     private Seat seat;
     private Cashier cashier;
@@ -19,14 +20,46 @@ public class JazzClub {
 
 
     public void handleSelectSeat() {
-        System.out.println("좌석 선택");
-        /*
-         *   [좌석 선택]
-         *   1. 좌석 선택 가능한지 확인: 이미 점유하고 있는 좌석이 있는지
-         *   2. 좌석 번호 입력 받기.
-         *   3. 유효한 번호라면 점유, 아니라면 불가
-         **/
+        System.out.println("\n=====[좌석 선택]=====\n");
+
+        if (this.guest.getCurrentSeat() != NONE_SELECT) {
+            System.out.println("이미 보유한 좌석이 있습니다. 좌석 이동 메뉴를 이용해 주세요.");
+            return;
+        }
+
+        while (true) {
+            System.out.println("원하는 좌석의 번호를 입력해 주세요.\n");
+            this.seat.showSeatsExcluding(NONE_SELECT);
+
+            int selectedSeatNumber = sc.nextInt();
+
+            if (!this.seat.isValidSeatNumber(selectedSeatNumber)) {
+                this.seat.printIsWrongSeatNumber(selectedSeatNumber);
+                continue;
+            }
+            if (!this.seat.isSeatAvailable(selectedSeatNumber)) {
+                System.out.println("이미 선점된 좌석입니다.");
+                continue;
+            }
+
+            this.seat.occupySeat(selectedSeatNumber);
+            System.out.println("좌석 선택이 완료되었습니다. 발급받은 입장권을 갖고 들어가 주세요.\n\n");
+            String ticket = String.format("""
+                    =====================================
+                    |               Ticket              |
+                    |-----------------------------------|
+                    | 좌석: %d번                            |
+                    |-----------------------------------|
+                    |  <Bluer Jazz Club>                |
+                    =====================================
+                    """, selectedSeatNumber);
+
+            System.out.println(ticket);
+            this.guest.setCurrentSeat(selectedSeatNumber);
+            break;
+        }
     }
+
 
     public void handleChangeSeat() {
         System.out.println("좌석 이동");
@@ -44,9 +77,10 @@ public class JazzClub {
         System.out.println("음료 주문");
         /*
          *   [음료 주문]
-         *   1. 메뉴 출력
-         *   2. 선택
-         *   3. 계산
+         *   1. 점유하고 있는 좌석이 있는지 확인 -> 없다면 에러: "좌석이 있는 고객님만 주문이 가능합니다."
+         *   2. 메뉴 출력
+         *   3. 선택
+         *   4. 계산
          */
     }
 
@@ -60,7 +94,7 @@ public class JazzClub {
     }
 
     public void run() {
-        System.out.println("안녕하세요, Bluer 재즈 클럽입니다.");
+        System.out.println("안녕하세요, Bluer Jazz Club입니다.");
 
         boolean isRunning = true;
 

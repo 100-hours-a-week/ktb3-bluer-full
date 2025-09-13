@@ -2,6 +2,7 @@ package jazzclub;
 
 public class Guest {
     private int cash;
+    //    TODO: 상수화
     private int currentSeat = -1;
 
     public Guest(int cash) {

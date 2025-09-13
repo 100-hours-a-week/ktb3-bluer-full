@@ -24,15 +24,7 @@ public class Seat {
     }
 
     public void occupySeat(int seatNumber) {
-        if (!isValidSeatNumber(seatNumber)) {
-            printIsWrongSeatNumber(seatNumber);
-            return;
-        }
-        if (isSeatAvailable(seatNumber)) {
-            this.seats[seatNumber - 1] = isOccupiedSeat;
-        } else {
-            System.out.println("이미 선점된 좌석입니다.");
-        }
+        this.seats[seatNumber - 1] = isOccupiedSeat;
     }
 
     public void releaseSeat(int seatNumber) {
@@ -43,13 +35,13 @@ public class Seat {
         this.seats[seatNumber - 1] = isEmptySeat;
     }
 
-    public void showSeatsExcluding(int currentSeat) {
+    public void showSeatsExcluding(int excludedNumber) {
         System.out.println("\n===== 좌석 배치도 =====");
         for (int i = 0; i < seats.length; i++) {
-            if (i + 1 == currentSeat) {
-                System.out.print("X "); // 현재 자리
+            if (i + 1 == excludedNumber) {
+                System.out.print("X ");
             } else if (seats[i] == isEmptySeat) {
-                System.out.print((i + 1) + " "); // 빈 자리
+                System.out.print((i + 1) + " ");
             }
         }
         System.out.println();
