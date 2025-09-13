@@ -19,18 +19,11 @@ public class JazzClub {
     }
 
 
-    public void handleSelectSeat() {
-        System.out.println("\n=====[좌석 선택]=====\n");
-
-        if (this.guest.getCurrentSeat() != NONE_SELECT) {
-            System.out.println("이미 보유한 좌석이 있습니다. 좌석 이동 메뉴를 이용해 주세요.");
-            return;
-        }
-
+    public void allocateSeat(SeatMode mode, int excludedSeat) {
         while (true) {
             System.out.println("원하는 좌석의 번호를 입력해 주세요.\n");
             System.out.println("뒤로 돌아가기 원하신다면 0번을 입력해 주세요.\n");
-            this.seat.showSeatsExcluding(NONE_SELECT);
+            this.seat.showSeatsExcluding(excludedSeat);
 
             int selectedSeatNumber = sc.nextInt();
 
@@ -38,56 +31,7 @@ public class JazzClub {
                 break;
             }
 
-            if (!this.seat.isValidSeatNumber(selectedSeatNumber)) {
-                this.seat.printIsWrongSeatNumber(selectedSeatNumber);
-                continue;
-            }
-            if (!this.seat.isSeatAvailable(selectedSeatNumber)) {
-                System.out.println("이미 선점된 좌석입니다.");
-                continue;
-            }
-
-            this.seat.occupySeat(selectedSeatNumber);
-            System.out.println("좌석 선택이 완료되었습니다. 발급받은 입장권을 갖고 들어가 주세요.\n\n");
-            String ticket = String.format("""
-                    =====================================
-                    |               Ticket              |
-                    |-----------------------------------|
-                    | 좌석: %d번                            |
-                    |-----------------------------------|
-                    |  <Bluer Jazz Club>                |
-                    =====================================
-                    """, selectedSeatNumber);
-
-            System.out.println(ticket);
-            this.guest.setCurrentSeat(selectedSeatNumber);
-            break;
-        }
-    }
-
-
-    public void handleChangeSeat() {
-        System.out.println("\n=====[좌석 이동]=====\n");
-
-        if (this.guest.getCurrentSeat() == NONE_SELECT) {
-            System.out.println("이미 보유한 좌석이 없습니다. 좌석 선택 메뉴를 이용해 주세요.");
-            return;
-        }
-
-        int currentSeat = this.guest.getCurrentSeat();
-
-        while (true) {
-            System.out.println("원하는 좌석의 번호를 입력해 주세요.\n");
-            System.out.println("뒤로 돌아가기 원하신다면 0번을 입력해 주세요.\n");
-            this.seat.showSeatsExcluding(currentSeat);
-
-            int selectedSeatNumber = sc.nextInt();
-
-            if (selectedSeatNumber == 0) {
-                break;
-            }
-
-            if (selectedSeatNumber == currentSeat) {
+            if (mode.equals(SeatMode.CHANGE) && selectedSeatNumber == excludedSeat) {
                 System.out.println("현재 좌석과 동일한 좌석입니다.");
                 continue;
             }
@@ -101,6 +45,8 @@ public class JazzClub {
             }
 
             this.seat.occupySeat(selectedSeatNumber);
+            this.guest.setCurrentSeat(selectedSeatNumber);
+
             System.out.println("좌석 선택이 완료되었습니다. 발급받은 입장권을 갖고 들어가 주세요.\n\n");
             String ticket = String.format("""
                     =====================================
@@ -113,10 +59,34 @@ public class JazzClub {
                     """, selectedSeatNumber);
 
             System.out.println(ticket);
-            this.guest.setCurrentSeat(selectedSeatNumber);
-            this.seat.releaseSeat(currentSeat);
             break;
         }
+    }
+
+
+    public void handleSelectSeat() {
+        System.out.println("\n=====[좌석 선택]=====\n");
+
+        if (this.guest.getCurrentSeat() != NONE_SELECT) {
+            System.out.println("이미 보유한 좌석이 있습니다. 좌석 이동 메뉴를 이용해 주세요.");
+            return;
+        }
+
+        this.allocateSeat(SeatMode.SELECT, NONE_SELECT);
+    }
+
+    public void handleChangeSeat() {
+        System.out.println("\n=====[좌석 이동]=====\n");
+
+        if (this.guest.getCurrentSeat() == NONE_SELECT) {
+            System.out.println("이미 보유한 좌석이 없습니다. 좌석 선택 메뉴를 이용해 주세요.");
+            return;
+        }
+
+        int currentSeat = this.guest.getCurrentSeat();
+
+        this.allocateSeat(SeatMode.CHANGE, currentSeat);
+        this.seat.releaseSeat(currentSeat);
     }
 
     public void handleOrder() {
@@ -174,5 +144,9 @@ public class JazzClub {
                 default -> System.out.println("잘못된 번호를 입력하셨습니다. 다시 입력해 주세요. (입력하신 번호: " + input + ")\n");
             }
         }
+    }
+
+    enum SeatMode {
+        SELECT, CHANGE
     }
 }
