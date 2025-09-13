@@ -1,13 +1,17 @@
 package jazzclub;
 
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class Seat {
     private final SeatState[] seats;
+    private final Scanner sc;
 
-    public Seat(int totalSeats) {
+    public Seat(int totalSeats, Scanner sc) {
+        this.sc = sc;
         this.seats = new SeatState[totalSeats];
         Arrays.fill(this.seats, SeatState.EMPTY);
+
     }
 
     public boolean isSeatAvailable(int seatNumber) {
@@ -46,6 +50,43 @@ public class Seat {
             }
         }
         System.out.println();
+    }
+
+    public void allocateSeat(JazzClub.SeatMode mode, int excludedSeat, Guest guest) {
+        boolean seatSelected = false;
+
+        while (!seatSelected) {
+            System.out.println("원하는 좌석의 번호를 입력해 주세요.\n");
+            System.out.println("뒤로 돌아가기 원하신다면 0번을 입력해 주세요.\n");
+            this.showSeatsExcluding(excludedSeat);
+
+            int selectedSeatNumber = sc.nextInt();
+
+            if (selectedSeatNumber == 0) {
+                return;
+            }
+
+            if (mode.equals(JazzClub.SeatMode.CHANGE) && selectedSeatNumber == excludedSeat) {
+                System.out.println("현재 좌석과 동일한 좌석입니다.");
+                continue;
+            }
+            if (!this.isValidSeatNumber(selectedSeatNumber)) {
+                this.printIsWrongSeatNumber(selectedSeatNumber);
+                continue;
+            }
+            if (!this.isSeatAvailable(selectedSeatNumber)) {
+                System.out.println("이미 선점된 좌석입니다.");
+                continue;
+            }
+
+            this.occupySeat(selectedSeatNumber);
+            guest.setCurrentSeat(selectedSeatNumber);
+
+            System.out.println("좌석 선택이 완료되었습니다. 발급받은 입장권을 갖고 들어가 주세요.\n\n");
+            Utils.printTicket(selectedSeatNumber);
+
+            seatSelected = true;
+        }
     }
 
     enum SeatState {

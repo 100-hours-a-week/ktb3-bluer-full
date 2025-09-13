@@ -19,42 +19,6 @@ public class JazzClub {
     }
 
 
-    private void allocateSeat(SeatMode mode, int excludedSeat) {
-        while (true) {
-            System.out.println("원하는 좌석의 번호를 입력해 주세요.\n");
-            System.out.println("뒤로 돌아가기 원하신다면 0번을 입력해 주세요.\n");
-            this.seat.showSeatsExcluding(excludedSeat);
-
-            int selectedSeatNumber = sc.nextInt();
-
-            if (selectedSeatNumber == 0) {
-                break;
-            }
-
-            if (mode.equals(SeatMode.CHANGE) && selectedSeatNumber == excludedSeat) {
-                System.out.println("현재 좌석과 동일한 좌석입니다.");
-                continue;
-            }
-            if (!this.seat.isValidSeatNumber(selectedSeatNumber)) {
-                this.seat.printIsWrongSeatNumber(selectedSeatNumber);
-                continue;
-            }
-            if (!this.seat.isSeatAvailable(selectedSeatNumber)) {
-                System.out.println("이미 선점된 좌석입니다.");
-                continue;
-            }
-
-            this.seat.occupySeat(selectedSeatNumber);
-            this.guest.setCurrentSeat(selectedSeatNumber);
-
-            System.out.println("좌석 선택이 완료되었습니다. 발급받은 입장권을 갖고 들어가 주세요.\n\n");
-            Utils.printTicket(selectedSeatNumber);
-
-            break;
-        }
-    }
-
-
     private void handleSelectSeat() {
         System.out.println("\n=====[좌석 선택]=====\n");
 
@@ -63,7 +27,7 @@ public class JazzClub {
             return;
         }
 
-        this.allocateSeat(SeatMode.SELECT, NONE_SELECT);
+        this.seat.allocateSeat(SeatMode.SELECT, NONE_SELECT, this.guest);
     }
 
     private void handleChangeSeat() {
@@ -76,7 +40,7 @@ public class JazzClub {
 
         int currentSeat = this.guest.getCurrentSeat();
 
-        this.allocateSeat(SeatMode.CHANGE, currentSeat);
+        this.seat.allocateSeat(SeatMode.CHANGE, currentSeat, this.guest);
         this.seat.releaseSeat(currentSeat);
     }
 
