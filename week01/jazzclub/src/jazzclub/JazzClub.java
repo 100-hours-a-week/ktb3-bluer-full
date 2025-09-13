@@ -3,7 +3,6 @@ package jazzclub;
 import java.util.Scanner;
 
 public class JazzClub {
-    private final int NONE_SELECT = -1;
     private final Guest guest;
     private final Seat seat;
     private final Cashier cashier;
@@ -22,18 +21,19 @@ public class JazzClub {
     private void handleSelectSeat() {
         System.out.println("\n=====[좌석 선택]=====\n");
 
-        if (this.guest.getCurrentSeat() != NONE_SELECT) {
+        if (this.guest.hasSeat()) {
             System.out.println("이미 보유한 좌석이 있습니다. 좌석 이동 메뉴를 이용해 주세요.");
             return;
         }
 
+        int NONE_SELECT = -1;
         this.seat.allocateSeat(SeatMode.SELECT, NONE_SELECT, this.guest);
     }
 
     private void handleChangeSeat() {
         System.out.println("\n=====[좌석 이동]=====\n");
 
-        if (this.guest.getCurrentSeat() == NONE_SELECT) {
+        if (!this.guest.hasSeat()) {
             System.out.println("이미 보유한 좌석이 없습니다. 좌석 선택 메뉴를 이용해 주세요.");
             return;
         }
@@ -45,10 +45,9 @@ public class JazzClub {
     }
 
     private void handleOrder() {
-        System.out.println("음료 주문");
         System.out.println("\n=====[음료 주문]=====\n");
 
-        if (this.guest.getCurrentSeat() == -1) {
+        if (!this.guest.hasSeat()) {
             System.out.println("좌석이 있는 고객만 음료 주문이 가능합니다. 좌석을 먼저 선택해 주세요.");
             return;
         }

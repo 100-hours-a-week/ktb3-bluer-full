@@ -1,9 +1,9 @@
 package jazzclub;
 
 public class Guest {
+    public final int NO_SEAT = -1;
     private int cash;
-    //    TODO: 상수화
-    private int currentSeat = -1;
+    private int currentSeat = NO_SEAT;
 
     public Guest(int cash) {
         this.cash = cash;
@@ -27,5 +27,9 @@ public class Guest {
 
     public void setCurrentSeat(int seatNumber) {
         this.currentSeat = seatNumber;
+    }
+
+    public boolean hasSeat() {
+        return this.currentSeat != NO_SEAT;
     }
 }
