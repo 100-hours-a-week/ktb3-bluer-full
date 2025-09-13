@@ -1,7 +1,7 @@
 package jazzclub;
 
 public class Cocktail extends Drink {
-    private float alcoholPercentage;
+    private final float alcoholPercentage;
 
     public Cocktail(String name, int price, float alcoholPercentage) {
         super(name, price);

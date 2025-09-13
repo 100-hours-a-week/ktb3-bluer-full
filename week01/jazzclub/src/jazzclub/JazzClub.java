@@ -4,11 +4,11 @@ import java.util.Scanner;
 
 public class JazzClub {
     private final int NONE_SELECT = -1;
-    private Guest guest;
-    private Seat seat;
-    private Cashier cashier;
-    private Drink[] menu;
-    private Scanner sc;
+    private final Guest guest;
+    private final Seat seat;
+    private final Cashier cashier;
+    private final Drink[] menu;
+    private final Scanner sc;
 
     public JazzClub(Guest guest, Seat seat, Cashier cashier, Drink[] menu, Scanner sc) {
         this.guest = guest;

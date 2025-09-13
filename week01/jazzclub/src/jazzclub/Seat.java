@@ -1,10 +1,9 @@
 package jazzclub;
 
 public class Seat {
+    private final int[] seats;
     public int isEmptySeat = 0;
     public int isOccupiedSeat = 1;
-    private int[] seats;
-
 
     public Seat(int totalSeats) {
         this.seats = new int[totalSeats];
@@ -37,7 +36,7 @@ public class Seat {
 
     public void showSeatsExcluding(int excludedNumber) {
         System.out.println("\n===== 좌석 배치도 =====");
-        
+
         for (int i = 0; i < seats.length; i++) {
             if (i + 1 == excludedNumber) {
                 System.out.print("X ");

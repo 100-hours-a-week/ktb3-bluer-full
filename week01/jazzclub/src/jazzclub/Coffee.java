@@ -1,7 +1,7 @@
 package jazzclub;
 
 public class Coffee extends Drink {
-    private String beanType;
+    private final String beanType;
 
     public Coffee(String name, int price, String beanType) {
         super(name, price);
