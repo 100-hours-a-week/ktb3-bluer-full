@@ -1,7 +1,21 @@
 package jazzclub;
 
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello JazzClub");
+        Scanner sc = new Scanner(System.in);
+        Guest guest = new Guest(100);
+        Seat seat = new Seat(10, sc);
+        Cashier cashier = new Cashier();
+        Drink[] menu = {
+                new Cocktail("Tequila", 30, 0.4f),
+                new Cocktail("Mojito", 25, 0.3f),
+                new Coffee("Americano", 20, "Java")
+        };
+
+        JazzClub jazzclub = new JazzClub(guest, seat, cashier, menu, sc);
+
+        jazzclub.run();
     }
 }
