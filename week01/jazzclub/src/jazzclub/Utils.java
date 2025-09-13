@@ -33,7 +33,7 @@ public class Utils {
         System.out.println(ticket);
     }
 
-    public static void printCocktailASCII() {
+    public static void printCoffeeASCII() {
         String cocktailASCII = """
                  ( (  ) )
                   ) (
@@ -47,7 +47,7 @@ public class Utils {
         System.out.println(cocktailASCII);
     }
 
-    public static void printCoffeeASCII() {
+    public static void printCocktailASCII() {
         String coffeeASCII = """
                    _______
                   /       \\
