@@ -91,13 +91,79 @@ public class JazzClub {
 
     public void handleOrder() {
         System.out.println("음료 주문");
-        /*
-         *   [음료 주문]
-         *   1. 점유하고 있는 좌석이 있는지 확인 -> 없다면 에러: "좌석이 있는 고객님만 주문이 가능합니다."
-         *   2. 메뉴 출력
-         *   3. 선택
-         *   4. 계산
-         */
+        System.out.println("\n=====[음료 주문]=====\n");
+
+        if (this.guest.getCurrentSeat() == -1) {
+            System.out.println("좌석이 있는 고객만 음료 주문이 가능합니다. 좌석을 먼저 선택해 주세요.");
+            return;
+        }
+
+        while (true) {
+            System.out.println("""
+                                        구매하기 원하는 음료의 번호를 입력해 주세요.
+                                        - 뒤로 돌아가기 원하신다면 0번을 입력해 주세요.
+                    """);
+
+            System.out.println("================== Jazz Club Drinks Menu ==================");
+            for (int i = 0; i < menu.length; i++) {
+                System.out.printf("%d. %-15s : %d원 (%s)%n", i + 1, menu[i].getName(), menu[i].getPrice(), menu[i].getDetail());
+            }
+            System.out.println("===========================================================");
+
+            int menuNumber = sc.nextInt();
+
+            if (menuNumber == 0) {
+                break;
+            }
+            if (menuNumber < 1 || menuNumber > menu.length) {
+                System.out.println("\n=====\n잘못된 입력입니다. 유효한 숫자: 1 ~ " + this.menu.length);
+                System.out.println("입력한 숫자: " + menuNumber + "\n");
+                continue;
+            }
+
+            Drink selectedMenu = this.menu[menuNumber - 1];
+            int selectedMenuPrice = selectedMenu.getPrice();
+
+            if (!this.guest.canSpendCash(selectedMenuPrice)) {
+                System.out.println("잔액이 부족합니다. 다른 음료를 선택해 주세요.\n\n\n\n");
+                continue;
+            }
+
+            this.guest.spendCash(selectedMenuPrice);
+            this.cashier.addSale(selectedMenuPrice);
+
+            System.out.println("\n🎉 음료 구매 완료! 🎉");
+            System.out.println("선택한 음료: " + selectedMenu.getName() + " (" + selectedMenu.getDetail() + ")\n");
+
+            String art = "";
+
+            if (selectedMenu instanceof Coffee) {
+                art = """
+                         ( (  ) )
+                          ) (
+                        ........
+                        |      |
+                        |      |
+                        |      |
+                        '------'
+                        """;
+            } else if (selectedMenu instanceof Cocktail) {
+                art = """
+                           _______
+                          /       \\
+                         |  🍹   |
+                         |       |
+                         |_______|
+                            | |
+                            | |
+                           '---'
+                        """;
+            }
+
+            System.out.println(art);
+            return;
+        }
+
     }
 
     public void handleExit() {

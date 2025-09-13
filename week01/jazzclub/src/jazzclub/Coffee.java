@@ -11,4 +11,8 @@ public class Coffee extends Drink {
     public String getBeanType() {
         return this.beanType;
     }
+
+    public String getDetail() {
+        return "원두: " + this.getBeanType();
+    }
 }

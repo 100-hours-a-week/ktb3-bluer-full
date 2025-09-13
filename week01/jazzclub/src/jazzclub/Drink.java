@@ -16,4 +16,6 @@ abstract class Drink {
     public int getPrice() {
         return this.price;
     }
+
+    public abstract String getDetail();
 }

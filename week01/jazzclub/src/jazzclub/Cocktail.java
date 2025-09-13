@@ -11,4 +11,8 @@ public class Cocktail extends Drink {
     public float getAlcoholPercentage() {
         return this.alcoholPercentage;
     }
+
+    public String getDetail() {
+        return "도수: " + this.getAlcoholPercentage() + "%";
+    }
 }
