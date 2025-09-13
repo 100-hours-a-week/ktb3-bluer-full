@@ -1,16 +1,17 @@
 package jazzclub;
 
+import java.util.Arrays;
+
 public class Seat {
-    private final int[] seats;
-    public int isEmptySeat = 0;
-    public int isOccupiedSeat = 1;
+    private final SeatState[] seats;
 
     public Seat(int totalSeats) {
-        this.seats = new int[totalSeats];
+        this.seats = new SeatState[totalSeats];
+        Arrays.fill(this.seats, SeatState.EMPTY);
     }
 
     public boolean isSeatAvailable(int seatNumber) {
-        return this.seats[seatNumber - 1] == isEmptySeat;
+        return this.seats[seatNumber - 1] == SeatState.EMPTY;
     }
 
     public boolean isValidSeatNumber(int seatNumber) {
@@ -23,7 +24,7 @@ public class Seat {
     }
 
     public void occupySeat(int seatNumber) {
-        this.seats[seatNumber - 1] = isOccupiedSeat;
+        this.seats[seatNumber - 1] = SeatState.OCCUPIED;
     }
 
     public void releaseSeat(int seatNumber) {
@@ -31,7 +32,7 @@ public class Seat {
             printIsWrongSeatNumber(seatNumber);
             return;
         }
-        this.seats[seatNumber - 1] = isEmptySeat;
+        this.seats[seatNumber - 1] = SeatState.EMPTY;
     }
 
     public void showSeatsExcluding(int excludedNumber) {
@@ -40,10 +41,14 @@ public class Seat {
         for (int i = 0; i < seats.length; i++) {
             if (i + 1 == excludedNumber) {
                 System.out.print("X ");
-            } else if (seats[i] == isEmptySeat) {
+            } else if (seats[i] == SeatState.EMPTY) {
                 System.out.print((i + 1) + " ");
             }
         }
         System.out.println();
+    }
+
+    enum SeatState {
+        EMPTY, OCCUPIED
     }
 }
