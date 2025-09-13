@@ -52,7 +52,9 @@ public class JazzClub {
             return;
         }
 
-        while (true) {
+        boolean orderCompleted = false;
+
+        while (!orderCompleted) {
             System.out.println("""
                                         구매하기 원하는 음료의 번호를 입력해 주세요.
                                         - 뒤로 돌아가기 원하신다면 0번을 입력해 주세요.
@@ -67,8 +69,9 @@ public class JazzClub {
             int menuNumber = sc.nextInt();
 
             if (menuNumber == 0) {
-                break;
+                return;
             }
+
             if (menuNumber < 1 || menuNumber > menu.length) {
                 System.out.println("\n=====\n잘못된 입력입니다. 유효한 숫자: 1 ~ " + this.menu.length);
                 System.out.println("입력한 숫자: " + menuNumber + "\n");
@@ -94,7 +97,8 @@ public class JazzClub {
             } else if (selectedMenu instanceof Cocktail) {
                 Utils.printCocktailASCII();
             }
-            return;
+
+            orderCompleted = true;
         }
     }
 
