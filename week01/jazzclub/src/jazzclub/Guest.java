@@ -9,7 +9,7 @@ public class Guest {
         this.cash = cash;
     }
 
-    public int getCash() {
+    private int getCash() {
         return this.cash;
     }
 
@@ -18,8 +18,7 @@ public class Guest {
     }
 
     public void spendCash(int amount) {
-        this.cash = this.cash - amount;
-        // TODO: 지불 예정 비용보다 보유 현금이 적은 경우 처리
+        this.cash = this.getCash() - amount;
     }
 
     public int getCurrentSeat() {

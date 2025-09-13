@@ -8,7 +8,7 @@ public class Coffee extends Drink {
         this.beanType = beanType;
     }
 
-    public String getBeanType() {
+    private String getBeanType() {
         return this.beanType;
     }
 

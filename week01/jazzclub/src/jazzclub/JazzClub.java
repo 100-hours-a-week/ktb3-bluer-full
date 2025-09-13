@@ -19,7 +19,7 @@ public class JazzClub {
     }
 
 
-    public void allocateSeat(SeatMode mode, int excludedSeat) {
+    private void allocateSeat(SeatMode mode, int excludedSeat) {
         while (true) {
             System.out.println("원하는 좌석의 번호를 입력해 주세요.\n");
             System.out.println("뒤로 돌아가기 원하신다면 0번을 입력해 주세요.\n");
@@ -55,7 +55,7 @@ public class JazzClub {
     }
 
 
-    public void handleSelectSeat() {
+    private void handleSelectSeat() {
         System.out.println("\n=====[좌석 선택]=====\n");
 
         if (this.guest.getCurrentSeat() != NONE_SELECT) {
@@ -66,7 +66,7 @@ public class JazzClub {
         this.allocateSeat(SeatMode.SELECT, NONE_SELECT);
     }
 
-    public void handleChangeSeat() {
+    private void handleChangeSeat() {
         System.out.println("\n=====[좌석 이동]=====\n");
 
         if (this.guest.getCurrentSeat() == NONE_SELECT) {
@@ -80,7 +80,7 @@ public class JazzClub {
         this.seat.releaseSeat(currentSeat);
     }
 
-    public void handleOrder() {
+    private void handleOrder() {
         System.out.println("음료 주문");
         System.out.println("\n=====[음료 주문]=====\n");
 
@@ -129,13 +129,13 @@ public class JazzClub {
             if (selectedMenu instanceof Coffee) {
                 Utils.printCoffeeASCII();
             } else if (selectedMenu instanceof Cocktail) {
-                Utils.printCoffeeASCII();
+                Utils.printCocktailASCII();
             }
             return;
         }
     }
 
-    public void handleExit() {
+    private void handleExit() {
         System.out.println("찾아주셔서 감사합니다. 또 오세요.");
 
         int sales = this.cashier.getSales();
@@ -170,4 +170,5 @@ public class JazzClub {
     enum SeatMode {
         SELECT, CHANGE
     }
+
 }
