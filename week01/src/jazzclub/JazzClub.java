@@ -2,6 +2,7 @@ package jazzclub;
 
 import jazzclub.domain.*;
 import jazzclub.util.Utils;
+import jazzclub.view.JazzClubView;
 
 import java.util.Scanner;
 
@@ -22,10 +23,10 @@ public class JazzClub {
 
 
     private void handleSelectSeat() {
-        System.out.println("\n=====[좌석 선택]=====\n");
+        JazzClubView.printMessage("\n=====[좌석 선택]=====\n");
 
         if (this.guest.hasSeat()) {
-            System.out.println("이미 보유한 좌석이 있습니다. 좌석 이동 메뉴를 이용해 주세요.");
+            JazzClubView.printMessage("이미 보유한 좌석이 있습니다. 좌석 이동 메뉴를 이용해 주세요.");
             return;
         }
 
@@ -34,10 +35,10 @@ public class JazzClub {
     }
 
     private void handleChangeSeat() {
-        System.out.println("\n=====[좌석 이동]=====\n");
+        JazzClubView.printMessage("\n=====[좌석 이동]=====\n");
 
         if (!this.guest.hasSeat()) {
-            System.out.println("이미 보유한 좌석이 없습니다. 좌석 선택 메뉴를 이용해 주세요.");
+            JazzClubView.printMessage("이미 보유한 좌석이 없습니다. 좌석 선택 메뉴를 이용해 주세요.");
             return;
         }
 
@@ -48,26 +49,22 @@ public class JazzClub {
     }
 
     private void handleOrder() {
-        System.out.println("\n=====[음료 주문]=====\n");
+        JazzClubView.printMessage("\n=====[음료 주문]=====\n");
 
         if (!this.guest.hasSeat()) {
-            System.out.println("좌석이 있는 고객만 음료 주문이 가능합니다. 좌석을 먼저 선택해 주세요.");
+            JazzClubView.printMessage("좌석이 있는 고객만 음료 주문이 가능합니다. 좌석을 먼저 선택해 주세요.");
             return;
         }
 
         boolean orderCompleted = false;
 
         while (!orderCompleted) {
-            System.out.println("""
+            JazzClubView.printMessage("""
                                         구매하기 원하는 음료의 번호를 입력해 주세요.
                                         - 뒤로 돌아가기 원하신다면 0번을 입력해 주세요.
                     """);
 
-            System.out.println("================== Jazz Club Drinks Menu ==================");
-            for (int i = 0; i < menu.length; i++) {
-                System.out.printf("%d. %-15s : %d원 (%s)%n", i + 1, menu[i].getName(), menu[i].getPrice(), menu[i].getDetail());
-            }
-            System.out.println("===========================================================");
+            JazzClubView.printDrinksMenu(menu);
 
             int menuNumber = sc.nextInt();
 
@@ -76,8 +73,8 @@ public class JazzClub {
             }
 
             if (menuNumber < 1 || menuNumber > menu.length) {
-                System.out.println("\n=====\n잘못된 입력입니다. 유효한 숫자: 1 ~ " + this.menu.length);
-                System.out.println("입력한 숫자: " + menuNumber + "\n");
+                JazzClubView.printMessage("\n=====\n잘못된 입력입니다. 유효한 숫자: 1 ~ " + this.menu.length);
+                JazzClubView.printMessage("입력한 숫자: " + menuNumber + "\n");
                 continue;
             }
 
@@ -85,20 +82,20 @@ public class JazzClub {
             int selectedMenuPrice = selectedMenu.getPrice();
 
             if (!this.guest.canSpendCash(selectedMenuPrice)) {
-                System.out.println("잔액이 부족합니다. 다른 음료를 선택해 주세요.\n\n\n\n");
+                JazzClubView.printMessage("잔액이 부족합니다. 다른 음료를 선택해 주세요.\n\n\n\n");
                 continue;
             }
 
             this.guest.spendCash(selectedMenuPrice);
             this.cashier.addSale(selectedMenuPrice);
 
-            System.out.println("\n🎉 음료 구매 완료! 🎉");
-            System.out.println("선택한 음료: " + selectedMenu.getName() + " (" + selectedMenu.getDetail() + ")\n");
+            JazzClubView.printMessage("\n🎉 음료 구매 완료! 🎉");
+            JazzClubView.printMessage("선택한 음료: " + selectedMenu.getName() + " (" + selectedMenu.getDetail() + ")\n");
 
             if (selectedMenu instanceof Coffee) {
-                Utils.printCoffeeASCII();
+                JazzClubView.printCoffeeASCII();
             } else if (selectedMenu instanceof Cocktail) {
-                Utils.printCocktailASCII();
+                JazzClubView.printCocktailASCII();
             }
 
             orderCompleted = true;
@@ -106,21 +103,21 @@ public class JazzClub {
     }
 
     private void handleExit() {
-        System.out.println("찾아주셔서 감사합니다. 또 오세요.");
+        JazzClubView.printMessage("찾아주셔서 감사합니다. 또 오세요.");
 
         int sales = this.cashier.getSales();
         if (sales > 0) {
-            System.out.println("총 사용하신 금액: " + sales);
+            JazzClubView.printMessage("총 사용하신 금액: " + sales);
         }
     }
 
     public void run() {
-        System.out.println("안녕하세요, Bluer Jazz Club입니다.");
+        JazzClubView.printMessage("안녕하세요, Bluer Jazz Club입니다.");
 
         boolean isRunning = true;
 
         while (isRunning) {
-            Utils.printMainMenu();
+            JazzClubView.printMainMenu();
 
             int input = sc.nextInt();
 
@@ -132,7 +129,7 @@ public class JazzClub {
                     handleExit();
                     isRunning = false;
                 }
-                default -> System.out.println("잘못된 번호를 입력하셨습니다. 다시 입력해 주세요. (입력하신 번호: " + input + ")\n");
+                default -> JazzClubView.printMessage("잘못된 번호를 입력하셨습니다. 다시 입력해 주세요. (입력하신 번호: " + input + ")\n");
             }
         }
     }

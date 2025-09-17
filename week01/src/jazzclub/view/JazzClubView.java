@@ -28,7 +28,7 @@ public class JazzClubView {
     }
 
     public static void printMainMenu() {
-        this.printMessage(
+        printMessage(
                 """
                                                     
                         -------------------
