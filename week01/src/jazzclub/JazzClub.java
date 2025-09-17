@@ -1,6 +1,7 @@
 package jazzclub;
 
 import jazzclub.domain.*;
+import jazzclub.service.JazzClubService;
 import jazzclub.view.JazzClubView;
 
 import java.util.Scanner;
@@ -11,26 +12,25 @@ public class JazzClub {
     private final Cashier cashier;
     private final Drink[] menu;
     private final Scanner sc;
-
+    private final JazzClubService service;
+    
     public JazzClub(Guest guest, Seat seat, Cashier cashier, Drink[] menu, Scanner sc) {
         this.guest = guest;
         this.seat = seat;
         this.cashier = cashier;
         this.menu = menu;
         this.sc = sc;
+        this.service = new JazzClubService(guest, seat, cashier, menu);
     }
-
 
     private void handleSelectSeat() {
         JazzClubView.printMessage("\n=====[좌석 선택]=====\n");
 
-        if (this.guest.hasSeat()) {
-            JazzClubView.printMessage("이미 보유한 좌석이 있습니다. 좌석 이동 메뉴를 이용해 주세요.");
-            return;
+        try {
+            service.selectSeat();
+        } catch (IllegalStateException e) {
+            JazzClubView.printMessage(e.getMessage());
         }
-
-        int NONE_SELECT = -1;
-        this.seat.allocateSeat(SeatMode.SELECT, NONE_SELECT, this.guest);
     }
 
     private void handleChangeSeat() {
