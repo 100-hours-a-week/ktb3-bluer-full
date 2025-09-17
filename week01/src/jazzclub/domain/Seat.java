@@ -1,4 +1,7 @@
-package jazzclub;
+package jazzclub.domain;
+
+import jazzclub.JazzClub;
+import jazzclub.util.Utils;
 
 import java.util.Arrays;
 import java.util.Scanner;

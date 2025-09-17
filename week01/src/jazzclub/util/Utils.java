@@ -1,4 +1,4 @@
-package jazzclub;
+package jazzclub.util;
 
 public class Utils {
     public static void printMainMenu() {

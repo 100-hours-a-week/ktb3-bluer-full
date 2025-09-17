@@ -1,5 +1,8 @@
 package jazzclub;
 
+import jazzclub.domain.*;
+import jazzclub.util.Utils;
+
 import java.util.Scanner;
 
 public class JazzClub {
@@ -134,7 +137,7 @@ public class JazzClub {
         }
     }
 
-    enum SeatMode {
+    public enum SeatMode {
         SELECT, CHANGE
     }
 

@@ -1,4 +1,4 @@
-package jazzclub;
+package jazzclub.domain;
 
 public class Guest {
     public final int NO_SEAT = -1;

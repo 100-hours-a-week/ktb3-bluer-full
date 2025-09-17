@@ -1,5 +1,7 @@
 package jazzclub;
 
+import jazzclub.domain.*;
+
 import java.util.Scanner;
 
 public class Main {
