@@ -1,7 +1,7 @@
 package jazzclub.domain;
 
 import jazzclub.JazzClub;
-import jazzclub.util.Utils;
+import jazzclub.view.JazzClubView;
 
 import java.util.Arrays;
 import java.util.Scanner;
@@ -26,8 +26,8 @@ public class Seat {
     }
 
     public void printIsWrongSeatNumber(int seatNumber) {
-        System.out.println("\n=====\n잘못된 입력입니다. 유효한 숫자: 1 ~ " + this.seats.length);
-        System.out.println("입력한 숫자: " + seatNumber + "\n");
+        JazzClubView.printMessage("\n=====\n잘못된 입력입니다. 유효한 숫자: 1 ~ " + this.seats.length);
+        JazzClubView.printMessage("입력한 숫자: " + seatNumber + "\n");
     }
 
     public void occupySeat(int seatNumber) {
@@ -43,24 +43,23 @@ public class Seat {
     }
 
     public void showSeatsExcluding(int excludedNumber) {
-        System.out.println("\n===== 좌석 배치도 =====");
+        JazzClubView.printMessage("\n===== 좌석 배치도 =====");
 
         for (int i = 0; i < seats.length; i++) {
             if (i + 1 == excludedNumber) {
-                System.out.print("X ");
+               JazzClubView.printMessage("X ");
             } else if (seats[i] == SeatState.EMPTY) {
-                System.out.print((i + 1) + " ");
+               JazzClubView.printMessage((i + 1) + " ");
             }
         }
-        System.out.println();
     }
 
     public void allocateSeat(JazzClub.SeatMode mode, int excludedSeat, Guest guest) {
         boolean seatSelected = false;
 
         while (!seatSelected) {
-            System.out.println("원하는 좌석의 번호를 입력해 주세요.\n");
-            System.out.println("뒤로 돌아가기 원하신다면 0번을 입력해 주세요.\n");
+            JazzClubView.printMessage("원하는 좌석의 번호를 입력해 주세요.\n");
+            JazzClubView.printMessage("뒤로 돌아가기 원하신다면 0번을 입력해 주세요.\n");
             this.showSeatsExcluding(excludedSeat);
 
             int selectedSeatNumber = sc.nextInt();
@@ -70,7 +69,7 @@ public class Seat {
             }
 
             if (mode.equals(JazzClub.SeatMode.CHANGE) && selectedSeatNumber == excludedSeat) {
-                System.out.println("현재 좌석과 동일한 좌석입니다.");
+                JazzClubView.printMessage("현재 좌석과 동일한 좌석입니다.");
                 continue;
             }
             if (!this.isValidSeatNumber(selectedSeatNumber)) {
@@ -78,15 +77,15 @@ public class Seat {
                 continue;
             }
             if (!this.isSeatAvailable(selectedSeatNumber)) {
-                System.out.println("이미 선점된 좌석입니다.");
+                JazzClubView.printMessage("이미 선점된 좌석입니다.");
                 continue;
             }
 
             this.occupySeat(selectedSeatNumber);
             guest.setCurrentSeat(selectedSeatNumber);
 
-            System.out.println("좌석 선택이 완료되었습니다. 발급받은 입장권을 갖고 들어가 주세요.\n\n");
-            Utils.printTicket(selectedSeatNumber);
+            JazzClubView.printMessage("좌석 선택이 완료되었습니다. 발급받은 입장권을 갖고 들어가 주세요.\n\n");
+            JazzClubView.printTicket(selectedSeatNumber);
 
             seatSelected = true;
         }

@@ -1,7 +1,6 @@
 package jazzclub;
 
 import jazzclub.domain.*;
-import jazzclub.util.Utils;
 import jazzclub.view.JazzClubView;
 
 import java.util.Scanner;
