@@ -1,6 +1,5 @@
 package jazzclub.view;
 
-import jazzclub.JazzClub;
 import jazzclub.domain.Drink;
 import jazzclub.domain.Seat;
 

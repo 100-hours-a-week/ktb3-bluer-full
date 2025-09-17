@@ -1,8 +1,6 @@
 package jazzclub.service;
 
-import jazzclub.JazzClub;
 import jazzclub.domain.*;
-import jazzclub.view.JazzClubView;
 
 
 public class JazzClubService {
@@ -16,6 +14,19 @@ public class JazzClubService {
         this.seat = seat;
         this.cashier = cashier;
         this.menu = menu;
+    }
+
+    // Seat
+
+    public void occupySeat(int seatNumber) {
+        this.seat.setSeatsState(seatNumber, Seat.SeatState.OCCUPIED);
+        this.guest.setCurrentSeat(seatNumber);
+    }
+
+
+    public void releaseSeat(int seatNumber) {
+        this.seat.setSeatsState(seatNumber, Seat.SeatState.EMPTY);
+        this.guest.setCurrentSeat(guest.NO_SEAT);
     }
 
     // Order
@@ -46,7 +57,4 @@ public class JazzClubService {
 
         return selectedMenu;
     }
-
-
-
 }

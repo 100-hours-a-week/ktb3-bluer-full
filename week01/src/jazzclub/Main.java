@@ -8,7 +8,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         Guest guest = new Guest(100);
-        Seat seat = new Seat(10, sc);
+        Seat seat = new Seat(10);
         Cashier cashier = new Cashier();
         Drink[] menu = {
                 new Cocktail("Tequila", 30, 0.4f),
