@@ -5,10 +5,10 @@ import jazzclub.domain.Drink;
 import java.util.Scanner;
 
 public class JazzClubView {
-    private final Scanner sc;
+    private static Scanner sc;
 
     public JazzClubView(Scanner sc) {
-        this.sc = sc;
+        JazzClubView.sc = sc;
     }
 
     public static void  printMessage(String message) {
@@ -23,7 +23,7 @@ public class JazzClubView {
         }
     }
 
-    public int getMenuInput() {
+    public static int getMenuInput() {
         return sc.nextInt();
     }
 

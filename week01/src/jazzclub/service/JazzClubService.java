@@ -1,10 +1,8 @@
 package jazzclub.service;
 
 import jazzclub.JazzClub;
-import jazzclub.domain.Cashier;
-import jazzclub.domain.Drink;
-import jazzclub.domain.Guest;
-import jazzclub.domain.Seat;
+import jazzclub.domain.*;
+import jazzclub.view.JazzClubView;
 
 
 public class JazzClubService {
@@ -26,6 +24,16 @@ public class JazzClubService {
         }
         int NONE_SELECT = -1;
         this.seat.allocateSeat(JazzClub.SeatMode.SELECT, NONE_SELECT, this.guest);
+    }
+
+    public void changeSeat() {
+        if (!this.guest.hasSeat()) {
+            throw new IllegalStateException("보유한 좌석이 없습니다. 좌석 선택 메뉴를 이용해 주세요.");
+        }
+        int currentSeat = this.guest.getCurrentSeat();
+
+        this.seat.allocateSeat(JazzClub.SeatMode.CHANGE, currentSeat, this.guest);
+        this.seat.releaseSeat(currentSeat);
     }
 
 

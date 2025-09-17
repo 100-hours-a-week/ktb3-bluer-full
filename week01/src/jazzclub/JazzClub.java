@@ -13,7 +13,7 @@ public class JazzClub {
     private final Drink[] menu;
     private final Scanner sc;
     private final JazzClubService service;
-    
+
     public JazzClub(Guest guest, Seat seat, Cashier cashier, Drink[] menu, Scanner sc) {
         this.guest = guest;
         this.seat = seat;
@@ -27,7 +27,7 @@ public class JazzClub {
         JazzClubView.printMessage("\n=====[좌석 선택]=====\n");
 
         try {
-            service.selectSeat();
+            this.service.selectSeat();
         } catch (IllegalStateException e) {
             JazzClubView.printMessage(e.getMessage());
         }
@@ -36,15 +36,12 @@ public class JazzClub {
     private void handleChangeSeat() {
         JazzClubView.printMessage("\n=====[좌석 이동]=====\n");
 
-        if (!this.guest.hasSeat()) {
-            JazzClubView.printMessage("이미 보유한 좌석이 없습니다. 좌석 선택 메뉴를 이용해 주세요.");
-            return;
+        try {
+            this.service.changeSeat();
+        } catch (IllegalStateException e) {
+            JazzClubView.printMessage(e.getMessage());
         }
 
-        int currentSeat = this.guest.getCurrentSeat();
-
-        this.seat.allocateSeat(SeatMode.CHANGE, currentSeat, this.guest);
-        this.seat.releaseSeat(currentSeat);
     }
 
     private void handleOrder() {
