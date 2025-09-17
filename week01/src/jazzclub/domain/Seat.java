@@ -17,6 +17,10 @@ public class Seat {
 
     }
 
+    public int getTotalSeats() {
+        return this.seats.length;
+    }
+
     public boolean isSeatAvailable(int seatNumber) {
         return this.seats[seatNumber - 1] == SeatState.EMPTY;
     }
@@ -92,7 +96,7 @@ public class Seat {
         }
     }
 
-    enum SeatState {
+    public enum SeatState {
         EMPTY, OCCUPIED
     }
 }
