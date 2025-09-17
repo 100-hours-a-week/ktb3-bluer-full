@@ -11,11 +11,11 @@ public class JazzClubView {
         JazzClubView.sc = sc;
     }
 
-    public static void  printMessage(String message) {
+    public  void  printMessage(String message) {
         System.out.println(message);
     }
 
-    public static void printMessage(String message, boolean newLine) {
+    public  void printMessage(String message, boolean newLine) {
         if (newLine) {
             System.out.println(message);
         } else {
@@ -23,20 +23,20 @@ public class JazzClubView {
         }
     }
 
-    public static int getMenuInput() {
+    public  int getMenuInput() {
         return sc.nextInt();
     }
 
-    public static void printDrinksMenu(Drink[] menu) {
-        printMessage("================== Jazz Club Drinks Menu ==================");
+    public void printDrinksMenu(Drink[] menu) {
+        this.printMessage("================== Jazz Club Drinks Menu ==================");
         for (int i = 0; i < menu.length; i++) {
             System.out.printf("%d. %-15s : %d원 (%s)%n", i + 1, menu[i].getName(), menu[i].getPrice(), menu[i].getDetail());
         }
-        printMessage("===========================================================");
+        this.printMessage("===========================================================");
     }
 
-    public static void printMainMenu() {
-        printMessage(
+    public void printMainMenu() {
+        this.printMessage(
                 """
                                                     
                         -------------------
@@ -53,7 +53,7 @@ public class JazzClubView {
         );
     }
 
-    public static void printTicket(int selectedSeatNumber) {
+    public void printTicket(int selectedSeatNumber) {
         String ticket = String.format("""
                 =====================================
                 |               Ticket              |
@@ -67,7 +67,7 @@ public class JazzClubView {
         System.out.println(ticket);
     }
 
-    public static void printCoffeeASCII() {
+    public void printCoffeeASCII() {
         String cocktailASCII = """
                  ( (  ) )
                   ) (
@@ -81,7 +81,7 @@ public class JazzClubView {
         System.out.println(cocktailASCII);
     }
 
-    public static void printCocktailASCII() {
+    public void printCocktailASCII() {
         String coffeeASCII = """
                    _______
                   /       \\

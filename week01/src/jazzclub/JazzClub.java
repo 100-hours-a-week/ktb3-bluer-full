@@ -13,6 +13,7 @@ public class JazzClub {
     private final Drink[] menu;
     private final Scanner sc;
     private final JazzClubService service;
+    private final JazzClubView view;
 
     public JazzClub(Guest guest, Seat seat, Cashier cashier, Drink[] menu, Scanner sc) {
         this.guest = guest;
@@ -21,48 +22,50 @@ public class JazzClub {
         this.menu = menu;
         this.sc = sc;
         this.service = new JazzClubService(guest, seat, cashier, menu);
+        this.view = new JazzClubView(sc);
     }
 
     private void handleSelectSeat() {
-        JazzClubView.printMessage("\n=====[좌석 선택]=====\n");
+        this.view.printMessage("\n=====[좌석 선택]=====\n");
 
         try {
             this.service.selectSeat();
         } catch (IllegalStateException e) {
-            JazzClubView.printMessage(e.getMessage());
+            this.view.printMessage(e.getMessage());
         }
     }
 
     private void handleChangeSeat() {
-        JazzClubView.printMessage("\n=====[좌석 이동]=====\n");
+        this.view.printMessage("\n=====[좌석 이동]=====\n");
 
         try {
             this.service.changeSeat();
         } catch (IllegalStateException e) {
-            JazzClubView.printMessage(e.getMessage());
+            this.view.printMessage(e.getMessage());
+
         }
 
     }
 
     private void handleOrder() {
-        JazzClubView.printMessage("\n=====[음료 주문]=====\n");
+        this.view.printMessage("\n=====[음료 주문]=====\n");
 
-        if (!this.guest.hasSeat()) {
-            JazzClubView.printMessage("좌석이 있는 고객만 음료 주문이 가능합니다. 좌석을 먼저 선택해 주세요.");
+        if (!this.service.isGuestCanOrder()) {
+            this.view.printMessage("좌석이 있는 고객만 음료 주문이 가능합니다. 좌석을 먼저 선택해 주세요.");
             return;
         }
+
 
         boolean orderCompleted = false;
 
         while (!orderCompleted) {
-            JazzClubView.printMessage("""
+            this.view.printMessage("""
                                         구매하기 원하는 음료의 번호를 입력해 주세요.
                                         - 뒤로 돌아가기 원하신다면 0번을 입력해 주세요.
                     """);
+            this.view.printDrinksMenu(menu);
 
-            JazzClubView.printDrinksMenu(menu);
-
-            int menuNumber = sc.nextInt();
+            int menuNumber = this.view.getMenuInput();
 
             if (menuNumber == 0) {
                 return;
@@ -99,21 +102,21 @@ public class JazzClub {
     }
 
     private void handleExit() {
-        JazzClubView.printMessage("찾아주셔서 감사합니다. 또 오세요.");
+        this.view.printMessage("찾아주셔서 감사합니다. 또 오세요.");
 
         int sales = this.cashier.getSales();
         if (sales > 0) {
-            JazzClubView.printMessage("총 사용하신 금액: " + sales);
+            this.view.printMessage("총 사용하신 금액: " + sales);
         }
     }
 
     public void run() {
-        JazzClubView.printMessage("안녕하세요, Bluer Jazz Club입니다.");
+        this.view.printMessage("안녕하세요, Bluer Jazz Club입니다.");
 
         boolean isRunning = true;
 
         while (isRunning) {
-            JazzClubView.printMainMenu();
+            this.view.printMainMenu();
 
             int input = sc.nextInt();
 
@@ -125,7 +128,7 @@ public class JazzClub {
                     handleExit();
                     isRunning = false;
                 }
-                default -> JazzClubView.printMessage("잘못된 번호를 입력하셨습니다. 다시 입력해 주세요. (입력하신 번호: " + input + ")\n");
+                default -> this.view.printMessage("잘못된 번호를 입력하셨습니다. 다시 입력해 주세요. (입력하신 번호: " + input + ")\n");
             }
         }
     }
