@@ -1,14 +1,15 @@
 package jazzclub;
 
 import jazzclub.domain.*;
+import jazzclub.util.Constants;
 
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        Guest guest = new Guest(100);
-        Seat seat = new Seat(10);
+        Guest guest = new Guest(Constants.Guest.CASH);
+        Seat seat = new Seat(Constants.Seat.TOTAL_SEATS);
         Cashier cashier = new Cashier();
         Drink[] menu = {
                 new Cocktail("Tequila", 30, 0.4f),

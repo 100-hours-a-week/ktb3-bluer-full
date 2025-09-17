@@ -1,7 +1,9 @@
 package jazzclub.domain;
 
+import jazzclub.util.Constants;
+
 public class Guest {
-    public final int NO_SEAT = -1;
+    static public final int NO_SEAT = Constants.Seat.NO_SEAT;
     private int cash;
     private int currentSeat = NO_SEAT;
 

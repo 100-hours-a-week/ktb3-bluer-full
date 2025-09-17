@@ -2,6 +2,7 @@ package jazzclub;
 
 import jazzclub.domain.*;
 import jazzclub.service.JazzClubService;
+import jazzclub.util.Constants;
 import jazzclub.view.JazzClubView;
 
 import java.util.Scanner;
@@ -71,7 +72,7 @@ public class JazzClub {
             return;
         }
         try {
-            this.allocateSeatLoop(SeatMode.SELECT, -1);
+            this.allocateSeatLoop(SeatMode.SELECT, Constants.Seat.NO_SEAT);
         } catch (Exception e) {
             this.view.printMessage(e.getMessage());
         }
