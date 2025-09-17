@@ -3,6 +3,7 @@ package jazzclub.view;
 import jazzclub.domain.Drink;
 import jazzclub.domain.Seat;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class JazzClubView {
@@ -25,7 +26,18 @@ public class JazzClubView {
     }
 
     public  int getInputNumber() {
-        return sc.nextInt();
+        int input = -1;
+
+        while (true) {
+            try {
+                input = sc.nextInt();
+                sc.nextLine();
+                return input;
+            } catch (java.util.InputMismatchException e) {
+                System.out.println("잘못된 입력입니다. 숫자를 입력해주세요.");
+                sc.nextLine();
+            }
+        }
     }
 
 

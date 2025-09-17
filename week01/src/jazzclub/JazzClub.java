@@ -154,7 +154,8 @@ public class JazzClub {
         while (isRunning) {
             this.view.printMainMenu();
 
-            int input = sc.nextInt();
+
+            int input = view.getInputNumber();
 
             switch (input) {
                 case 1 -> handleSelectSeat();
