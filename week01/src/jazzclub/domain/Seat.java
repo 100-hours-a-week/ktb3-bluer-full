@@ -47,11 +47,12 @@ public class Seat {
 
         for (int i = 0; i < seats.length; i++) {
             if (i + 1 == excludedNumber) {
-               JazzClubView.printMessage("X ");
+               JazzClubView.printMessage("X ", false);
             } else if (seats[i] == SeatState.EMPTY) {
-               JazzClubView.printMessage((i + 1) + " ");
+               JazzClubView.printMessage((i + 1) + " ", false);
             }
         }
+        JazzClubView.printMessage("");
     }
 
     public void allocateSeat(JazzClub.SeatMode mode, int excludedSeat, Guest guest) {

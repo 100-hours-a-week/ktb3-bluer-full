@@ -15,6 +15,14 @@ public class JazzClubView {
         System.out.println(message);
     }
 
+    public static void printMessage(String message, boolean newLine) {
+        if (newLine) {
+            System.out.println(message);
+        } else {
+            System.out.print(message);
+        }
+    }
+
     public int getMenuInput() {
         return sc.nextInt();
     }
