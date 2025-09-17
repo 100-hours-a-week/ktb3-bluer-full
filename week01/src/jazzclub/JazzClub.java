@@ -71,33 +71,21 @@ public class JazzClub {
                 return;
             }
 
-            if (menuNumber < 1 || menuNumber > menu.length) {
-                JazzClubView.printMessage("\n=====\n잘못된 입력입니다. 유효한 숫자: 1 ~ " + this.menu.length);
-                JazzClubView.printMessage("입력한 숫자: " + menuNumber + "\n");
-                continue;
+            try {
+                Drink orderedDrink = service.orderDrink(menuNumber);
+                this.view.printMessage("\n🎉 음료 구매 완료! 🎉");
+                this.view.printMessage("선택한 음료: " + orderedDrink.getName() + " (" + orderedDrink.getDetail() + ")\n");
+
+                if (orderedDrink instanceof Coffee) {
+                    this.view.printCoffeeASCII();
+                } else if (orderedDrink instanceof Cocktail) {
+                    this.view.printCocktailASCII();
+                }
+
+                orderCompleted = true;
+            } catch (Exception e) {
+                this.view.printMessage(e.getMessage());
             }
-
-            Drink selectedMenu = this.menu[menuNumber - 1];
-            int selectedMenuPrice = selectedMenu.getPrice();
-
-            if (!this.guest.canSpendCash(selectedMenuPrice)) {
-                JazzClubView.printMessage("잔액이 부족합니다. 다른 음료를 선택해 주세요.\n\n\n\n");
-                continue;
-            }
-
-            this.guest.spendCash(selectedMenuPrice);
-            this.cashier.addSale(selectedMenuPrice);
-
-            JazzClubView.printMessage("\n🎉 음료 구매 완료! 🎉");
-            JazzClubView.printMessage("선택한 음료: " + selectedMenu.getName() + " (" + selectedMenu.getDetail() + ")\n");
-
-            if (selectedMenu instanceof Coffee) {
-                JazzClubView.printCoffeeASCII();
-            } else if (selectedMenu instanceof Cocktail) {
-                JazzClubView.printCocktailASCII();
-            }
-
-            orderCompleted = true;
         }
     }
 

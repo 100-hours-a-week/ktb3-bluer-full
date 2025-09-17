@@ -18,6 +18,7 @@ public class JazzClubService {
         this.menu = menu;
     }
 
+    // Seat
     public void selectSeat() {
         if (this.guest.hasSeat()) {
             throw new IllegalStateException("이미 보유한 좌석이 있습니다. 좌석 이동 메뉴를 이용해 주세요.");
@@ -36,5 +37,36 @@ public class JazzClubService {
         this.seat.releaseSeat(currentSeat);
     }
 
+
+
+    
+    // Order
+
+    public boolean isGuestCanOrder() {
+        return this.guest.hasSeat();
+    }
+
+    public Drink orderDrink(int menuNumber) {
+        if (menuNumber < 1 || menuNumber > menu.length) {
+            throw new IllegalArgumentException(
+                String.format("\n=====\n잘못된 입력입니다. 유효한 숫자: %d ~ %d\n입력한 숫자: %d\n",
+                    1, this.menu.length, menuNumber
+            ));
+        }
+
+        Drink selectedMenu = this.menu[menuNumber - 1];
+        int selectedMenuPrice = selectedMenu.getPrice();
+
+        if (!this.guest.canSpendCash(selectedMenuPrice)) {
+            throw new IllegalArgumentException(
+                    "잔액이 부족합니다. 다른 음료를 선택해 주세요.\n\n\n\n"
+            );
+        }
+
+        this.guest.spendCash(selectedMenuPrice);
+        this.cashier.addSale(selectedMenuPrice);
+
+        return selectedMenu;
+    }
 
 }
