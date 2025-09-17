@@ -1,7 +1,5 @@
 package jazzclub.domain;
 
-import jazzclub.JazzClub;
-import jazzclub.view.JazzClubView;
 
 import java.util.Arrays;
 import java.util.Scanner;
@@ -59,42 +57,6 @@ public class Seat {
         // JazzClubView.printMessage("");
     }
 
-    public void allocateSeat(JazzClub.SeatMode mode, int excludedSeat, Guest guest) {
-        boolean seatSelected = false;
-
-        while (!seatSelected) {
-            // JazzClubView.printMessage("원하는 좌석의 번호를 입력해 주세요.\n");
-            // JazzClubView.printMessage("뒤로 돌아가기 원하신다면 0번을 입력해 주세요.\n");
-            this.showSeatsExcluding(excludedSeat);
-
-            int selectedSeatNumber = sc.nextInt();
-
-            if (selectedSeatNumber == 0) {
-                return;
-            }
-
-            if (mode.equals(JazzClub.SeatMode.CHANGE) && selectedSeatNumber == excludedSeat) {
-                // JazzClubView.printMessage("현재 좌석과 동일한 좌석입니다.");
-                continue;
-            }
-            if (!this.isValidSeatNumber(selectedSeatNumber)) {
-                this.printIsWrongSeatNumber(selectedSeatNumber);
-                continue;
-            }
-            if (!this.isSeatAvailable(selectedSeatNumber)) {
-                // JazzClubView.printMessage("이미 선점된 좌석입니다.");
-                continue;
-            }
-
-            this.occupySeat(selectedSeatNumber);
-            guest.setCurrentSeat(selectedSeatNumber);
-
-            // JazzClubView.printMessage("좌석 선택이 완료되었습니다. 발급받은 입장권을 갖고 들어가 주세요.\n\n");
-            // JazzClubView.printTicket(selectedSeatNumber);
-
-            seatSelected = true;
-        }
-    }
 
     public enum SeatState {
         EMPTY, OCCUPIED

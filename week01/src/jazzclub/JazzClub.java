@@ -26,6 +26,43 @@ public class JazzClub {
     }
 
 
+    private void allocateSeatLoop(JazzClub.SeatMode mode, int excludedSeat) {
+        boolean seatSelected = false;
+
+        while (!seatSelected) {
+            this.view.printMessage("원하는 좌석의 번호를 입력해 주세요.\n");
+            this.view.printMessage("뒤로 돌아가기 원하신다면 0번을 입력해 주세요.\n");
+            this.view.showSeatsExcluding(this.seat, excludedSeat);
+
+            int selectedSeatNumber = this.view.getInputNumber();
+
+            if (selectedSeatNumber == 0) {
+                return;
+            }
+
+            if (selectedSeatNumber == excludedSeat) {
+                this.view.printMessage("현재 좌석과 동일한 좌석입니다.");
+                continue;
+            }
+
+            if (!this.seat.isValidSeatNumber(selectedSeatNumber)) {
+                this.view.printIsWrongSeatNumber(selectedSeatNumber, this.seat.getTotalSeats());
+                continue;
+            }
+            if (!this.seat.isSeatAvailable(selectedSeatNumber)) {
+                this.view.printMessage("이미 선점된 좌석입니다.");
+                continue;
+            }
+
+            this.seat.occupySeat(selectedSeatNumber);
+            this.guest.setCurrentSeat(selectedSeatNumber);
+            this.view.printMessage("좌석 선택이 완료되었습니다. 발급받은 입장권을 갖고 들어가 주세요.\n\n");
+            this.view.printTicket(selectedSeatNumber);
+
+            seatSelected = true;
+        }
+    }
+
 
     private void handleSelectSeat() {
         this.view.printMessage("\n=====[좌석 선택]=====\n");
@@ -35,62 +72,27 @@ public class JazzClub {
             return;
         }
 
-        boolean seatSelected = false;
-        int NONE_SELECT = -1;
-
-        while (!seatSelected) {
-            this.view.printMessage("원하는 좌석의 번호를 입력해 주세요.\n");
-            this.view.printMessage("뒤로 돌아가기 원하신다면 0번을 입력해 주세요.\n");
-            this.view.showSeatsExcluding(this.seat, -1);
-
-            int selectedSeatNumber = this.view.getInputNumber();
-
-            if (selectedSeatNumber == 0) {
-                return;
-            }
-
-
-//            if (mode.equals(JazzClub.SeatMode.CHANGE) && selectedSeatNumber == excludedSeat) {
-                // JazzClubView.printMessage("현재 좌석과 동일한 좌석입니다.");
-//                continue;
-//            }
-
-            if (!this.seat.isValidSeatNumber(selectedSeatNumber)) {
-                this.view.printIsWrongSeatNumber(selectedSeatNumber, this.seat.getTotalSeats());
-                continue;
-            }
-            if (!this.seat.isSeatAvailable(selectedSeatNumber)) {
-                 this.view.printMessage("이미 선점된 좌석입니다.");
-                continue;
-            }
-
-            this.seat.occupySeat(selectedSeatNumber);
-            this.guest.setCurrentSeat(selectedSeatNumber);
-
-             this.view.printMessage("좌석 선택이 완료되었습니다. 발급받은 입장권을 갖고 들어가 주세요.\n\n");
-             this.view.printTicket(selectedSeatNumber);
-
-            seatSelected = true;
-        }
-
-
-//        try {
-//            this.service.selectSeat();
-//        } catch (IllegalStateException e) {
-//            this.view.printMessage(e.getMessage());
-//        }
+        this.allocateSeatLoop(SeatMode.SELECT, -1);
     }
 
     private void handleChangeSeat() {
         this.view.printMessage("\n=====[좌석 이동]=====\n");
 
-        try {
-            this.service.changeSeat();
-        } catch (IllegalStateException e) {
-            this.view.printMessage(e.getMessage());
-
+        if (!this.guest.hasSeat()) {
+            this.view.printMessage("보유한 좌석이 없습니다. 좌석 선택 메뉴를 이용해 주세요.");
+            return;
         }
 
+        int currentSeat = this.guest.getCurrentSeat();
+
+        this.view.printMessage("currentSeat: " + currentSeat);
+
+        try {
+            this.allocateSeatLoop(SeatMode.CHANGE, currentSeat);
+            this.seat.releaseSeat(currentSeat);
+        } catch (Exception e) {
+            this.view.printMessage(e.getMessage());
+        }
     }
 
     private void handleOrder() {

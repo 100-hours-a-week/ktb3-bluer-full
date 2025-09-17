@@ -94,6 +94,8 @@ public class JazzClubView {
                 this.printMessage((i + 1) + " ", false);
             }
         }
+
+        this.printMessage("\n");
     }
 
     public void printIsWrongSeatNumber(int seatNumber, int totalSeatsLength) {
