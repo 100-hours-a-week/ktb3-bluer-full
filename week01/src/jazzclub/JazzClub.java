@@ -15,7 +15,7 @@ public class JazzClub {
     private final Seat seat;
     private final Cashier cashier;
     private final Drink[] menu;
-    private final Scanner sc;
+
     private final GuestService guestService;
     private final JazzClubView view;
     private final SeatService seatService;
@@ -31,7 +31,6 @@ public class JazzClub {
         this.seat = seat;
         this.cashier = cashier;
         this.menu = menu;
-        this.sc = sc;
         this.guestService = new GuestService();
         this.seatService = new SeatService();
         this.orderService = new OrderService();
@@ -216,8 +215,7 @@ public class JazzClub {
         }
     }
 
-    public enum SeatMode {
+    private enum SeatMode {
         SELECT, CHANGE
     }
-
 }
