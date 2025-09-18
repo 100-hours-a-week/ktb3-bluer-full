@@ -32,9 +32,26 @@ public class JazzClub {
         this.view = new JazzClubView(sc);
     }
 
+    private void startGuestTimer() {
+        stopGuestTimer();
+        timerFuture = executor.scheduleAtFixedRate(() -> {
+            if (remainingSeconds < 1) {
+                view.printMessage("\n머무를 수 있는 시간이 초과되어 자동으로 퇴장합니다.\n");
+                handleExit();
+            }
+            remainingSeconds--;
+        }, 1, 1, TimeUnit.SECONDS);
+    }
+
+    private void stopGuestTimer() {
+        if (timerFuture != null && !timerFuture.isCancelled()) {
+            timerFuture.cancel(true);
+        }
+    }
+
     private void allocateSeatLoop(JazzClub.SeatMode mode, int excludedSeat) {
         boolean seatSelected = false;
-
+        
         while (!seatSelected) {
             this.view.printMessage("원하는 좌석의 번호를 입력해 주세요.\n");
             this.view.printMessage("뒤로 돌아가기 원하신다면 0번을 입력해 주세요.\n");
@@ -78,6 +95,11 @@ public class JazzClub {
         }
         try {
             this.allocateSeatLoop(SeatMode.SELECT, Constants.Seat.NO_SEAT);
+            if (this.guest.hasSeat()) {
+                // TODO: 좌석 선택 시 시간 초기화
+                // remainingSeconds = 30;
+                startGuestTimer();
+            }
         } catch (Exception e) {
             this.view.printMessage(e.getMessage());
         }
@@ -144,12 +166,18 @@ public class JazzClub {
     }
 
     private void handleExit() {
+        handleExit(0); 
+    }
+
+    private void handleExit(int statusCode) {
+        stopGuestTimer();
         this.view.printMessage("찾아주셔서 감사합니다. 또 오세요.");
 
         int sales = this.cashier.getSales();
         if (sales > 0) {
             this.view.printMessage("총 사용하신 금액: " + sales);
         }
+        System.exit(statusCode);
     }
 
     public void run() {
@@ -168,8 +196,8 @@ public class JazzClub {
                 case 2 -> handleChangeSeat();
                 case 3 -> handleOrder();
                 case 0 -> {
-                    handleExit();
                     isRunning = false;
+                    handleExit();
                 }
                 default -> this.view.printMessage("잘못된 번호를 입력하셨습니다. 다시 입력해 주세요. (입력하신 번호: " + input + ")\n");
             }
