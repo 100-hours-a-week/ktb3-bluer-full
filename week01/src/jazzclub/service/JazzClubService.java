@@ -3,24 +3,14 @@ package jazzclub.service;
 import jazzclub.domain.*;
 
 public class JazzClubService {
-    private final Seat seat;
     private final Cashier cashier;
     private final Drink[] menu;
 
-    public JazzClubService(Seat seat, Cashier cashier, Drink[] menu) { 
-        this.seat = seat;
+    public JazzClubService(Cashier cashier, Drink[] menu) {
         this.cashier = cashier;
         this.menu = menu;
     }
 
-    // Seat
-    public void occupySeat(int seatNumber) {
-        this.seat.setSeatsState(seatNumber, Seat.SeatState.OCCUPIED);
-    }
-
-    public void releaseSeat(int seatNumber) {
-        this.seat.setSeatsState(seatNumber, Seat.SeatState.EMPTY);
-    }
 
     // Order
     public Drink orderDrink(Guest guest, int menuNumber) {

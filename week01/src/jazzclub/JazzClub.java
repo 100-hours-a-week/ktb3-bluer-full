@@ -3,6 +3,7 @@ package jazzclub;
 import jazzclub.domain.*;
 import jazzclub.service.GuestService;
 import jazzclub.service.JazzClubService;
+import jazzclub.service.SeatService;
 import jazzclub.util.Constants;
 import jazzclub.view.JazzClubView;
 
@@ -18,6 +19,7 @@ public class JazzClub {
     private final JazzClubService service;
     private final GuestService guestService;
     private final JazzClubView view;
+    private final SeatService seatService;
 
     private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> timerFuture;
@@ -30,8 +32,9 @@ public class JazzClub {
         this.cashier = cashier;
         this.menu = menu;
         this.sc = sc;
-        this.service = new JazzClubService(seat, cashier, menu);
+        this.service = new JazzClubService(cashier, menu);
         this.guestService = new GuestService();
+        this.seatService = new SeatService();
         this.view = new JazzClubView(sc);
     }
 
@@ -70,17 +73,13 @@ public class JazzClub {
                 continue;
             }
 
-            if (!this.seat.isValidSeatNumber(selectedSeatNumber)) {
+            if (!seatService.isSeatAvailable(this.seat, selectedSeatNumber)) {
                 this.view.printIsWrongSeatNumber(selectedSeatNumber, this.seat.getTotalSeats());
                 continue;
             }
-            if (!this.seat.isSeatAvailable(selectedSeatNumber)) {
-                this.view.printMessage("이미 선점된 좌석입니다.");
-                continue;
-            }
 
-            this.service.occupySeat(selectedSeatNumber);
-            this.guestService.assignSeat(guest, selectedSeatNumber); // GuestService 사용
+            this.seatService.occupySeat(this.seat, selectedSeatNumber);
+            this.guestService.assignSeat(this.guest, selectedSeatNumber);
             this.view.printMessage("좌석 선택이 완료되었습니다. 발급받은 입장권을 갖고 들어가 주세요.\n\n");
             this.view.printTicket(selectedSeatNumber);
 
@@ -91,13 +90,13 @@ public class JazzClub {
     private void handleSelectSeat() {
         this.view.printMessage("\n=====[좌석 선택]=====\n");
 
-        if (this.guestService.hasSeat(guest)) { // GuestService 사용
+        if (this.guestService.hasSeat(this.guest)) {
             this.view.printMessage("이미 보유한 좌석이 있습니다. 좌석 이동 메뉴를 이용해 주세요.");
             return;
         }
         try {
             this.allocateSeatLoop(SeatMode.SELECT, Constants.Seat.NO_SEAT);
-            if (this.guestService.hasSeat(guest)) { // GuestService 사용
+            if (this.guestService.hasSeat(this.guest)) {
                 startGuestTimer();
             }
         } catch (Exception e) {
@@ -108,16 +107,16 @@ public class JazzClub {
     private void handleChangeSeat() {
         this.view.printMessage("\n=====[좌석 이동]=====\n");
 
-        if (!this.guestService.hasSeat(guest)) { // GuestService 사용
+        if (!this.guestService.hasSeat(this.guest)) {
             this.view.printMessage("보유한 좌석이 없습니다. 좌석 선택 메뉴를 이용해 주세요.");
             return;
         }
 
-        int currentSeat = guest.getCurrentSeat();
+        int currentSeat = this.guest.getCurrentSeat();
 
         try {
-            this.service.releaseSeat(currentSeat);
-            this.guestService.releaseSeat(guest); // GuestService 사용
+            seatService.releaseSeat(this.seat, currentSeat);
+            guestService.releaseSeat(this.guest);
             this.allocateSeatLoop(SeatMode.CHANGE, currentSeat);
         } catch (Exception e) {
             this.view.printMessage(e.getMessage());
@@ -127,7 +126,7 @@ public class JazzClub {
     private void handleOrder() {
         this.view.printMessage("\n=====[음료 주문]=====\n");
 
-        if (!this.guestService.hasSeat(guest)) { // GuestService 사용
+        if (!this.guestService.hasSeat(this.guest)) {
             this.view.printMessage("좌석이 있는 고객만 음료 주문이 가능합니다. 좌석을 먼저 선택해 주세요.");
             return;
         }
@@ -166,8 +165,8 @@ public class JazzClub {
     }
 
     private void handleExtendTime() {
-        if (this.guestService.canSpendCash(guest, Constants.Seat.EXTEND_COST)) { // GuestService 사용
-            this.guestService.spendCash(guest, Constants.Seat.EXTEND_COST);      // GuestService 사용
+        if (this.guestService.canSpendCash(this.guest, Constants.Seat.EXTEND_COST)) {
+            this.guestService.spendCash(this.guest, Constants.Seat.EXTEND_COST);
             remainingSeconds += Constants.Seat.EXTEND_SECONDS;
             this.view.printMessage("시간 연장이 완료되었습니다. 남은 시간: " + remainingSeconds, true);
         } else {
@@ -176,7 +175,7 @@ public class JazzClub {
     }
 
     private void handleExit() {
-        handleExit(0); 
+        handleExit(0);
     }
 
     private void handleExit(int statusCode) {
