@@ -36,7 +36,7 @@ public class JazzClub {
         stopGuestTimer();
         timerFuture = executor.scheduleAtFixedRate(() -> {
             if (remainingSeconds < 1) {
-                view.printMessage("\n머무를 수 있는 시간이 초과되어 자동으로 퇴장합니다.\n");
+                view.printMessage("고객님의 이용 시간이 모두 끝났습니다. 찾아주셔서 감사합니다.");
                 handleExit();
             }
             remainingSeconds--;
@@ -96,8 +96,6 @@ public class JazzClub {
         try {
             this.allocateSeatLoop(SeatMode.SELECT, Constants.Seat.NO_SEAT);
             if (this.guest.hasSeat()) {
-                // TODO: 좌석 선택 시 시간 초기화
-                // remainingSeconds = 30;
                 startGuestTimer();
             }
         } catch (Exception e) {
@@ -165,6 +163,16 @@ public class JazzClub {
         }
     }
 
+    private void handleExtendTime() {
+        if (this.guest.canSpendCash(Constants.Seat.EXTEND_COST)) {
+            this.guest.spendCash(Constants.Seat.EXTEND_COST);
+            remainingSeconds += Constants.Seat.EXTEND_SECONDS;
+            this.view.printMessage("시간 연장이 완료되었습니다. 남은 시간: " + remainingSeconds, true);
+        } else {
+            this.view.printMessage("잔액이 부족하여 시간 연장이 불가능합니다.\n");
+        }
+    }
+
     private void handleExit() {
         handleExit(0); 
     }
@@ -195,6 +203,7 @@ public class JazzClub {
                 case 1 -> handleSelectSeat();
                 case 2 -> handleChangeSeat();
                 case 3 -> handleOrder();
+                case 4 -> handleExtendTime();
                 case 0 -> {
                     isRunning = false;
                     handleExit();
