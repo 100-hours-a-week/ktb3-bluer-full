@@ -3,7 +3,6 @@ package jazzclub.view;
 import jazzclub.domain.Drink;
 import jazzclub.domain.Seat;
 
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class JazzClubView {
@@ -25,7 +24,7 @@ public class JazzClubView {
         }
     }
 
-    public  int getInputNumber() {
+    public int getInputNumber() {
         int input = -1;
 
         while (true) {

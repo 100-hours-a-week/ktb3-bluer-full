@@ -9,7 +9,7 @@ public class JazzClubService {
     private final Cashier cashier;
     private final Drink[] menu;
 
-    public JazzClubService(Guest guest, Seat seat, Cashier cashier, Drink[] menu) {
+    public JazzClubService(Guest guest, Seat seat, Cashier cashier, Drink[] menu) { 
         this.guest = guest;
         this.seat = seat;
         this.cashier = cashier;
@@ -26,7 +26,7 @@ public class JazzClubService {
 
     public void releaseSeat(int seatNumber) {
         this.seat.setSeatsState(seatNumber, Seat.SeatState.EMPTY);
-        this.guest.setCurrentSeat(guest.NO_SEAT);
+        this.guest.setCurrentSeat(Guest.NO_SEAT);
     }
 
     // Order
