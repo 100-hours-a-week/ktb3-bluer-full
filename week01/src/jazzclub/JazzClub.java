@@ -2,7 +2,7 @@ package jazzclub;
 
 import jazzclub.domain.*;
 import jazzclub.service.GuestService;
-import jazzclub.service.JazzClubService;
+import jazzclub.service.OrderService;
 import jazzclub.service.SeatService;
 import jazzclub.util.Constants;
 import jazzclub.view.JazzClubView;
@@ -16,10 +16,10 @@ public class JazzClub {
     private final Cashier cashier;
     private final Drink[] menu;
     private final Scanner sc;
-    private final JazzClubService service;
     private final GuestService guestService;
     private final JazzClubView view;
     private final SeatService seatService;
+    private final OrderService orderService;
 
     private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> timerFuture;
@@ -32,9 +32,9 @@ public class JazzClub {
         this.cashier = cashier;
         this.menu = menu;
         this.sc = sc;
-        this.service = new JazzClubService(cashier, menu);
         this.guestService = new GuestService();
         this.seatService = new SeatService();
+        this.orderService = new OrderService();
         this.view = new JazzClubView(sc);
     }
 
@@ -138,7 +138,7 @@ public class JazzClub {
                                         구매하기 원하는 음료의 번호를 입력해 주세요.
                                         - 뒤로 돌아가기 원하신다면 0번을 입력해 주세요.
                     """);
-            this.view.printDrinksMenu(menu);
+            this.view.printDrinksMenu(this.menu);
 
             int menuNumber = this.view.getInputNumber();
 
@@ -147,7 +147,9 @@ public class JazzClub {
             }
 
             try {
-                Drink orderedDrink = service.orderDrink(guest, menuNumber);
+                Drink orderedDrink = this.orderService.orderDrink(this.guest, this.menu, menuNumber);
+                
+                this.orderService.addSale(this.cashier, orderedDrink.getPrice());
                 this.view.printMessage("\n🎉 음료 구매 완료! 🎉");
                 this.view.printMessage("선택한 음료: " + orderedDrink.getName() + " (" + orderedDrink.getDetail() + ")\n");
 
