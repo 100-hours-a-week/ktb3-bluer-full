@@ -6,6 +6,7 @@ import jazzclub.util.Constants;
 import jazzclub.view.JazzClubView;
 
 import java.util.Scanner;
+import java.util.concurrent.*;
 
 public class JazzClub {
     private final Guest guest;
@@ -16,6 +17,11 @@ public class JazzClub {
     private final JazzClubService service;
     private final JazzClubView view;
 
+    private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledFuture<?> timerFuture;
+
+    private int remainingSeconds = Constants.Seat.INITIAL_REMAINING_SECONDS;
+
     public JazzClub(Guest guest, Seat seat, Cashier cashier, Drink[] menu, Scanner sc) {
         this.guest = guest;
         this.seat = seat;
@@ -25,7 +31,6 @@ public class JazzClub {
         this.service = new JazzClubService(guest, seat, cashier, menu);
         this.view = new JazzClubView(sc);
     }
-
 
     private void allocateSeatLoop(JazzClub.SeatMode mode, int excludedSeat) {
         boolean seatSelected = false;
