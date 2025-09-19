@@ -11,16 +11,8 @@ public class Guest {
         this.cash = cash;
     }
 
-    private int getCash() {
+    public int getCash() {
         return this.cash;
-    }
-
-    public boolean canSpendCash(int amount) {
-        return this.cash >= amount;
-    }
-
-    public void spendCash(int amount) {
-        this.cash = this.getCash() - amount;
     }
 
     public int getCurrentSeat() {
@@ -31,7 +23,7 @@ public class Guest {
         this.currentSeat = seatNumber;
     }
 
-    public boolean hasSeat() {
-        return this.currentSeat != NO_SEAT;
+    public void setCash(int cash) {
+        this.cash = cash;
     }
 }

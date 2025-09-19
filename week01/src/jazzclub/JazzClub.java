@@ -16,8 +16,9 @@ public class JazzClub {
     private final Cashier cashier;
     private final Drink[] menu;
 
-    private final GuestService guestService;
     private final JazzClubView view;
+    
+    private final GuestService guestService;
     private final SeatService seatService;
     private final OrderService orderService;
 
@@ -33,7 +34,7 @@ public class JazzClub {
         this.menu = menu;
         this.guestService = new GuestService();
         this.seatService = new SeatService();
-        this.orderService = new OrderService();
+        this.orderService = new OrderService(this.guestService);
         this.view = new JazzClubView(sc);
     }
 

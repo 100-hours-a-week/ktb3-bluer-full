@@ -4,7 +4,7 @@ import jazzclub.domain.Guest;
 
 public class GuestService {
     public boolean hasSeat(Guest guest) {
-        return guest.hasSeat();
+        return guest.getCurrentSeat() != Guest.NO_SEAT;
     }
 
     public void assignSeat(Guest guest, int seatNumber) {
@@ -16,10 +16,10 @@ public class GuestService {
     }
 
     public boolean canSpendCash(Guest guest, int amount) {
-        return guest.canSpendCash(amount);
+        return guest.getCash() >= amount;
     }
 
     public void spendCash(Guest guest, int amount) {
-        guest.spendCash(amount);
+        guest.setCash(guest.getCash() - amount);
     }
 }

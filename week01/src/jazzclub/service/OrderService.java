@@ -5,6 +5,12 @@ import jazzclub.domain.Drink;
 import jazzclub.domain.Guest;
 
 public class OrderService {
+    private final GuestService guestService;
+
+    public OrderService(GuestService guestService) {
+        this.guestService = guestService;
+    }
+
     public Drink orderDrink(Guest guest, Drink[] menu, int menuNumber) {
         if (menuNumber < 1 || menuNumber > menu.length) {
              throw new IllegalArgumentException(
@@ -15,12 +21,12 @@ public class OrderService {
 
         Drink selected = menu[menuNumber - 1];
 
-        if (!guest.canSpendCash(selected.getPrice())) {
+        if (!guestService.canSpendCash(guest, selected.getPrice())) {
             throw new IllegalArgumentException(
                     "잔액이 부족합니다. 다른 음료를 선택해 주세요.\n\n\n\n"
             );
         }
-        guest.spendCash(selected.getPrice());
+        guestService.spendCash(guest, selected.getPrice());
 
         return selected;
     }
