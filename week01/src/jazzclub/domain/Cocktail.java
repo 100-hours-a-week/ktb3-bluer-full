@@ -1,4 +1,4 @@
-package jazzclub;
+package jazzclub.domain;
 
 public class Cocktail extends Drink {
     private final float alcoholPercentage;

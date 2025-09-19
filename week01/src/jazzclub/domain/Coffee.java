@@ -1,4 +1,4 @@
-package jazzclub;
+package jazzclub.domain;
 
 public class Coffee extends Drink {
     private final String beanType;

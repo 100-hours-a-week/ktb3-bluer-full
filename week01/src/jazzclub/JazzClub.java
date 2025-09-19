@@ -1,141 +1,222 @@
 package jazzclub;
 
+import jazzclub.domain.*;
+import jazzclub.service.GuestService;
+import jazzclub.service.OrderService;
+import jazzclub.service.SeatService;
+import jazzclub.util.Constants;
+import jazzclub.view.JazzClubView;
+
 import java.util.Scanner;
+import java.util.concurrent.*;
 
 public class JazzClub {
     private final Guest guest;
     private final Seat seat;
     private final Cashier cashier;
     private final Drink[] menu;
-    private final Scanner sc;
+
+    private final JazzClubView view;
+    
+    private final GuestService guestService;
+    private final SeatService seatService;
+    private final OrderService orderService;
+
+    private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledFuture<?> timerFuture;
+
+    private int remainingSeconds = Constants.Seat.INITIAL_REMAINING_SECONDS;
 
     public JazzClub(Guest guest, Seat seat, Cashier cashier, Drink[] menu, Scanner sc) {
         this.guest = guest;
         this.seat = seat;
         this.cashier = cashier;
         this.menu = menu;
-        this.sc = sc;
+        this.guestService = new GuestService();
+        this.seatService = new SeatService();
+        this.orderService = new OrderService(this.guestService);
+        this.view = new JazzClubView(sc);
     }
 
+    private void startGuestTimer() {
+        stopGuestTimer();
+        timerFuture = executor.scheduleAtFixedRate(() -> {
+            if (remainingSeconds < 1) {
+                view.printMessage("고객님의 이용 시간이 모두 끝났습니다. 찾아주셔서 감사합니다.");
+                handleExit();
+            }
+            remainingSeconds--;
+        }, 1, 1, TimeUnit.SECONDS);
+    }
+
+    private void stopGuestTimer() {
+        if (timerFuture != null && !timerFuture.isCancelled()) {
+            timerFuture.cancel(true);
+        }
+    }
+
+    private void allocateSeatLoop(JazzClub.SeatMode mode, int excludedSeat) {
+        boolean seatSelected = false;
+        while (!seatSelected) {
+            this.view.printMessage("원하는 좌석의 번호를 입력해 주세요.\n");
+            this.view.printMessage("뒤로 돌아가기 원하신다면 0번을 입력해 주세요.\n");
+            this.view.showSeatsExcluding(this.seat, excludedSeat);
+
+            int selectedSeatNumber = this.view.getInputNumber();
+
+            if (selectedSeatNumber == 0) {
+                return;
+            }
+
+            if (mode == SeatMode.CHANGE && selectedSeatNumber == excludedSeat) {
+                this.view.printMessage("현재 좌석과 동일한 좌석입니다.");
+                continue;
+            }
+
+            if (!seatService.isSeatAvailable(this.seat, selectedSeatNumber)) {
+                this.view.printIsWrongSeatNumber(selectedSeatNumber, seat.getTotalSeats());
+                continue;
+            }
+
+            this.seatService.occupySeat(this.seat, selectedSeatNumber);
+            this.guestService.assignSeat(this.guest, selectedSeatNumber);
+            this.view.printMessage("좌석 선택이 완료되었습니다. 발급받은 입장권을 갖고 들어가 주세요.\n\n");
+            this.view.printTicket(selectedSeatNumber);
+
+            seatSelected = true;
+        }
+    }
 
     private void handleSelectSeat() {
-        System.out.println("\n=====[좌석 선택]=====\n");
+        this.view.printMessage("\n=====[좌석 선택]=====\n");
 
-        if (this.guest.hasSeat()) {
-            System.out.println("이미 보유한 좌석이 있습니다. 좌석 이동 메뉴를 이용해 주세요.");
+        if (this.guestService.hasSeat(this.guest)) {
+            this.view.printMessage("이미 보유한 좌석이 있습니다. 좌석 이동 메뉴를 이용해 주세요.");
             return;
         }
-
-        int NONE_SELECT = -1;
-        this.seat.allocateSeat(SeatMode.SELECT, NONE_SELECT, this.guest);
+        try {
+            this.allocateSeatLoop(SeatMode.SELECT, Constants.Seat.NO_SEAT);
+            if (this.guestService.hasSeat(this.guest)) {
+                startGuestTimer();
+            }
+        } catch (Exception e) {
+            this.view.printMessage(e.getMessage());
+        }
     }
 
     private void handleChangeSeat() {
-        System.out.println("\n=====[좌석 이동]=====\n");
+        this.view.printMessage("\n=====[좌석 이동]=====\n");
 
-        if (!this.guest.hasSeat()) {
-            System.out.println("이미 보유한 좌석이 없습니다. 좌석 선택 메뉴를 이용해 주세요.");
+        if (!this.guestService.hasSeat(this.guest)) {
+            this.view.printMessage("보유한 좌석이 없습니다. 좌석 선택 메뉴를 이용해 주세요.");
             return;
         }
 
         int currentSeat = this.guest.getCurrentSeat();
 
-        this.seat.allocateSeat(SeatMode.CHANGE, currentSeat, this.guest);
-        this.seat.releaseSeat(currentSeat);
+        try {
+            seatService.releaseSeat(this.seat, currentSeat);
+            guestService.releaseSeat(this.guest);
+            this.allocateSeatLoop(SeatMode.CHANGE, currentSeat);
+        } catch (Exception e) {
+            this.view.printMessage(e.getMessage());
+        }
     }
 
     private void handleOrder() {
-        System.out.println("\n=====[음료 주문]=====\n");
+        this.view.printMessage("\n=====[음료 주문]=====\n");
 
-        if (!this.guest.hasSeat()) {
-            System.out.println("좌석이 있는 고객만 음료 주문이 가능합니다. 좌석을 먼저 선택해 주세요.");
+        if (!this.guestService.hasSeat(this.guest)) {
+            this.view.printMessage("좌석이 있는 고객만 음료 주문이 가능합니다. 좌석을 먼저 선택해 주세요.");
             return;
         }
 
         boolean orderCompleted = false;
 
         while (!orderCompleted) {
-            System.out.println("""
+            this.view.printMessage("""
                                         구매하기 원하는 음료의 번호를 입력해 주세요.
                                         - 뒤로 돌아가기 원하신다면 0번을 입력해 주세요.
                     """);
+            this.view.printDrinksMenu(this.menu);
 
-            System.out.println("================== Jazz Club Drinks Menu ==================");
-            for (int i = 0; i < menu.length; i++) {
-                System.out.printf("%d. %-15s : %d원 (%s)%n", i + 1, menu[i].getName(), menu[i].getPrice(), menu[i].getDetail());
-            }
-            System.out.println("===========================================================");
-
-            int menuNumber = sc.nextInt();
+            int menuNumber = this.view.getInputNumber();
 
             if (menuNumber == 0) {
                 return;
             }
 
-            if (menuNumber < 1 || menuNumber > menu.length) {
-                System.out.println("\n=====\n잘못된 입력입니다. 유효한 숫자: 1 ~ " + this.menu.length);
-                System.out.println("입력한 숫자: " + menuNumber + "\n");
-                continue;
+            try {
+                Drink orderedDrink = this.orderService.orderDrink(this.guest, this.menu, menuNumber);
+                
+                this.orderService.addSale(this.cashier, orderedDrink.getPrice());
+                this.view.printMessage("\n🎉 음료 구매 완료! 🎉");
+                this.view.printMessage("선택한 음료: " + orderedDrink.getName() + " (" + orderedDrink.getDetail() + ")\n");
+
+                if (orderedDrink instanceof Coffee) {
+                    this.view.printCoffeeASCII();
+                } else if (orderedDrink instanceof Cocktail) {
+                    this.view.printCocktailASCII();
+                }
+
+                orderCompleted = true;
+            } catch (Exception e) {
+                this.view.printMessage(e.getMessage());
             }
+        }
+    }
 
-            Drink selectedMenu = this.menu[menuNumber - 1];
-            int selectedMenuPrice = selectedMenu.getPrice();
-
-            if (!this.guest.canSpendCash(selectedMenuPrice)) {
-                System.out.println("잔액이 부족합니다. 다른 음료를 선택해 주세요.\n\n\n\n");
-                continue;
-            }
-
-            this.guest.spendCash(selectedMenuPrice);
-            this.cashier.addSale(selectedMenuPrice);
-
-            System.out.println("\n🎉 음료 구매 완료! 🎉");
-            System.out.println("선택한 음료: " + selectedMenu.getName() + " (" + selectedMenu.getDetail() + ")\n");
-
-            if (selectedMenu instanceof Coffee) {
-                Utils.printCoffeeASCII();
-            } else if (selectedMenu instanceof Cocktail) {
-                Utils.printCocktailASCII();
-            }
-
-            orderCompleted = true;
+    private void handleExtendTime() {
+        if (this.guestService.canSpendCash(this.guest, Constants.Seat.EXTEND_COST)) {
+            this.guestService.spendCash(this.guest, Constants.Seat.EXTEND_COST);
+            remainingSeconds += Constants.Seat.EXTEND_SECONDS;
+            this.view.printMessage("시간 연장이 완료되었습니다. 남은 시간: " + remainingSeconds, true);
+        } else {
+            this.view.printMessage("잔액이 부족하여 시간 연장이 불가능합니다.\n");
         }
     }
 
     private void handleExit() {
-        System.out.println("찾아주셔서 감사합니다. 또 오세요.");
+        handleExit(0);
+    }
+
+    private void handleExit(int statusCode) {
+        stopGuestTimer();
+        this.view.printMessage("찾아주셔서 감사합니다. 또 오세요.");
 
         int sales = this.cashier.getSales();
         if (sales > 0) {
-            System.out.println("총 사용하신 금액: " + sales);
+            this.view.printMessage("총 사용하신 금액: " + sales);
         }
+        System.exit(statusCode);
     }
 
     public void run() {
-        System.out.println("안녕하세요, Bluer Jazz Club입니다.");
+        this.view.printMessage("안녕하세요, Bluer Jazz Club입니다.");
 
         boolean isRunning = true;
 
         while (isRunning) {
-            Utils.printMainMenu();
+            this.view.printMainMenu();
 
-            int input = sc.nextInt();
+
+            int input = view.getInputNumber();
 
             switch (input) {
                 case 1 -> handleSelectSeat();
                 case 2 -> handleChangeSeat();
                 case 3 -> handleOrder();
+                case 4 -> handleExtendTime();
                 case 0 -> {
-                    handleExit();
                     isRunning = false;
+                    handleExit();
                 }
-                default -> System.out.println("잘못된 번호를 입력하셨습니다. 다시 입력해 주세요. (입력하신 번호: " + input + ")\n");
+                default -> this.view.printMessage("잘못된 번호를 입력하셨습니다. 다시 입력해 주세요. (입력하신 번호: " + input + ")\n");
             }
         }
     }
 
-    enum SeatMode {
+    private enum SeatMode {
         SELECT, CHANGE
     }
-
 }
