@@ -73,7 +73,7 @@ public class JazzClub {
             }
 
             if (!seatService.isSeatAvailable(this.seat, selectedSeatNumber)) {
-                this.view.printIsWrongSeatNumber(selectedSeatNumber, this.seat.getTotalSeats());
+                this.view.printIsWrongSeatNumber(selectedSeatNumber, seat.getTotalSeats());
                 continue;
             }
 

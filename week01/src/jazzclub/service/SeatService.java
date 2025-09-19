@@ -12,6 +12,14 @@ public class SeatService {
     }
 
     public boolean isSeatAvailable(Seat seat, int seatNumber) {
-        return seat.isValidSeatNumber(seatNumber) && seat.isSeatAvailable(seatNumber);
+        return isValidSeatNumber(seat, seatNumber) && seat.getSeats()[seatNumber - 1] == Seat.SeatState.EMPTY;
+    }
+
+    public boolean isValidSeatNumber(Seat seat, int seatNumber) {
+        return seatNumber >= 1 && seatNumber <= seat.getTotalSeats();
+    }
+
+    public Seat.SeatState getSeatState(Seat seat, int seatNumber) {
+        return seat.getSeats()[seatNumber - 1];
     }
 }

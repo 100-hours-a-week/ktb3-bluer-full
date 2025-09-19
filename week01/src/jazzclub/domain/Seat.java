@@ -16,14 +16,9 @@ public class Seat {
         return this.seats.length;
     }
 
-    public boolean isSeatAvailable(int seatNumber) {
-        return this.seats[seatNumber - 1] == SeatState.EMPTY;
+    public SeatState[] getSeats() {
+        return seats;
     }
-
-    public boolean isValidSeatNumber(int seatNumber) {
-        return seatNumber >= 1 && seatNumber <= this.seats.length;
-    }
-
 
     public void setSeatsState(int seatNumber, SeatState state) {
         this.seats[seatNumber - 1] = state;

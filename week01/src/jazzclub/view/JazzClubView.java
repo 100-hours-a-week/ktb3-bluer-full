@@ -100,7 +100,7 @@ public class JazzClubView {
         for (int i = 0; i < seat.getTotalSeats(); i++) {
             if (i + 1 == excludedNumber) {
                 this.printMessage("X ", false);
-            } else if (seat.isSeatAvailable(i + 1)) {
+            } else if (seat.getSeats()[i] == Seat.SeatState.EMPTY) {
                 this.printMessage((i + 1) + " ", false);
             }
         }
