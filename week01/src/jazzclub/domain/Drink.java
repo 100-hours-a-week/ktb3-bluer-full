@@ -1,6 +1,6 @@
-package jazzclub;
+package jazzclub.domain;
 
-abstract class Drink {
+public abstract class Drink {
     private final String name;
     private final int price;
 
