@@ -1,10 +1,14 @@
 package com.example.community.service;
 
+import com.example.community.common.ErrorCode;
+import com.example.community.common.exception.ServiceException;
 import com.example.community.domain.User;
 import com.example.community.dto.SignUpRequest;
 import com.example.community.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -20,9 +24,9 @@ public class UserService {
 
      */
     public User signup(SignUpRequest request) {
-//        if (userRepository.findByEmail(email).isPresent()) {
-//            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
-//        }
+        if (userRepository.findByEmail(request.email()).isPresent()) {
+            throw new ServiceException(ErrorCode.DUPLICATE_EMAIL);
+        }
 
         User user = User.builder()
                 .id(UUID.randomUUID().toString())
