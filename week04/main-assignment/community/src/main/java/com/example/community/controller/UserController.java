@@ -7,6 +7,7 @@ import com.example.community.common.exception.ServiceException;
 import com.example.community.domain.User;
 import com.example.community.dto.SignInRequest;
 import com.example.community.dto.SignUpRequest;
+import com.example.community.dto.UpdatePasswordRequest;
 import com.example.community.dto.UpdateProfileRequest;
 import com.example.community.service.UserService;
 import jakarta.validation.Valid;
@@ -92,7 +93,7 @@ public class UserController {
     }
 
     @PutMapping("/profile")
-    public ResponseEntity<ApiResponse<User>> modifyProfile(
+    public ResponseEntity<ApiResponse<User>> updateProfile(
             @RequestHeader("Authorization") String authorization,
             @Valid @RequestBody UpdateProfileRequest requestData
     ) {
@@ -105,4 +106,17 @@ public class UserController {
         );
     }
 
+    @PutMapping("/password")
+    public ResponseEntity<ApiResponse<User>> updatePassword(
+            @RequestHeader("Authorization") String authorization,
+            @Valid @RequestBody UpdatePasswordRequest requestData
+    ) {
+        String token = authorization.replace("Bearer ", "").trim();
+
+        User updatedUser = userService.updatePassword(token, requestData);
+
+        return ResponseEntity.ok(
+                ApiResponse.success("회원정보 수정 성공", updatedUser)
+        );
+    }
 }

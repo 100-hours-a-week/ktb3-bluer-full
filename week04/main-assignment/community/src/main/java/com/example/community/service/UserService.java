@@ -5,6 +5,7 @@ import com.example.community.common.exception.ServiceException;
 import com.example.community.domain.User;
 import com.example.community.dto.SignInRequest;
 import com.example.community.dto.SignUpRequest;
+import com.example.community.dto.UpdatePasswordRequest;
 import com.example.community.dto.UpdateProfileRequest;
 import com.example.community.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -80,6 +81,15 @@ public class UserService {
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         user.updateProfile(request.getNickname(), request.getProfileImageUrl());
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public User updatePassword(String token, UpdatePasswordRequest request) {
+        User user = findByToken(token)
+                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+
+        user.updatePassword(request.getPassword());
         return userRepository.save(user);
     }
 }
