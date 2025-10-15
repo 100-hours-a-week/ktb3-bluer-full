@@ -4,6 +4,7 @@ import com.example.community.common.ApiResponse;
 import com.example.community.common.ErrorCode;
 import com.example.community.common.SuccessCode;
 import com.example.community.common.exception.ServiceException;
+import com.example.community.domain.User;
 import com.example.community.dto.SignInRequest;
 import com.example.community.dto.SignUpRequest;
 import com.example.community.service.UserService;
@@ -76,6 +77,18 @@ public class UserController {
         return ResponseEntity.ok(
                 ApiResponse.success(message, Map.of("available", !isExisted))
         );
-
     }
+
+    @GetMapping("/profile")
+    public ResponseEntity<ApiResponse<User>> getMyInfo(
+            @RequestHeader("Authorization") String authorization
+    ) {
+        String token = authorization.replace("Bearer ", "").trim();
+
+        User user = userService.findByToken(token)
+                .orElseThrow(() -> new ServiceException(ErrorCode.INVALID_REQUEST));
+
+        return ResponseEntity.ok(ApiResponse.success("내 정보 조회 성공", user));
+    }
+
 }

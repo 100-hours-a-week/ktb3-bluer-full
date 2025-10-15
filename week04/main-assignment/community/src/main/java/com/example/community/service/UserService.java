@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -54,6 +55,13 @@ public class UserService {
         tokenStore.put(token, user.getId());
 
         return token;
+    }
+
+    public Optional<User> findByToken(String token) {
+        String userId = tokenStore.get(token);
+        if (userId == null) return Optional.empty();
+
+        return userRepository.findById(userId);
     }
 
     public boolean isExistedEmail(String email) {
