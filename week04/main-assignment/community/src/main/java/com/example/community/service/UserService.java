@@ -3,6 +3,7 @@ package com.example.community.service;
 import com.example.community.common.ErrorCode;
 import com.example.community.common.exception.ServiceException;
 import com.example.community.domain.User;
+import com.example.community.dto.SignInRequest;
 import com.example.community.dto.SignUpRequest;
 import com.example.community.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final Map<String, String> tokenStore = new HashMap<>();
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -37,5 +39,20 @@ public class UserService {
                 .build();
 
         return userRepository.save(user);
+    }
+
+    public String signIn(SignInRequest request) {
+        User user = userRepository.findByEmail(request.email())
+                .orElseThrow(() -> new ServiceException(ErrorCode.LOGIN_FAILED));
+
+        if (!user.getPassword().equals(request.password())) {
+            throw new ServiceException(ErrorCode.LOGIN_FAILED);
+        }
+
+        String token = UUID.randomUUID().toString();
+
+        tokenStore.put(token, user.getId());
+
+        return token;
     }
 }
