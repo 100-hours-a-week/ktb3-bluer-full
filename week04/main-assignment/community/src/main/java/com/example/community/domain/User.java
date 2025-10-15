@@ -16,17 +16,25 @@ public class User {
     private String password;
     private String nickname;
     private String profileImageUrl;
+    private boolean deleted;
+
+    public void markAsDeleted() {
+        this.deleted = true;
+    }
 
     public void updateProfile(String nickname, String profileImageUrl) {
-        if (nickname != null && !nickname.isBlank()) {
-            this.nickname = nickname;
+        if (deleted) {
+            throw new IllegalStateException("삭제된 계정입니다.");
         }
-        if (profileImageUrl != null && !profileImageUrl.isBlank()) {
-            this.profileImageUrl = profileImageUrl;
-        }
+        
+        this.nickname = nickname;
+        this.profileImageUrl = profileImageUrl;
     }
 
     public void updatePassword(String password) {
+        if (deleted) {
+            throw new IllegalStateException("삭제된 계정입니다.");
+        }
         this.password = password;
     }
 }

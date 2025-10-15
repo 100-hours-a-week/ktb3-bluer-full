@@ -84,6 +84,19 @@ public class UserService {
         return userRepository.save(user);
     }
 
+
+    @Transactional
+    public void deleteProfile(String token) {
+        User user = findByToken(token)
+                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+
+        user.markAsDeleted();
+        tokenStore.values().removeIf(id -> id.equals(user.getId()));
+
+        userRepository.save(user);
+    }
+
+
     @Transactional
     public User updatePassword(String token, UpdatePasswordRequest request) {
         User user = findByToken(token)

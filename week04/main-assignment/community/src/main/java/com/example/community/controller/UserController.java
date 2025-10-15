@@ -11,6 +11,7 @@ import com.example.community.dto.UpdatePasswordRequest;
 import com.example.community.dto.UpdateProfileRequest;
 import com.example.community.service.UserService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Null;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -89,7 +90,7 @@ public class UserController {
         User user = userService.findByToken(token)
                 .orElseThrow(() -> new ServiceException(ErrorCode.INVALID_REQUEST));
 
-        return ResponseEntity.ok(ApiResponse.success("내 정보 조회 성공", user));
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.REQUEST_SUCCESS.getMessage(), user));
     }
 
     @PutMapping("/profile")
@@ -102,7 +103,7 @@ public class UserController {
         User updatedUser = userService.updateProfile(token, requestData);
 
         return ResponseEntity.ok(
-                ApiResponse.success("회원정보 수정 성공", updatedUser)
+                ApiResponse.success(SuccessCode.UPDATE_SUCCESS.getMessage(), updatedUser)
         );
     }
 
@@ -116,7 +117,20 @@ public class UserController {
         User updatedUser = userService.updatePassword(token, requestData);
 
         return ResponseEntity.ok(
-                ApiResponse.success("회원정보 수정 성공", updatedUser)
+                ApiResponse.success(SuccessCode.UPDATE_SUCCESS.getMessage(), updatedUser)
+        );
+    }
+
+    @DeleteMapping("/profile")
+    public ResponseEntity<ApiResponse<Null>> deleteProfile(
+            @RequestHeader("Authorization") String authorization
+    ) {
+        String token = authorization.replace("Bearer ", "").trim();
+
+        userService.deleteProfile(token);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(SuccessCode.DELETE_SUCCESS.getMessage(), null)
         );
     }
 }
