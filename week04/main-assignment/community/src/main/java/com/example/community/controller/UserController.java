@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.net.URI;
 import java.util.Map;
 
 @Controller
@@ -28,7 +29,9 @@ public class UserController {
                 requestData
         );
 
-        return ResponseEntity.ok(ApiResponse.success("회원가입 성공"));
+        URI location = URI.create("/");
+
+        return ResponseEntity.created(location).body(ApiResponse.success("회원가입 성공"));
     }
 
     @PostMapping("/signin")
