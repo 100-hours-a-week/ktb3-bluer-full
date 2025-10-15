@@ -1,8 +1,9 @@
 package com.example.community.controller;
 
 import com.example.community.common.ApiResponse;
-import com.example.community.domain.User;
+import com.example.community.dto.SignUpRequest;
 import com.example.community.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,12 +20,9 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse<Void>> signup(@RequestBody User requestData) {
+    public ResponseEntity<ApiResponse<Void>> signup(@Valid @RequestBody SignUpRequest requestData) {
         userService.signup(
-                requestData.getEmail(),
-                requestData.getPassword(),
-                requestData.getNickname(),
-                requestData.getProfileImageUrl()
+                requestData
         );
 
         return ResponseEntity.ok(ApiResponse.success("회원가입 성공"));
