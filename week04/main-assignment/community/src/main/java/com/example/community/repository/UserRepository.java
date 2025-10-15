@@ -21,6 +21,14 @@ public class UserRepository {
     }
 
     public Optional<User> findByEmail(String email) {
-        return store.values().stream().filter(user -> user.getEmail().equals(email)).findFirst();
+        return store.values().stream()
+                .filter(user -> user.getEmail().equals(email))
+                .findFirst();
+    }
+
+    public Optional<User> findByNickname(String nickname) {
+        return store.values().stream()
+                .filter(user -> user.getNickname().equals(nickname))
+                .findFirst();
     }
 }

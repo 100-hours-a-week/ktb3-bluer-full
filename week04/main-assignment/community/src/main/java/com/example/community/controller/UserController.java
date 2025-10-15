@@ -1,15 +1,16 @@
 package com.example.community.controller;
 
 import com.example.community.common.ApiResponse;
+import com.example.community.common.ErrorCode;
+import com.example.community.common.SuccessCode;
+import com.example.community.common.exception.ServiceException;
 import com.example.community.dto.SignInRequest;
 import com.example.community.dto.SignUpRequest;
 import com.example.community.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.Map;
@@ -31,7 +32,9 @@ public class UserController {
 
         URI location = URI.create("/");
 
-        return ResponseEntity.created(location).body(ApiResponse.success("회원가입 성공"));
+        return ResponseEntity.created(location).body(
+                ApiResponse.success(SuccessCode.SIGNUP_SUCCESS.getMessage())
+        );
     }
 
     @PostMapping("/signin")
@@ -39,6 +42,40 @@ public class UserController {
         String token = userService.signIn(requestData);
         Map<String, String> response = Map.of("token", token);
 
-        return ResponseEntity.ok(ApiResponse.success("로그인 성공", response));
+        return ResponseEntity.ok(
+                ApiResponse.success(SuccessCode.SIGNIN_SUCCESS.getMessage(), response)
+        );
+    }
+
+    @GetMapping("/check")
+    public ResponseEntity<ApiResponse<Map<String, Boolean>>> checkDuplicate(
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String nickname
+    ) {
+        if (email == null && nickname == null) {
+            throw new ServiceException(ErrorCode.INVALID_REQUEST);
+        }
+
+        boolean isExisted;
+        String message;
+
+        // Email
+        if (email != null) {
+            isExisted = userService.isExistedEmail(email);
+            message = isExisted ? ErrorCode.DUPLICATE_EMAIL.getMessage() : SuccessCode.EMAIL_AVAILABLE.getMessage();
+
+            return ResponseEntity.ok(
+                    ApiResponse.success(message, Map.of("available", !isExisted))
+            );
+        }
+
+        // Nickname
+        isExisted = userService.isExistedNickname(nickname);
+        message = isExisted ? ErrorCode.DUPLICATE_NICKNAME.getMessage() : SuccessCode.NICKNAME_AVAILABLE.getMessage();
+
+        return ResponseEntity.ok(
+                ApiResponse.success(message, Map.of("available", !isExisted))
+        );
+
     }
 }

@@ -55,4 +55,12 @@ public class UserService {
 
         return token;
     }
+
+    public boolean isExistedEmail(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
+    public boolean isExistedNickname(String nickname) {
+        return userRepository.findByNickname(nickname).isPresent();
+    }
 }
