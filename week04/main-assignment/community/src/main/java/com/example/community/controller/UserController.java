@@ -10,13 +10,12 @@ import com.example.community.dto.SignUpRequest;
 import com.example.community.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.Map;
 
-@Controller
+@RestController
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
