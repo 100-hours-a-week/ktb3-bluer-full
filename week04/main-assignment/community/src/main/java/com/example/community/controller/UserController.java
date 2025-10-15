@@ -7,6 +7,7 @@ import com.example.community.common.exception.ServiceException;
 import com.example.community.domain.User;
 import com.example.community.dto.SignInRequest;
 import com.example.community.dto.SignUpRequest;
+import com.example.community.dto.UpdateProfileRequest;
 import com.example.community.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -79,7 +80,7 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<ApiResponse<User>> getMyInfo(
+    public ResponseEntity<ApiResponse<User>> getProfile(
             @RequestHeader("Authorization") String authorization
     ) {
         String token = authorization.replace("Bearer ", "").trim();
@@ -88,6 +89,20 @@ public class UserController {
                 .orElseThrow(() -> new ServiceException(ErrorCode.INVALID_REQUEST));
 
         return ResponseEntity.ok(ApiResponse.success("내 정보 조회 성공", user));
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<ApiResponse<User>> modifyProfile(
+            @RequestHeader("Authorization") String authorization,
+            @Valid @RequestBody UpdateProfileRequest requestData
+    ) {
+        String token = authorization.replace("Bearer ", "").trim();
+
+        User updatedUser = userService.updateProfile(token, requestData);
+
+        return ResponseEntity.ok(
+                ApiResponse.success("회원정보 수정 성공", updatedUser)
+        );
     }
 
 }

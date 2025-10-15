@@ -2,6 +2,7 @@ package com.example.community.common;
 
 import com.example.community.common.exception.ServiceException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -33,5 +34,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(ErrorCode.INTERNAL_SERVER_ERROR.getStatus())
                 .body(ApiResponse.error(ErrorCode.INTERNAL_SERVER_ERROR.getMessage()));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiResponse<Void>> handleMissingOrInvalidRequestBody(HttpMessageNotReadableException e) {
+        return ResponseEntity
+                .badRequest()
+                .body(ApiResponse.error("요청 본문이 없거나 형식이 잘못되었습니다."));
     }
 }

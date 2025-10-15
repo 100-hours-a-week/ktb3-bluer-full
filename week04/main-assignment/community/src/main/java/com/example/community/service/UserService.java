@@ -5,8 +5,10 @@ import com.example.community.common.exception.ServiceException;
 import com.example.community.domain.User;
 import com.example.community.dto.SignInRequest;
 import com.example.community.dto.SignUpRequest;
+import com.example.community.dto.UpdateProfileRequest;
 import com.example.community.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -70,5 +72,14 @@ public class UserService {
 
     public boolean isExistedNickname(String nickname) {
         return userRepository.findByNickname(nickname).isPresent();
+    }
+
+    @Transactional
+    public User updateProfile(String token, UpdateProfileRequest request) {
+        User user = findByToken(token)
+                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+
+        user.updateProfile(request.getNickname(), request.getProfileImageUrl());
+        return userRepository.save(user);
     }
 }
