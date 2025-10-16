@@ -31,4 +31,8 @@ public class Post {
             this.content = content;
         }
     }
+
+    public void updateCommentCount(int commentCount) {
+        this.commentCount = commentCount;
+    }
 }

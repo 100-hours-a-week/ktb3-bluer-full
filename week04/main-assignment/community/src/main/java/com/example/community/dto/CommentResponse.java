@@ -14,12 +14,13 @@ public class CommentResponse {
     private final String updatedAt;
 
     public static CommentResponse of(Comment comment, CommentAuthorResponse author) {
+        String updatedAt = comment.getUpdatedAt() != null ? comment.getUpdatedAt() : comment.getCreatedAt();
         return new CommentResponse(
                 comment.getCommentId(),
                 comment.getContent(),
                 author,
                 comment.getCreatedAt(),
-                comment.getUpdatedAt()
+                updatedAt
         );
     }
 }
