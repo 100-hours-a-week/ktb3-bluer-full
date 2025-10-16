@@ -4,6 +4,7 @@ import com.example.community.common.ApiResponse;
 import com.example.community.common.ErrorCode;
 import com.example.community.common.SuccessCode;
 import com.example.community.common.exception.ServiceException;
+import com.example.community.common.auth.AuthRequired;
 import com.example.community.domain.User;
 import com.example.community.dto.SignInRequest;
 import com.example.community.dto.SignUpRequest;
@@ -81,53 +82,46 @@ public class UserController {
         );
     }
 
+    @AuthRequired
     @GetMapping("/profile")
     public ResponseEntity<ApiResponse<User>> getProfile(
-            @RequestHeader("Authorization") String authorization
+            @RequestAttribute("authUser") User authUser
     ) {
-        String token = authorization.replace("Bearer ", "").trim();
-
-        User user = userService.findByToken(token)
-                .orElseThrow(() -> new ServiceException(ErrorCode.INVALID_REQUEST));
-
-        return ResponseEntity.ok(ApiResponse.success(SuccessCode.REQUEST_SUCCESS.getMessage(), user));
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.REQUEST_SUCCESS.getMessage(), authUser));
     }
 
+    @AuthRequired
     @PutMapping("/profile")
     public ResponseEntity<ApiResponse<User>> updateProfile(
-            @RequestHeader("Authorization") String authorization,
+            @RequestAttribute("authUser") User authUser,
             @Valid @RequestBody UpdateProfileRequest requestData
     ) {
-        String token = authorization.replace("Bearer ", "").trim();
-
-        User updatedUser = userService.updateProfile(token, requestData);
+        User updatedUser = userService.updateProfile(authUser.getId(), requestData);
 
         return ResponseEntity.ok(
                 ApiResponse.success(SuccessCode.UPDATE_SUCCESS.getMessage(), updatedUser)
         );
     }
 
+    @AuthRequired
     @PutMapping("/password")
     public ResponseEntity<ApiResponse<User>> updatePassword(
-            @RequestHeader("Authorization") String authorization,
+            @RequestAttribute("authUser") User authUser,
             @Valid @RequestBody UpdatePasswordRequest requestData
     ) {
-        String token = authorization.replace("Bearer ", "").trim();
-
-        User updatedUser = userService.updatePassword(token, requestData);
+        User updatedUser = userService.updatePassword(authUser.getId(), requestData);
 
         return ResponseEntity.ok(
                 ApiResponse.success(SuccessCode.UPDATE_SUCCESS.getMessage(), updatedUser)
         );
     }
 
+    @AuthRequired
     @DeleteMapping("/profile")
     public ResponseEntity<ApiResponse<Null>> deleteProfile(
-            @RequestHeader("Authorization") String authorization
+            @RequestAttribute("authUser") User authUser
     ) {
-        String token = authorization.replace("Bearer ", "").trim();
-
-        userService.deleteProfile(token);
+        userService.deleteProfile(authUser.getId());
 
         return ResponseEntity.ok(
                 ApiResponse.success(SuccessCode.DELETE_SUCCESS.getMessage(), null)
