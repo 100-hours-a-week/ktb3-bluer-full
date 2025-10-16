@@ -62,7 +62,9 @@ public class UserService {
 
     public Optional<User> findByToken(String token) {
         String userId = tokenStore.get(token);
-        if (userId == null) return Optional.empty();
+        if (userId == null) {
+            return Optional.empty();
+        }
 
         return userRepository.findById(userId);
     }
@@ -84,6 +86,14 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Transactional
+    public User updatePassword(String token, UpdatePasswordRequest request) {
+        User user = findByToken(token)
+                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+
+        user.updatePassword(request.getPassword());
+        return userRepository.save(user);
+    }
 
     @Transactional
     public void deleteProfile(String token) {
@@ -92,17 +102,6 @@ public class UserService {
 
         user.markAsDeleted();
         tokenStore.values().removeIf(id -> id.equals(user.getId()));
-
         userRepository.save(user);
-    }
-
-
-    @Transactional
-    public User updatePassword(String token, UpdatePasswordRequest request) {
-        User user = findByToken(token)
-                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
-
-        user.updatePassword(request.getPassword());
-        return userRepository.save(user);
     }
 }

@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class User {
     private String id;
     private String email;
@@ -26,9 +25,12 @@ public class User {
         if (deleted) {
             throw new IllegalStateException("삭제된 계정입니다.");
         }
-        
-        this.nickname = nickname;
-        this.profileImageUrl = profileImageUrl;
+        if (nickname != null && !nickname.isBlank()) {
+            this.nickname = nickname;
+        }
+        if (profileImageUrl != null && !profileImageUrl.isBlank()) {
+            this.profileImageUrl = profileImageUrl;
+        }
     }
 
     public void updatePassword(String password) {
