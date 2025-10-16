@@ -1,6 +1,7 @@
 package com.example.community.controller;
 
 import com.example.community.common.ApiResponse;
+import com.example.community.common.auth.AuthRequired;
 import com.example.community.domain.Post;
 import com.example.community.domain.User;
 import com.example.community.dto.CreatePostRequest;
@@ -24,6 +25,7 @@ public class PostController {
         return ResponseEntity.ok(ApiResponse.success("fetch_success", post));
     }
 
+    @AuthRequired
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> createPost(
             @RequestAttribute("authUser") User authUser,
@@ -33,6 +35,7 @@ public class PostController {
         return ResponseEntity.status(201).body(ApiResponse.success("create_success"));
     }
 
+    @AuthRequired
     @PutMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> updatePost(
             @RequestAttribute("authUser") User authUser,
@@ -43,6 +46,7 @@ public class PostController {
         return ResponseEntity.ok(ApiResponse.success("update_success"));
     }
 
+    @AuthRequired
     @DeleteMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> deletePost(
             @RequestAttribute("authUser") User authUser,

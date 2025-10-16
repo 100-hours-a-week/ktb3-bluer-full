@@ -29,7 +29,7 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public Post createPost(String title, String content, String authorId) {
+    public Post createPost(String authorId, String title, String content) {
         Post post = Post.builder()
                 .postId(UUID.randomUUID().toString())
                 .title(title)
@@ -44,7 +44,7 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public Post updatePost(String postId, String title, String content, String authorId) {
+    public Post updatePost(String postId, String authorId, String title, String content) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.POST_NOT_FOUND));
 

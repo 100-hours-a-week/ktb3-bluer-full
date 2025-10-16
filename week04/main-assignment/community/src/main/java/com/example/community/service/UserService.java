@@ -78,8 +78,8 @@ public class UserService {
     }
 
     @Transactional
-    public User updateProfile(String token, UpdateProfileRequest request) {
-        User user = findByToken(token)
+    public User updateProfile(String userId, UpdateProfileRequest request) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         user.updateProfile(request.getNickname(), request.getProfileImageUrl());
@@ -87,8 +87,8 @@ public class UserService {
     }
 
     @Transactional
-    public User updatePassword(String token, UpdatePasswordRequest request) {
-        User user = findByToken(token)
+    public User updatePassword(String userId, UpdatePasswordRequest request) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         user.updatePassword(request.getPassword());
@@ -96,8 +96,8 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteProfile(String token) {
-        User user = findByToken(token)
+    public void deleteProfile(String userId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         user.markAsDeleted();
