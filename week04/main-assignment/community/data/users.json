@@ -1,35 +1,35 @@
 [ {
   "id" : "u1",
   "email" : "user1@test.com",
-  "password" : null,
+  "password" : "test",
   "nickname" : "Alice",
   "profileImageUrl" : "/profiles/u1.jpg",
   "deleted" : false
 }, {
   "id" : "u2",
   "email" : "user2@test.com",
-  "password" : null,
+  "password" : "test",
   "nickname" : "Bob",
   "profileImageUrl" : "/profiles/u2.jpg",
   "deleted" : false
 }, {
   "id" : "u3",
   "email" : "user3@test.com",
-  "password" : null,
+  "password" : "test",
   "nickname" : "Charlie",
   "profileImageUrl" : "/profiles/u3.jpg",
   "deleted" : false
 }, {
   "id" : "u4",
   "email" : "user4@test.com",
-  "password" : null,
+  "password" : "test",
   "nickname" : "Daisy",
   "profileImageUrl" : "/profiles/u4.jpg",
   "deleted" : false
 }, {
   "id" : "u5",
   "email" : "user5@test.com",
-  "password" : null,
+  "password" : "test",
   "nickname" : "Ethan",
   "profileImageUrl" : "/profiles/u5.jpg",
   "deleted" : false
@@ -40,4 +40,11 @@
   "nickname" : "test",
   "profileImageUrl" : null,
   "deleted" : true
+}, {
+  "id" : "c8263a63-edb5-4246-87a2-abd86673d91c",
+  "email" : "test@test.com",
+  "password" : "test",
+  "nickname" : "test",
+  "profileImageUrl" : null,
+  "deleted" : false
 } ]

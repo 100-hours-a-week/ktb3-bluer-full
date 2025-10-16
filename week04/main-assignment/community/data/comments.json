@@ -1,318 +1,289 @@
-[
-  {
-    "postId": "p1",
-    "comments": [
-      {
-        "commentId": "c1",
-        "authorId": "u2",
-        "content": "첫 번째 게시글의 첫 댓글입니다.",
-        "createdAt": "2025-09-01T01:00:00Z"
-      },
-      {
-        "commentId": "c2",
-        "authorId": "u3",
-        "content": "좋은 글 잘 읽었습니다!",
-        "createdAt": "2025-09-01T02:00:00Z"
-      },
-      {
-        "commentId": "c3",
-        "authorId": "u4",
-        "content": "도움이 많이 되네요.",
-        "createdAt": "2025-09-01T03:00:00Z"
-      }
-    ]
-  },
-  {
-    "postId": "p2",
-    "comments": [
-      {
-        "commentId": "c4",
-        "authorId": "u1",
-        "content": "두 번째 글도 흥미로워요.",
-        "createdAt": "2025-09-02T01:00:00Z"
-      },
-      {
-        "commentId": "c5",
-        "authorId": "u5",
-        "content": "감사합니다!",
-        "createdAt": "2025-09-02T02:00:00Z"
-      }
-    ]
-  },
-  {
-    "postId": "p3",
-    "comments": [
-      {
-        "commentId": "c6",
-        "authorId": "u2",
-        "content": "정말 공감돼요.",
-        "createdAt": "2025-09-03T01:00:00Z"
-      },
-      {
-        "commentId": "c7",
-        "authorId": "u4",
-        "content": "좋은 정보 감사합니다!",
-        "createdAt": "2025-09-03T02:00:00Z"
-      },
-      {
-        "commentId": "c8",
-        "authorId": "u5",
-        "content": "잘 보고 갑니다 :)",
-        "createdAt": "2025-09-03T03:00:00Z"
-      }
-    ]
-  },
-  {
-    "postId": "p4",
-    "comments": [
-      {
-        "commentId": "c9",
-        "authorId": "u3",
-        "content": "이런 글 좋아요!",
-        "createdAt": "2025-09-04T01:00:00Z"
-      }
-    ]
-  },
-  {
-    "postId": "p5",
-    "comments": [
-      {
-        "commentId": "c10",
-        "authorId": "u1",
-        "content": "짧지만 인상 깊네요.",
-        "createdAt": "2025-09-05T01:00:00Z"
-      }
-    ]
-  },
-  {
-    "postId": "p6",
-    "comments": [
-      {
-        "commentId": "c11",
-        "authorId": "u4",
-        "content": "유익한 내용이네요!",
-        "createdAt": "2025-09-06T01:00:00Z"
-      },
-      {
-        "commentId": "c12",
-        "authorId": "u3",
-        "content": "공감합니다.",
-        "createdAt": "2025-09-06T02:00:00Z"
-      }
-    ]
-  },
-  {
-    "postId": "p7",
-    "comments": [
-      {
-        "commentId": "c13",
-        "authorId": "u5",
-        "content": "정리 감사합니다.",
-        "createdAt": "2025-09-07T01:00:00Z"
-      },
-      {
-        "commentId": "c14",
-        "authorId": "u2",
-        "content": "깔끔하네요!",
-        "createdAt": "2025-09-07T02:00:00Z"
-      }
-    ]
-  },
-  {
-    "postId": "p8",
-    "comments": [
-      {
-        "commentId": "c15",
-        "authorId": "u1",
-        "content": "읽기 쉬웠어요.",
-        "createdAt": "2025-09-08T01:00:00Z"
-      },
-      {
-        "commentId": "c16",
-        "authorId": "u3",
-        "content": "감사합니다!",
-        "createdAt": "2025-09-08T02:00:00Z"
-      },
-      {
-        "commentId": "c17",
-        "authorId": "u5",
-        "content": "좋아요!",
-        "createdAt": "2025-09-08T03:00:00Z"
-      }
-    ]
-  },
-  {
-    "postId": "p9",
-    "comments": [
-      {
-        "commentId": "c18",
-        "authorId": "u2",
-        "content": "이런 주제 좋아요.",
-        "createdAt": "2025-09-09T01:00:00Z"
-      }
-    ]
-  },
-  {
-    "postId": "p10",
-    "comments": [
-      {
-        "commentId": "c19",
-        "authorId": "u3",
-        "content": "잘 읽었습니다.",
-        "createdAt": "2025-09-10T01:00:00Z"
-      },
-      {
-        "commentId": "c20",
-        "authorId": "u1",
-        "content": "정말 유익해요!",
-        "createdAt": "2025-09-10T02:00:00Z"
-      },
-      {
-        "commentId": "c21",
-        "authorId": "u4",
-        "content": "이런 글 더 보고 싶네요.",
-        "createdAt": "2025-09-10T03:00:00Z"
-      }
-    ]
-  },
-  {
-    "postId": "p11",
-    "comments": [
-      {
-        "commentId": "c22",
-        "authorId": "u5",
-        "content": "간단하지만 좋네요.",
-        "createdAt": "2025-09-11T01:00:00Z"
-      }
-    ]
-  },
-  {
-    "postId": "p12",
-    "comments": [
-      {
-        "commentId": "c23",
-        "authorId": "u2",
-        "content": "깔끔한 정리 감사합니다.",
-        "createdAt": "2025-09-12T01:00:00Z"
-      },
-      {
-        "commentId": "c24",
-        "authorId": "u4",
-        "content": "이런 글 좋아요.",
-        "createdAt": "2025-09-12T02:00:00Z"
-      }
-    ]
-  },
-  {
-    "postId": "p13",
-    "comments": [
-      {
-        "commentId": "c25",
-        "authorId": "u3",
-        "content": "공감합니다.",
-        "createdAt": "2025-09-13T01:00:00Z"
-      }
-    ]
-  },
-  {
-    "postId": "p14",
-    "comments": [
-      {
-        "commentId": "c26",
-        "authorId": "u1",
-        "content": "간단하고 좋네요!",
-        "createdAt": "2025-09-14T01:00:00Z"
-      },
-      {
-        "commentId": "c27",
-        "authorId": "u5",
-        "content": "잘 읽었습니다 :)",
-        "createdAt": "2025-09-14T02:00:00Z"
-      }
-    ]
-  },
-  {
-    "postId": "p15",
-    "comments": [
-      {
-        "commentId": "c28",
-        "authorId": "u2",
-        "content": "매우 유익해요.",
-        "createdAt": "2025-09-15T01:00:00Z"
-      },
-      {
-        "commentId": "c29",
-        "authorId": "u3",
-        "content": "좋은 글이에요.",
-        "createdAt": "2025-09-15T02:00:00Z"
-      }
-    ]
-  },
-  {
-    "postId": "p16",
-    "comments": [
-      {
-        "commentId": "c30",
-        "authorId": "u4",
-        "content": "간결하고 명확하네요.",
-        "createdAt": "2025-09-16T01:00:00Z"
-      }
-    ]
-  },
-  {
-    "postId": "p17",
-    "comments": [
-      {
-        "commentId": "c31",
-        "authorId": "u5",
-        "content": "정리가 잘 되어 있네요.",
-        "createdAt": "2025-09-17T01:00:00Z"
-      },
-      {
-        "commentId": "c32",
-        "authorId": "u1",
-        "content": "공감합니다.",
-        "createdAt": "2025-09-17T02:00:00Z"
-      }
-    ]
-  },
-  {
-    "postId": "p18",
-    "comments": [
-      {
-        "commentId": "c33",
-        "authorId": "u3",
-        "content": "좋은 글이에요!",
-        "createdAt": "2025-09-18T01:00:00Z"
-      },
-      {
-        "commentId": "c34",
-        "authorId": "u4",
-        "content": "유익하게 봤습니다.",
-        "createdAt": "2025-09-18T02:00:00Z"
-      }
-    ]
-  },
-  {
-    "postId": "p19",
-    "comments": [
-      {
-        "commentId": "c35",
-        "authorId": "u2",
-        "content": "좋네요.",
-        "createdAt": "2025-09-19T01:00:00Z"
-      }
-    ]
-  },
-  {
-    "postId": "p20",
-    "comments": [
-      {
-        "commentId": "c36",
-        "authorId": "u1",
-        "content": "마지막 글까지 잘 봤습니다!",
-        "createdAt": "2025-09-20T01:00:00Z"
-      }
-    ]
-  }
-]
+[ {
+  "postId" : "p1",
+  "comments" : [ {
+    "commentId" : "c1",
+    "authorId" : "u2",
+    "content" : "첫 번째 게시글의 첫 댓글입니다.",
+    "createdAt" : "2025-09-01T01:00:00Z",
+    "updatedAt" : null
+  }, {
+    "commentId" : "c2",
+    "authorId" : "u3",
+    "content" : "좋은 글 잘 읽었습니다!",
+    "createdAt" : "2025-09-01T02:00:00Z",
+    "updatedAt" : null
+  }, {
+    "commentId" : "c3",
+    "authorId" : "u4",
+    "content" : "도움이 많이 되네요.",
+    "createdAt" : "2025-09-01T03:00:00Z",
+    "updatedAt" : null
+  } ]
+}, {
+  "postId" : "p2",
+  "comments" : [ {
+    "commentId" : "c4",
+    "authorId" : "u1",
+    "content" : "두 번째 글도 흥미로워요.",
+    "createdAt" : "2025-09-02T01:00:00Z",
+    "updatedAt" : null
+  }, {
+    "commentId" : "c5",
+    "authorId" : "u5",
+    "content" : "감사합니다!",
+    "createdAt" : "2025-09-02T02:00:00Z",
+    "updatedAt" : null
+  } ]
+}, {
+  "postId" : "p3",
+  "comments" : [ {
+    "commentId" : "c6",
+    "authorId" : "u2",
+    "content" : "정말 공감돼요.",
+    "createdAt" : "2025-09-03T01:00:00Z",
+    "updatedAt" : null
+  }, {
+    "commentId" : "c7",
+    "authorId" : "u4",
+    "content" : "좋은 정보 감사합니다!",
+    "createdAt" : "2025-09-03T02:00:00Z",
+    "updatedAt" : null
+  }, {
+    "commentId" : "c8",
+    "authorId" : "u5",
+    "content" : "잘 보고 갑니다 :)",
+    "createdAt" : "2025-09-03T03:00:00Z",
+    "updatedAt" : null
+  } ]
+}, {
+  "postId" : "p4",
+  "comments" : [ {
+    "commentId" : "c9",
+    "authorId" : "u3",
+    "content" : "이런 글 좋아요!",
+    "createdAt" : "2025-09-04T01:00:00Z",
+    "updatedAt" : null
+  } ]
+}, {
+  "postId" : "p5",
+  "comments" : [ {
+    "commentId" : "c10",
+    "authorId" : "u1",
+    "content" : "짧지만 인상 깊네요.",
+    "createdAt" : "2025-09-05T01:00:00Z",
+    "updatedAt" : null
+  } ]
+}, {
+  "postId" : "p6",
+  "comments" : [ {
+    "commentId" : "c11",
+    "authorId" : "u4",
+    "content" : "유익한 내용이네요!",
+    "createdAt" : "2025-09-06T01:00:00Z",
+    "updatedAt" : null
+  }, {
+    "commentId" : "c12",
+    "authorId" : "u3",
+    "content" : "공감합니다.",
+    "createdAt" : "2025-09-06T02:00:00Z",
+    "updatedAt" : null
+  } ]
+}, {
+  "postId" : "p7",
+  "comments" : [ {
+    "commentId" : "c13",
+    "authorId" : "u5",
+    "content" : "정리 감사합니다.",
+    "createdAt" : "2025-09-07T01:00:00Z",
+    "updatedAt" : null
+  }, {
+    "commentId" : "c14",
+    "authorId" : "u2",
+    "content" : "깔끔하네요!",
+    "createdAt" : "2025-09-07T02:00:00Z",
+    "updatedAt" : null
+  } ]
+}, {
+  "postId" : "p8",
+  "comments" : [ {
+    "commentId" : "c15",
+    "authorId" : "u1",
+    "content" : "읽기 쉬웠어요.",
+    "createdAt" : "2025-09-08T01:00:00Z",
+    "updatedAt" : null
+  }, {
+    "commentId" : "c16",
+    "authorId" : "u3",
+    "content" : "감사합니다!",
+    "createdAt" : "2025-09-08T02:00:00Z",
+    "updatedAt" : null
+  }, {
+    "commentId" : "c17",
+    "authorId" : "u5",
+    "content" : "좋아요!",
+    "createdAt" : "2025-09-08T03:00:00Z",
+    "updatedAt" : null
+  } ]
+}, {
+  "postId" : "p9",
+  "comments" : [ {
+    "commentId" : "c18",
+    "authorId" : "u2",
+    "content" : "이런 주제 좋아요.",
+    "createdAt" : "2025-09-09T01:00:00Z",
+    "updatedAt" : null
+  } ]
+}, {
+  "postId" : "p10",
+  "comments" : [ {
+    "commentId" : "c19",
+    "authorId" : "u3",
+    "content" : "잘 읽었습니다.",
+    "createdAt" : "2025-09-10T01:00:00Z",
+    "updatedAt" : null
+  }, {
+    "commentId" : "c20",
+    "authorId" : "u1",
+    "content" : "정말 유익해요!",
+    "createdAt" : "2025-09-10T02:00:00Z",
+    "updatedAt" : null
+  }, {
+    "commentId" : "c21",
+    "authorId" : "u4",
+    "content" : "이런 글 더 보고 싶네요.",
+    "createdAt" : "2025-09-10T03:00:00Z",
+    "updatedAt" : null
+  } ]
+}, {
+  "postId" : "p11",
+  "comments" : [ {
+    "commentId" : "c22",
+    "authorId" : "u5",
+    "content" : "간단하지만 좋네요.",
+    "createdAt" : "2025-09-11T01:00:00Z",
+    "updatedAt" : null
+  } ]
+}, {
+  "postId" : "p12",
+  "comments" : [ {
+    "commentId" : "c23",
+    "authorId" : "u2",
+    "content" : "깔끔한 정리 감사합니다.",
+    "createdAt" : "2025-09-12T01:00:00Z",
+    "updatedAt" : null
+  }, {
+    "commentId" : "c24",
+    "authorId" : "u4",
+    "content" : "이런 글 좋아요.",
+    "createdAt" : "2025-09-12T02:00:00Z",
+    "updatedAt" : null
+  } ]
+}, {
+  "postId" : "p13",
+  "comments" : [ {
+    "commentId" : "c25",
+    "authorId" : "u3",
+    "content" : "공감합니다.",
+    "createdAt" : "2025-09-13T01:00:00Z",
+    "updatedAt" : null
+  } ]
+}, {
+  "postId" : "p14",
+  "comments" : [ {
+    "commentId" : "c26",
+    "authorId" : "u1",
+    "content" : "간단하고 좋네요!",
+    "createdAt" : "2025-09-14T01:00:00Z",
+    "updatedAt" : null
+  }, {
+    "commentId" : "c27",
+    "authorId" : "u5",
+    "content" : "잘 읽었습니다 :)",
+    "createdAt" : "2025-09-14T02:00:00Z",
+    "updatedAt" : null
+  } ]
+}, {
+  "postId" : "p15",
+  "comments" : [ {
+    "commentId" : "c28",
+    "authorId" : "u2",
+    "content" : "매우 유익해요.",
+    "createdAt" : "2025-09-15T01:00:00Z",
+    "updatedAt" : null
+  }, {
+    "commentId" : "c29",
+    "authorId" : "u3",
+    "content" : "좋은 글이에요.",
+    "createdAt" : "2025-09-15T02:00:00Z",
+    "updatedAt" : null
+  } ]
+}, {
+  "postId" : "p16",
+  "comments" : [ {
+    "commentId" : "c30",
+    "authorId" : "u4",
+    "content" : "간결하고 명확하네요.",
+    "createdAt" : "2025-09-16T01:00:00Z",
+    "updatedAt" : null
+  } ]
+}, {
+  "postId" : "p17",
+  "comments" : [ {
+    "commentId" : "c31",
+    "authorId" : "u5",
+    "content" : "정리가 잘 되어 있네요.",
+    "createdAt" : "2025-09-17T01:00:00Z",
+    "updatedAt" : null
+  }, {
+    "commentId" : "c32",
+    "authorId" : "u1",
+    "content" : "공감합니다.",
+    "createdAt" : "2025-09-17T02:00:00Z",
+    "updatedAt" : null
+  } ]
+}, {
+  "postId" : "p18",
+  "comments" : [ {
+    "commentId" : "c34",
+    "authorId" : "u1",
+    "content" : "유익하게 봤습니다.",
+    "createdAt" : "2025-09-18T02:00:00Z",
+    "updatedAt" : null
+  }, {
+    "commentId" : "498209c6-08f5-45a6-822b-8f34f1b8220f",
+    "authorId" : "u1",
+    "content" : "test ",
+    "createdAt" : "2025-10-16T08:29:03.429812Z",
+    "updatedAt" : "2025-10-16T08:29:03.429812Z"
+  }, {
+    "commentId" : "14f34e0e-157a-4e26-bfae-2b12958a4b76",
+    "authorId" : "u1",
+    "content" : "test ",
+    "createdAt" : "2025-10-16T08:29:07.979670Z",
+    "updatedAt" : "2025-10-16T08:29:07.979670Z"
+  }, {
+    "commentId" : "3addb85c-8697-4401-a71e-b8c54c122b19",
+    "authorId" : "u1",
+    "content" : "test ",
+    "createdAt" : "2025-10-16T08:29:08.602456Z",
+    "updatedAt" : "2025-10-16T08:29:08.602456Z"
+  } ]
+}, {
+  "postId" : "p19",
+  "comments" : [ {
+    "commentId" : "c35",
+    "authorId" : "u2",
+    "content" : "좋네요.",
+    "createdAt" : "2025-09-19T01:00:00Z",
+    "updatedAt" : null
+  } ]
+}, {
+  "postId" : "p20",
+  "comments" : [ {
+    "commentId" : "c36",
+    "authorId" : "u1",
+    "content" : "마지막 글까지 잘 봤습니다!",
+    "createdAt" : "2025-09-20T01:00:00Z",
+    "updatedAt" : null
+  } ]
+} ]
