@@ -5,6 +5,7 @@ import com.example.community.common.auth.AuthRequired;
 import com.example.community.domain.Post;
 import com.example.community.domain.User;
 import com.example.community.dto.CreatePostRequest;
+import com.example.community.dto.PostListResponse;
 import com.example.community.dto.UpdatePostRequest;
 import com.example.community.service.PostService;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,15 @@ public class PostController {
 
     public PostController(PostService postService) {
         this.postService = postService;
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<PostListResponse>> getPosts(
+            @RequestParam(name = "cursor", defaultValue = "0") int cursor,
+            @RequestParam(name = "size", defaultValue = "5") int size
+    ) {
+        PostListResponse response = postService.getPosts(cursor, size);
+        return ResponseEntity.ok(ApiResponse.success("fetch_success", response));
     }
 
     @GetMapping("/{postId}")

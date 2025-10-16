@@ -3,9 +3,11 @@ package com.example.community.service;
 import com.example.community.common.ErrorCode;
 import com.example.community.common.exception.ServiceException;
 import com.example.community.domain.Post;
+import com.example.community.dto.PostListResponse;
 import com.example.community.repository.PostRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -18,8 +20,20 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
-    public List<Post> getAllPosts() {
-        return postRepository.findAll();
+    public PostListResponse getPosts(int cursor, int size) {
+        if (cursor < 0 || size <= 0) {
+            throw new ServiceException(ErrorCode.INVALID_REQUEST);
+        }
+
+        List<Post> posts = postRepository.findAll();
+        int fromIndex = Math.min(cursor, posts.size());
+        int toIndex = Math.min(fromIndex + size, posts.size());
+
+        List<Post> page = new ArrayList<>(posts.subList(fromIndex, toIndex));
+        boolean hasNext = toIndex < posts.size();
+        Integer nextCursor = hasNext ? toIndex : null;
+
+        return new PostListResponse(page, nextCursor, hasNext);
     }
 
     public Post getPostById(String postId) {
