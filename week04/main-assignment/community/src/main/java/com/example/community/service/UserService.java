@@ -7,6 +7,7 @@ import com.example.community.dto.SignInRequest;
 import com.example.community.dto.SignUpRequest;
 import com.example.community.dto.UpdatePasswordRequest;
 import com.example.community.dto.UpdateProfileRequest;
+import com.example.community.dto.UserProfileResponse;
 import com.example.community.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -87,12 +88,13 @@ public class UserService {
     }
 
     @Transactional
-    public User updatePassword(String userId, UpdatePasswordRequest request) {
+    public UserProfileResponse updatePassword(String userId, UpdatePasswordRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         user.updatePassword(request.getPassword());
-        return userRepository.save(user);
+        userRepository.save(user);
+        return UserProfileResponse.from(user);
     }
 
     @Transactional
