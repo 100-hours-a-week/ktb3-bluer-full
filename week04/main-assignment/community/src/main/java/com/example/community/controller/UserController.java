@@ -10,9 +10,9 @@ import com.example.community.dto.SignInRequest;
 import com.example.community.dto.SignUpRequest;
 import com.example.community.dto.UpdatePasswordRequest;
 import com.example.community.dto.UpdateProfileRequest;
+import com.example.community.dto.UserProfileResponse;
 import com.example.community.service.UserService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Null;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -84,47 +84,55 @@ public class UserController {
 
     @AuthRequired
     @GetMapping("/profile")
-    public ResponseEntity<ApiResponse<User>> getProfile(
+    public ResponseEntity<ApiResponse<UserProfileResponse>> getProfile(
             @RequestAttribute("authUser") User authUser
     ) {
-        return ResponseEntity.ok(ApiResponse.success(SuccessCode.REQUEST_SUCCESS.getMessage(), authUser));
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        SuccessCode.REQUEST_SUCCESS.getMessage(),
+                        UserProfileResponse.from(authUser)
+                )
+        );
     }
 
     @AuthRequired
     @PutMapping("/profile")
-    public ResponseEntity<ApiResponse<User>> updateProfile(
+    public ResponseEntity<ApiResponse<UserProfileResponse>> updateProfile(
             @RequestAttribute("authUser") User authUser,
             @Valid @RequestBody UpdateProfileRequest requestData
     ) {
         User updatedUser = userService.updateProfile(authUser.getId(), requestData);
 
         return ResponseEntity.ok(
-                ApiResponse.success(SuccessCode.UPDATE_SUCCESS.getMessage(), updatedUser)
+                ApiResponse.success(
+                        SuccessCode.UPDATE_SUCCESS.getMessage(),
+                        UserProfileResponse.from(updatedUser)
+                )
         );
     }
 
     @AuthRequired
     @PutMapping("/password")
-    public ResponseEntity<ApiResponse<User>> updatePassword(
+    public ResponseEntity<ApiResponse<Void>> updatePassword(
             @RequestAttribute("authUser") User authUser,
             @Valid @RequestBody UpdatePasswordRequest requestData
     ) {
-        User updatedUser = userService.updatePassword(authUser.getId(), requestData);
+        userService.updatePassword(authUser.getId(), requestData);
 
         return ResponseEntity.ok(
-                ApiResponse.success(SuccessCode.UPDATE_SUCCESS.getMessage(), updatedUser)
+                ApiResponse.success(SuccessCode.UPDATE_SUCCESS.getMessage())
         );
     }
 
     @AuthRequired
     @DeleteMapping("/profile")
-    public ResponseEntity<ApiResponse<Null>> deleteProfile(
+    public ResponseEntity<ApiResponse<Void>> deleteProfile(
             @RequestAttribute("authUser") User authUser
     ) {
         userService.deleteProfile(authUser.getId());
 
         return ResponseEntity.ok(
-                ApiResponse.success(SuccessCode.DELETE_SUCCESS.getMessage(), null)
+                ApiResponse.success(SuccessCode.DELETE_SUCCESS.getMessage())
         );
     }
 }
