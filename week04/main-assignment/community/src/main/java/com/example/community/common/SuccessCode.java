@@ -6,15 +6,15 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum SuccessCode {
-    SIGNUP_SUCCESS("회원가입 성공"),
-    SIGNIN_SUCCESS("로그인 성공"),
+    SIGNUP_SUCCESS("register_success"),
+    SIGNIN_SUCCESS("success"),
 
-    EMAIL_AVAILABLE("이메일 사용 가능"),
-    NICKNAME_AVAILABLE("닉네임 사용 가능"),
+    EMAIL_AVAILABLE("success"),
+    NICKNAME_AVAILABLE("available"),
 
-    REQUEST_SUCCESS("요청 성공"),
-    UPDATE_SUCCESS("수정 성공"),
-    DELETE_SUCCESS("삭제 성공");
+    REQUEST_SUCCESS("success"),
+    UPDATE_SUCCESS("update_success"),
+    DELETE_SUCCESS("delete_success");
 
     private final String message;
 }

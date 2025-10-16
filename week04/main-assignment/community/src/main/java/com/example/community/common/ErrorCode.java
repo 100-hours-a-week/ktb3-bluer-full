@@ -5,16 +5,16 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public enum ErrorCode {
-    DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "이미 존재하는 이메일입니다."),
-    DUPLICATE_NICKNAME(HttpStatus.BAD_REQUEST, "이미 존재하는 닉네임입니다."),
-    INVALID_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
-    LOGIN_FAILED(HttpStatus.BAD_REQUEST, "이메일 또는 비밀번호를 확인해 주세요."),
-    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다."),
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."),
-    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증이 필요합니다."),
-    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
-    POST_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 게시글입니다."),
-    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 댓글입니다.");
+    DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "duplicate_email"),
+    DUPLICATE_NICKNAME(HttpStatus.BAD_REQUEST, "duplicate_nickname"),
+    INVALID_REQUEST(HttpStatus.BAD_REQUEST, "invalid_request"),
+    LOGIN_FAILED(HttpStatus.BAD_REQUEST, "login_failed"),
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "internal_server_error"),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "user_not_found"),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "unauthorized"),
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "invalid_token"),
+    POST_NOT_FOUND(HttpStatus.NOT_FOUND, "post_not_found"),
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "comment_not_found");
 
 
     private final HttpStatus status;
