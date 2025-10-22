@@ -8,6 +8,7 @@ import com.example.community.common.exception.ServiceException;
 import com.example.community.docs.UserApiDoc;
 import com.example.community.domain.User;
 import com.example.community.dto.*;
+import com.example.community.service.AuthService;
 import com.example.community.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -21,9 +22,11 @@ import java.util.Map;
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
+    private final AuthService authService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AuthService authService) {
         this.userService = userService;
+        this.authService = authService;
     }
 
     @UserApiDoc.SignUp
@@ -66,7 +69,7 @@ public class UserController {
 
         // Email
         if (email != null) {
-            isExisted = userService.isExistedEmail(email);
+            isExisted = authService.isExistedEmail(email);
             message = isExisted ? ErrorCode.DUPLICATED_EMAIL.getMessage() : SuccessCode.EMAIL_AVAILABLE.getMessage();
 
             return ResponseEntity.ok(
@@ -75,7 +78,7 @@ public class UserController {
         }
 
         // Nickname
-        isExisted = userService.isExistedNickname(nickname);
+        isExisted = authService.isExistedNickname(nickname);
         message = isExisted ? ErrorCode.DUPLICATED_NICKNAME.getMessage() : SuccessCode.NICKNAME_AVAILABLE.getMessage();
 
         return ResponseEntity.ok(

@@ -8,21 +8,21 @@ import com.example.community.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final ConcurrentHashMap<String, String> tokenStore = new ConcurrentHashMap<>();
+    private final AuthService authService;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, AuthService authService) {
         this.userRepository = userRepository;
+        this.authService = authService;
     }
 
     public User signup(SignUpRequest request) {
-        if (userRepository.findByEmail(request.email()).isPresent()) {
+        if (authService.isExistedEmail(request.email())) {
             throw new ServiceException(ErrorCode.DUPLICATED_EMAIL);
         }
 
@@ -45,28 +45,7 @@ public class UserService {
             throw new ServiceException(ErrorCode.LOGIN_FAILED);
         }
 
-        String token = UUID.randomUUID().toString();
-
-        tokenStore.put(token, user.getId());
-
-        return token;
-    }
-
-    public Optional<User> findByToken(String token) {
-        String userId = tokenStore.get(token);
-        if (userId == null) {
-            return Optional.empty();
-        }
-
-        return userRepository.findById(userId);
-    }
-
-    public boolean isExistedEmail(String email) {
-        return userRepository.findByEmail(email).isPresent();
-    }
-
-    public boolean isExistedNickname(String nickname) {
-        return userRepository.findByNickname(nickname).isPresent();
+        return authService.issueToken(user);
     }
 
     @Transactional
@@ -94,7 +73,7 @@ public class UserService {
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         user.markAsDeleted();
-        tokenStore.values().removeIf(id -> id.equals(user.getId()));
+        authService.invalidateUserTokens(user.getId());
         userRepository.save(user);
     }
 }
