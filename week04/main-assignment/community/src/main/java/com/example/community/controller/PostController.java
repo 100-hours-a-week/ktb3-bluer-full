@@ -7,6 +7,7 @@ import com.example.community.domain.User;
 import com.example.community.dto.CreatePostRequest;
 import com.example.community.dto.PostListResponse;
 import com.example.community.dto.UpdatePostRequest;
+import com.example.community.docs.PostApiDoc;
 import com.example.community.service.PostService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ public class PostController {
         this.postService = postService;
     }
 
+    @PostApiDoc.GetPosts
     @GetMapping
     public ResponseEntity<ApiResponse<PostListResponse>> getPosts(
             @RequestParam(name = "cursor", defaultValue = "0") int cursor,
@@ -29,6 +31,7 @@ public class PostController {
         return ResponseEntity.ok(ApiResponse.success("fetch_success", response));
     }
 
+    @PostApiDoc.GetPost
     @GetMapping("/{postId}")
     public ResponseEntity<ApiResponse<Post>> getPost(@PathVariable String postId) {
         Post post = postService.getPostById(postId);
@@ -36,6 +39,7 @@ public class PostController {
     }
 
     @AuthRequired
+    @PostApiDoc.CreatePost
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> createPost(
             @RequestAttribute("authUser") User authUser,
@@ -46,6 +50,7 @@ public class PostController {
     }
 
     @AuthRequired
+    @PostApiDoc.UpdatePost
     @PutMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> updatePost(
             @RequestAttribute("authUser") User authUser,
@@ -57,6 +62,7 @@ public class PostController {
     }
 
     @AuthRequired
+    @PostApiDoc.DeletePost
     @DeleteMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> deletePost(
             @RequestAttribute("authUser") User authUser,
