@@ -28,14 +28,7 @@ public final class UserApiDoc {
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             examples = @ExampleObject(
                                     name = "성공 요청",
-                                    value = """
-                                            {
-                                              "email": "user@example.com",
-                                              "password": "P@ssw0rd!",
-                                              "nickname": "닉네임",
-                                              "profileImageUrl": "https://cdn.example.com/profile.jpg"
-                                            }
-                                            """
+                                    value = SwaggerExamples.SIGNUP_REQUEST
                             )
                     )
             )
@@ -44,12 +37,24 @@ public final class UserApiDoc {
             @ApiResponse(
                     responseCode = "201",
                     description = "회원가입 성공",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "성공 응답",
+                                    value = SwaggerExamples.SIGNUP_RESPONSE_SUCCESS
+                            )
+                    )
             ),
             @ApiResponse(
                     responseCode = "400",
                     description = "유효하지 않은 요청 데이터",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "중복 이메일",
+                                    value = SwaggerExamples.SIGNUP_RESPONSE_DUPLICATED
+                            )
+                    )
             )
     })
     public @interface SignUp {
@@ -95,12 +100,31 @@ public final class UserApiDoc {
             summary = "이메일/닉네임 중복 검사",
             description = "이메일 또는 닉네임이 이미 존재하는지 확인합니다. (query params: email, nickname)"
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "중복 여부 반환",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-    )
-    public @interface CheckDuplicate {
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "중복 여부 반환",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = {
+                                    @ExampleObject(name = "사용 가능", value = SwaggerExamples.CHECK_DUPLICATED_RESPONSE_AVAILABLE),
+                                    @ExampleObject(name = "중복됨", value = SwaggerExamples.CHECK_DUPLICATED_RESPONSE_DUPLICATE)
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "이메일과 닉네임이 모두 비어 있음",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "잘못된 요청",
+                                    value = SwaggerExamples.CHECK_DUPLICATED_RESPONSE_INVALID
+                            )
+                    )
+            )
+    })
+    public @interface CheckDuplicated {
     }
 
     @Target(ElementType.METHOD)
@@ -110,14 +134,23 @@ public final class UserApiDoc {
             @ApiResponse(
                     responseCode = "200",
                     description = "프로필 조회 성공",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "성공 응답",
+                                    value = SwaggerExamples.PROFILE_RESPONSE_SUCCESS
+                            )
+                    )
             ),
             @ApiResponse(
                     responseCode = "401",
                     description = "권한이 없습니다.",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            examples = @ExampleObject(name = "실패 응답", value = SwaggerExamples.SIGNIN_RESPONSE_FAILURE)
+                            examples = @ExampleObject(
+                                    name = "인증 실패",
+                                    value = SwaggerExamples.PROFILE_RESPONSE_UNAUTHORIZED
+                            )
                     )
             )})
     public @interface GetProfile {
@@ -125,34 +158,117 @@ public final class UserApiDoc {
 
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
-    @Operation(summary = "프로필 수정", description = "닉네임, 프로필 이미지를 수정합니다.")
-    @ApiResponse(
-            responseCode = "200",
-            description = "프로필 수정 성공",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(
+            summary = "프로필 수정",
+            description = "닉네임, 프로필 이미지를 수정합니다.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "성공 요청",
+                                    value = SwaggerExamples.UPDATE_PROFILE_REQUEST
+                            )
+                    )
+            )
     )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "프로필 수정 성공",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "성공 응답",
+                                    value = SwaggerExamples.UPDATE_PROFILE_RESPONSE_SUCCESS
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "권한이 없습니다.",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "인증 실패",
+                                    value = SwaggerExamples.PROFILE_RESPONSE_UNAUTHORIZED
+                            )
+                    )
+            )
+    })
     public @interface UpdateProfile {
     }
 
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
-    @Operation(summary = "비밀번호 변경", description = "기존 비밀번호를 확인하고 새 비밀번호로 변경합니다.")
-    @ApiResponse(
-            responseCode = "200",
-            description = "비밀번호 변경 성공",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(
+            summary = "비밀번호 변경",
+            description = "기존 비밀번호를 확인하고 새 비밀번호로 변경합니다.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "성공 요청",
+                                    value = SwaggerExamples.UPDATE_PASSWORD_REQUEST
+                            )
+                    )
+            )
     )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "비밀번호 변경 성공",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "성공 응답",
+                                    value = SwaggerExamples.UPDATE_PASSWORD_RESPONSE_SUCCESS
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "권한이 없습니다.",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "인증 실패",
+                                    value = SwaggerExamples.PROFILE_RESPONSE_UNAUTHORIZED
+                            )
+                    )
+            )
+    })
     public @interface UpdatePassword {
     }
 
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
     @Operation(summary = "회원 탈퇴", description = "사용자 계정을 삭제합니다.")
-    @ApiResponse(
-            responseCode = "200",
-            description = "회원 탈퇴 성공",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "회원 탈퇴 성공",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "성공 응답",
+                                    value = SwaggerExamples.DELETE_PROFILE_RESPONSE_SUCCESS
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "권한이 없습니다.",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "인증 실패",
+                                    value = SwaggerExamples.PROFILE_RESPONSE_UNAUTHORIZED
+                            )
+                    )
+            )
+    })
     public @interface DeleteProfile {
     }
 }

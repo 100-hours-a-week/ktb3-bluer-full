@@ -51,9 +51,9 @@ public class UserController {
         );
     }
 
-    @UserApiDoc.CheckDuplicate
+    @UserApiDoc.CheckDuplicated
     @GetMapping("/check")
-    public ResponseEntity<ApiResponse<Map<String, Boolean>>> checkDuplicate(
+    public ResponseEntity<ApiResponse<Map<String, Boolean>>> checkDuplicated(
             @RequestParam(required = false) String email,
             @RequestParam(required = false) String nickname
     ) {
@@ -67,7 +67,7 @@ public class UserController {
         // Email
         if (email != null) {
             isExisted = userService.isExistedEmail(email);
-            message = isExisted ? ErrorCode.DUPLICATE_EMAIL.getMessage() : SuccessCode.EMAIL_AVAILABLE.getMessage();
+            message = isExisted ? ErrorCode.DUPLICATED_EMAIL.getMessage() : SuccessCode.EMAIL_AVAILABLE.getMessage();
 
             return ResponseEntity.ok(
                     ApiResponse.success(message, Map.of("available", !isExisted))
@@ -76,7 +76,7 @@ public class UserController {
 
         // Nickname
         isExisted = userService.isExistedNickname(nickname);
-        message = isExisted ? ErrorCode.DUPLICATE_NICKNAME.getMessage() : SuccessCode.NICKNAME_AVAILABLE.getMessage();
+        message = isExisted ? ErrorCode.DUPLICATED_NICKNAME.getMessage() : SuccessCode.NICKNAME_AVAILABLE.getMessage();
 
         return ResponseEntity.ok(
                 ApiResponse.success(message, Map.of("available", !isExisted))
