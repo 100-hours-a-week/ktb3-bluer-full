@@ -9,6 +9,7 @@ import com.example.community.docs.UserApiDoc;
 import com.example.community.domain.User;
 import com.example.community.dto.*;
 import com.example.community.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -82,8 +83,9 @@ public class UserController {
         );
     }
 
-    @UserApiDoc.GetProfile
     @AuthRequired
+    @UserApiDoc.GetProfile
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/profile")
     public ResponseEntity<ApiResponse<UserProfileResponse>> getProfile(
             @RequestAttribute("authUser") User authUser
@@ -98,6 +100,7 @@ public class UserController {
 
     @UserApiDoc.UpdateProfile
     @AuthRequired
+    @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/profile")
     public ResponseEntity<ApiResponse<UserProfileResponse>> updateProfile(
             @RequestAttribute("authUser") User authUser,
@@ -115,6 +118,7 @@ public class UserController {
 
     @UserApiDoc.UpdatePassword
     @AuthRequired
+    @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/password")
     public ResponseEntity<ApiResponse<Void>> updatePassword(
             @RequestAttribute("authUser") User authUser,
@@ -129,6 +133,7 @@ public class UserController {
 
     @UserApiDoc.DeleteProfile
     @AuthRequired
+    @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/profile")
     public ResponseEntity<ApiResponse<Void>> deleteProfile(
             @RequestAttribute("authUser") User authUser

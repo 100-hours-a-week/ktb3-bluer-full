@@ -2,13 +2,14 @@ package com.example.community.controller;
 
 import com.example.community.common.ApiResponse;
 import com.example.community.common.auth.AuthRequired;
+import com.example.community.docs.PostApiDoc;
 import com.example.community.domain.Post;
 import com.example.community.domain.User;
 import com.example.community.dto.CreatePostRequest;
 import com.example.community.dto.PostListResponse;
 import com.example.community.dto.UpdatePostRequest;
-import com.example.community.docs.PostApiDoc;
 import com.example.community.service.PostService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +41,7 @@ public class PostController {
 
     @AuthRequired
     @PostApiDoc.CreatePost
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> createPost(
             @RequestAttribute("authUser") User authUser,
@@ -51,6 +53,7 @@ public class PostController {
 
     @AuthRequired
     @PostApiDoc.UpdatePost
+    @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> updatePost(
             @RequestAttribute("authUser") User authUser,
@@ -63,6 +66,7 @@ public class PostController {
 
     @AuthRequired
     @PostApiDoc.DeletePost
+    @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> deletePost(
             @RequestAttribute("authUser") User authUser,
