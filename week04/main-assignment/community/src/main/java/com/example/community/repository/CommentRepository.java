@@ -5,20 +5,24 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Repository;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
-public class CommentRepository {
+public class CommentRepository extends JsonFileRepository<CommentRepository.PostCommentsData> {
 
     private static final String FILE_PATH = "data/comments.json";
-    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public CommentRepository() {
+        super(
+                FILE_PATH,
+                new ObjectMapper(),
+                new TypeReference<List<PostCommentsData>>() {
+                },
+                "댓글 데이터 읽기 실패",
+                "댓글 데이터 저장 실패"
+        );
+    }
 
     public List<Comment> findByPostId(String postId) {
         return readAll().stream()
@@ -100,29 +104,7 @@ public class CommentRepository {
         return data;
     }
 
-    private List<PostCommentsData> readAll() {
-        try {
-            File file = new File(FILE_PATH);
-            if (!file.exists()) {
-                return new ArrayList<>();
-            }
-            return objectMapper.readValue(file, new TypeReference<List<PostCommentsData>>() {
-            });
-        } catch (IOException e) {
-            throw new RuntimeException("댓글 데이터 읽기 실패", e);
-        }
-    }
-
-    private void writeAll(List<PostCommentsData> data) {
-        try {
-            objectMapper.writerWithDefaultPrettyPrinter()
-                    .writeValue(new File(FILE_PATH), data);
-        } catch (IOException e) {
-            throw new RuntimeException("댓글 데이터 저장 실패", e);
-        }
-    }
-
-    private static class PostCommentsData {
+    public static class PostCommentsData {
         public String postId;
         public List<CommentData> comments = new ArrayList<>();
     }
