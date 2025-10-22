@@ -32,7 +32,7 @@ public class UserService {
      */
     public User signup(SignUpRequest request) {
         if (userRepository.findByEmail(request.email()).isPresent()) {
-            throw new ServiceException(ErrorCode.DUPLICATE_EMAIL);
+            throw new ServiceException(ErrorCode.DUPLICATED_EMAIL);
         }
 
         User user = User.builder()

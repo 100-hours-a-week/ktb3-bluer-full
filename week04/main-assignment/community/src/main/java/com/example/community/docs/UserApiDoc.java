@@ -108,7 +108,7 @@ public final class UserApiDoc {
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             examples = {
                                     @ExampleObject(name = "사용 가능", value = SwaggerExamples.CHECK_DUPLICATED_RESPONSE_AVAILABLE),
-                                    @ExampleObject(name = "중복됨", value = SwaggerExamples.CHECK_DUPLICATED_RESPONSE_DUPLICATE)
+                                    @ExampleObject(name = "중복됨", value = SwaggerExamples.CHECK_DUPLICATED_RESPONSE_DUPLICATED)
                             }
                     )
             ),
@@ -149,7 +149,7 @@ public final class UserApiDoc {
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             examples = @ExampleObject(
                                     name = "인증 실패",
-                                    value = SwaggerExamples.PROFILE_RESPONSE_UNAUTHORIZED
+                                    value = SwaggerExamples.UNAUTHORIZED_RESPONSE
                             )
                     )
             )})
@@ -191,7 +191,7 @@ public final class UserApiDoc {
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             examples = @ExampleObject(
                                     name = "인증 실패",
-                                    value = SwaggerExamples.PROFILE_RESPONSE_UNAUTHORIZED
+                                    value = SwaggerExamples.UNAUTHORIZED_RESPONSE
                             )
                     )
             )
@@ -234,7 +234,7 @@ public final class UserApiDoc {
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             examples = @ExampleObject(
                                     name = "인증 실패",
-                                    value = SwaggerExamples.PROFILE_RESPONSE_UNAUTHORIZED
+                                    value = SwaggerExamples.UNAUTHORIZED_RESPONSE
                             )
                     )
             )
@@ -264,7 +264,7 @@ public final class UserApiDoc {
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             examples = @ExampleObject(
                                     name = "인증 실패",
-                                    value = SwaggerExamples.PROFILE_RESPONSE_UNAUTHORIZED
+                                    value = SwaggerExamples.UNAUTHORIZED_RESPONSE
                             )
                     )
             )
