@@ -3,33 +3,24 @@ package com.example.community.service;
 import com.example.community.common.ErrorCode;
 import com.example.community.common.exception.ServiceException;
 import com.example.community.domain.User;
-import com.example.community.dto.SignInRequest;
-import com.example.community.dto.SignUpRequest;
-import com.example.community.dto.UpdatePasswordRequest;
-import com.example.community.dto.UpdateProfileRequest;
-import com.example.community.dto.UserProfileResponse;
+import com.example.community.dto.*;
 import com.example.community.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final Map<String, String> tokenStore = new HashMap<>();
+    private final ConcurrentHashMap<String, String> tokenStore = new ConcurrentHashMap<>();
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    /*
-        TODO: 유효성 검사
-
-     */
     public User signup(SignUpRequest request) {
         if (userRepository.findByEmail(request.email()).isPresent()) {
             throw new ServiceException(ErrorCode.DUPLICATED_EMAIL);
