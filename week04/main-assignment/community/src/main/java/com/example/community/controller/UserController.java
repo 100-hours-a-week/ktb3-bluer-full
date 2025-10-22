@@ -3,15 +3,16 @@ package com.example.community.controller;
 import com.example.community.common.ApiResponse;
 import com.example.community.common.ErrorCode;
 import com.example.community.common.SuccessCode;
-import com.example.community.common.exception.ServiceException;
 import com.example.community.common.auth.AuthRequired;
+import com.example.community.common.exception.ServiceException;
 import com.example.community.domain.User;
-import com.example.community.dto.SignInRequest;
-import com.example.community.dto.SignUpRequest;
-import com.example.community.dto.UpdatePasswordRequest;
-import com.example.community.dto.UpdateProfileRequest;
-import com.example.community.dto.UserProfileResponse;
+import com.example.community.dto.*;
 import com.example.community.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +42,62 @@ public class UserController {
         );
     }
 
+    @Operation(
+            summary = "사용자 로그인",
+            description = "이메일과 비밀번호를 검증하고 액세스 토큰을 발급합니다.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = SignInRequest.class),
+                            examples = @ExampleObject(
+                                    name = "성공 요청",
+                                    value = """
+                                            {
+                                              "email": "user1@test.com",
+                                              "password": "test"
+                                            }
+                                            """
+                            )
+                    )
+            )
+    )
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "로그인 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    name = "성공 응답",
+                                    value = """
+                                            {
+                                              "message": "success",
+                                              "data": {
+                                                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                                              }
+                                            }
+                                            """
+                            )
+                    )
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "401",
+                    description = "이메일 또는 비밀번호가 올바르지 않음",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    name = "실패 응답",
+                                    value = """
+                                            {
+                                              "message": "login_failed",
+                                              "data": null
+                                            }
+                                            """
+                            )
+                    )
+            )
+    })
     @PostMapping("/signin")
     public ResponseEntity<ApiResponse<Map<String, String>>> signin(@Valid @RequestBody SignInRequest requestData) {
         String token = userService.signIn(requestData);
