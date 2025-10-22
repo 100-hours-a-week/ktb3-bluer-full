@@ -3,6 +3,7 @@ package com.example.community.controller;
 import com.example.community.common.ApiResponse;
 import com.example.community.common.auth.AuthRequired;
 import com.example.community.domain.User;
+import com.example.community.docs.CommentApiDoc;
 import com.example.community.dto.CommentResponse;
 import com.example.community.dto.CreateCommentRequest;
 import com.example.community.dto.UpdateCommentRequest;
@@ -23,6 +24,7 @@ public class CommentController {
         this.commentService = commentService;
     }
 
+    @CommentApiDoc.GetComments
     @GetMapping
     public ResponseEntity<ApiResponse<List<CommentResponse>>> getComments(
             @PathVariable String postId
@@ -32,6 +34,7 @@ public class CommentController {
     }
 
     @AuthRequired
+    @CommentApiDoc.CreateComment
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> createComment(
             @PathVariable String postId,
@@ -43,6 +46,7 @@ public class CommentController {
     }
 
     @AuthRequired
+    @CommentApiDoc.UpdateComment
     @PutMapping("/{commentId}")
     public ResponseEntity<ApiResponse<Void>> updateComment(
             @PathVariable String postId,
@@ -55,6 +59,7 @@ public class CommentController {
     }
 
     @AuthRequired
+    @CommentApiDoc.DeleteComment
     @DeleteMapping("/{commentId}")
     public ResponseEntity<ApiResponse<Void>> deleteComment(
             @PathVariable String postId,
