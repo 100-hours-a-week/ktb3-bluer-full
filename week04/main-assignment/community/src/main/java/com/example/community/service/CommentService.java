@@ -15,7 +15,9 @@ import com.example.community.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.function.Function;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -40,8 +42,13 @@ public class CommentService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.POST_NOT_FOUND));
 
-        return commentRepository.findByPostId(post.getPostId()).stream()
-                .map(this::toResponse)
+        List<Comment> comments = commentRepository.findByPostId(post.getPostId());
+
+        Map<String, User> userMap = userRepository.findAll().stream()
+                .collect(Collectors.toMap(User::getId, Function.identity()));
+
+        return comments.stream()
+                .map(comment -> toResponse(comment, userMap))
                 .collect(Collectors.toList());
     }
 
@@ -87,9 +94,11 @@ public class CommentService {
         updatePostCommentCount(postId);
     }
 
-    private CommentResponse toResponse(Comment comment) {
-        User author = userRepository.findById(comment.getAuthorId())
-                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+    private CommentResponse toResponse(Comment comment, Map<String, User> userMap) {
+        User author = userMap.get(comment.getAuthorId());
+        if (author == null) {
+            throw new ServiceException(ErrorCode.USER_NOT_FOUND);
+        }
 
         CommentAuthorResponse authorResponse = new CommentAuthorResponse(
                 author.getId(),
