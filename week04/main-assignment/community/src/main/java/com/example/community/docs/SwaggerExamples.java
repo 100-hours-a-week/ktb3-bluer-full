@@ -220,4 +220,63 @@ public final class SwaggerExamples {
               "data": null
             }
             """;
+
+    public static final String COMMENT_LIST_RESPONSE = """
+            {
+              "message": "fetch_success",
+              "data": [
+                {
+                  "commentId": "comment-123",
+                  "content": "좋은 글 잘 읽었습니다!",
+                  "author": {
+                    "id": "user-456",
+                    "nickname": "댓글러",
+                    "profileImageUrl": "https://cdn.example.com/profile-commenter.jpg"
+                  },
+                  "createdAt": "2025-02-18T12:40:00Z",
+                  "updatedAt": "2025-02-18T12:40:00Z"
+                }
+              ]
+            }
+            """;
+
+    public static final String CREATE_COMMENT_REQUEST = """
+            {
+              "content": "좋은 글 잘 읽었습니다!"
+            }
+            """;
+
+    public static final String CREATE_COMMENT_RESPONSE_SUCCESS = """
+            {
+              "message": "create_success",
+              "data": null
+            }
+            """;
+
+    public static final String UPDATE_COMMENT_REQUEST = """
+            {
+              "content": "내용을 조금 더 다듬었습니다."
+            }
+            """;
+
+    public static final String UPDATE_COMMENT_RESPONSE_SUCCESS = """
+            {
+              "message": "update_success",
+              "data": null
+            }
+            """;
+
+    public static final String DELETE_COMMENT_RESPONSE_SUCCESS = """
+            {
+              "message": "delete_success",
+              "data": null
+            }
+            """;
+
+    public static final String COMMENT_NOT_FOUND_RESPONSE = """
+            {
+              "message": "comment_not_found",
+              "data": null
+            }
+            """;
 }
