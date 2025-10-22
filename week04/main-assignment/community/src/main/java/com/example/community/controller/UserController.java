@@ -10,7 +10,6 @@ import com.example.community.domain.User;
 import com.example.community.dto.*;
 import com.example.community.service.UserService;
 import jakarta.validation.Valid;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +17,7 @@ import java.net.URI;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping("/users")
 public class UserController {
     private final UserService userService;
 
@@ -27,7 +26,7 @@ public class UserController {
     }
 
     @UserApiDoc.SignUp
-    @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("/signup")
     public ResponseEntity<ApiResponse<Void>> signup(@Valid @RequestBody SignUpRequest requestData) {
         userService.signup(
                 requestData
@@ -41,7 +40,7 @@ public class UserController {
     }
 
     @UserApiDoc.SignIn
-    @PostMapping(value = "/signin", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("/signin")
     public ResponseEntity<ApiResponse<Map<String, String>>> signin(@Valid @RequestBody SignInRequest requestData) {
         String token = userService.signIn(requestData);
         Map<String, String> response = Map.of("token", token);
@@ -99,7 +98,7 @@ public class UserController {
 
     @UserApiDoc.UpdateProfile
     @AuthRequired
-    @PutMapping(value = "/profile", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping("/profile")
     public ResponseEntity<ApiResponse<UserProfileResponse>> updateProfile(
             @RequestAttribute("authUser") User authUser,
             @Valid @RequestBody UpdateProfileRequest requestData
@@ -116,7 +115,7 @@ public class UserController {
 
     @UserApiDoc.UpdatePassword
     @AuthRequired
-    @PutMapping(value = "/password", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping("/password")
     public ResponseEntity<ApiResponse<Void>> updatePassword(
             @RequestAttribute("authUser") User authUser,
             @Valid @RequestBody UpdatePasswordRequest requestData
