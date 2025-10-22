@@ -5,15 +5,12 @@ import com.example.community.common.ErrorCode;
 import com.example.community.common.SuccessCode;
 import com.example.community.common.auth.AuthRequired;
 import com.example.community.common.exception.ServiceException;
+import com.example.community.docs.UserApiDoc;
 import com.example.community.domain.User;
 import com.example.community.dto.*;
 import com.example.community.service.UserService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +18,7 @@ import java.net.URI;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
     private final UserService userService;
 
@@ -29,7 +26,8 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/signup")
+    @UserApiDoc.SignUp
+    @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<Void>> signup(@Valid @RequestBody SignUpRequest requestData) {
         userService.signup(
                 requestData
@@ -42,63 +40,8 @@ public class UserController {
         );
     }
 
-    @Operation(
-            summary = "사용자 로그인",
-            description = "이메일과 비밀번호를 검증하고 액세스 토큰을 발급합니다.",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    required = true,
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = SignInRequest.class),
-                            examples = @ExampleObject(
-                                    name = "성공 요청",
-                                    value = """
-                                            {
-                                              "email": "user1@test.com",
-                                              "password": "test"
-                                            }
-                                            """
-                            )
-                    )
-            )
-    )
-    @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                    responseCode = "200",
-                    description = "로그인 성공",
-                    content = @Content(
-                            mediaType = "application/json",
-                            examples = @ExampleObject(
-                                    name = "성공 응답",
-                                    value = """
-                                            {
-                                              "message": "success",
-                                              "data": {
-                                                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-                                              }
-                                            }
-                                            """
-                            )
-                    )
-            ),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                    responseCode = "401",
-                    description = "이메일 또는 비밀번호가 올바르지 않음",
-                    content = @Content(
-                            mediaType = "application/json",
-                            examples = @ExampleObject(
-                                    name = "실패 응답",
-                                    value = """
-                                            {
-                                              "message": "login_failed",
-                                              "data": null
-                                            }
-                                            """
-                            )
-                    )
-            )
-    })
-    @PostMapping("/signin")
+    @UserApiDoc.SignIn
+    @PostMapping(value = "/signin", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<Map<String, String>>> signin(@Valid @RequestBody SignInRequest requestData) {
         String token = userService.signIn(requestData);
         Map<String, String> response = Map.of("token", token);
@@ -108,6 +51,7 @@ public class UserController {
         );
     }
 
+    @UserApiDoc.CheckDuplicate
     @GetMapping("/check")
     public ResponseEntity<ApiResponse<Map<String, Boolean>>> checkDuplicate(
             @RequestParam(required = false) String email,
@@ -139,6 +83,7 @@ public class UserController {
         );
     }
 
+    @UserApiDoc.GetProfile
     @AuthRequired
     @GetMapping("/profile")
     public ResponseEntity<ApiResponse<UserProfileResponse>> getProfile(
@@ -152,8 +97,9 @@ public class UserController {
         );
     }
 
+    @UserApiDoc.UpdateProfile
     @AuthRequired
-    @PutMapping("/profile")
+    @PutMapping(value = "/profile", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<UserProfileResponse>> updateProfile(
             @RequestAttribute("authUser") User authUser,
             @Valid @RequestBody UpdateProfileRequest requestData
@@ -168,8 +114,9 @@ public class UserController {
         );
     }
 
+    @UserApiDoc.UpdatePassword
     @AuthRequired
-    @PutMapping("/password")
+    @PutMapping(value = "/password", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<Void>> updatePassword(
             @RequestAttribute("authUser") User authUser,
             @Valid @RequestBody UpdatePasswordRequest requestData
@@ -181,6 +128,7 @@ public class UserController {
         );
     }
 
+    @UserApiDoc.DeleteProfile
     @AuthRequired
     @DeleteMapping("/profile")
     public ResponseEntity<ApiResponse<Void>> deleteProfile(
