@@ -7,8 +7,8 @@ import com.example.community.common.auth.AuthRequired;
 import com.example.community.common.exception.ServiceException;
 import com.example.community.docs.UserApiDoc;
 import com.example.community.domain.User;
+import com.example.community.domain.validator.UserValidator;
 import com.example.community.dto.*;
-import com.example.community.service.AuthService;
 import com.example.community.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -22,11 +22,11 @@ import java.util.Map;
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
-    private final AuthService authService;
+    private final UserValidator userValidator;
 
-    public UserController(UserService userService, AuthService authService) {
+    public UserController(UserService userService, UserValidator userValidator) {
         this.userService = userService;
-        this.authService = authService;
+        this.userValidator = userValidator;
     }
 
     @UserApiDoc.SignUp
@@ -69,7 +69,7 @@ public class UserController {
 
         // Email
         if (email != null) {
-            isExisted = authService.isExistedEmail(email);
+            isExisted = userValidator.isExistedEmail(email);
             message = isExisted ? ErrorCode.DUPLICATED_EMAIL.getMessage() : SuccessCode.EMAIL_AVAILABLE.getMessage();
 
             return ResponseEntity.ok(
@@ -78,7 +78,7 @@ public class UserController {
         }
 
         // Nickname
-        isExisted = authService.isExistedNickname(nickname);
+        isExisted = userValidator.isExistedNickname(nickname);
         message = isExisted ? ErrorCode.DUPLICATED_NICKNAME.getMessage() : SuccessCode.NICKNAME_AVAILABLE.getMessage();
 
         return ResponseEntity.ok(

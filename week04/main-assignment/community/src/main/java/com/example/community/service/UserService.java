@@ -3,6 +3,7 @@ package com.example.community.service;
 import com.example.community.common.ErrorCode;
 import com.example.community.common.exception.ServiceException;
 import com.example.community.domain.User;
+import com.example.community.domain.validator.UserValidator;
 import com.example.community.dto.SignInRequest;
 import com.example.community.dto.SignUpRequest;
 import com.example.community.dto.UpdatePasswordRequest;
@@ -17,17 +18,17 @@ import java.util.UUID;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final AuthService authService;
+    private final UserValidator userValidator;
     private final TokenService tokenService;
 
-    public UserService(UserRepository userRepository, AuthService authService, TokenService tokenService) {
+    public UserService(UserRepository userRepository, UserValidator userValidator, TokenService tokenService) {
         this.userRepository = userRepository;
-        this.authService = authService;
+        this.userValidator = userValidator;
         this.tokenService = tokenService;
     }
 
     public void signup(SignUpRequest request) {
-        if (authService.isExistedEmail(request.email())) {
+        if (userValidator.isExistedEmail(request.email())) {
             throw new ServiceException(ErrorCode.DUPLICATED_EMAIL);
         }
 

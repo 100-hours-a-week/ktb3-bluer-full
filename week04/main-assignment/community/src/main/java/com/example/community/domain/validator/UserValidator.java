@@ -1,14 +1,13 @@
-package com.example.community.service;
+package com.example.community.domain.validator;
 
 import com.example.community.repository.UserRepository;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
-public class AuthService {
-
+@Component
+public class UserValidator {
     private final UserRepository userRepository;
 
-    public AuthService(UserRepository userRepository) {
+    public UserValidator(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
