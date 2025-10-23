@@ -5,10 +5,10 @@ import com.example.community.common.exception.ServiceException;
 import com.example.community.domain.Comment;
 import com.example.community.domain.Post;
 import com.example.community.domain.User;
-import com.example.community.dto.CommentAuthorResponse;
 import com.example.community.dto.CommentResponse;
 import com.example.community.dto.CreateCommentRequest;
 import com.example.community.dto.UpdateCommentRequest;
+import com.example.community.dto.mapper.CommentResponseMapper;
 import com.example.community.repository.CommentRepository;
 import com.example.community.repository.PostRepository;
 import com.example.community.repository.UserRepository;
@@ -27,15 +27,18 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final CommentResponseMapper commentResponseMapper;
 
     public CommentService(
             CommentRepository commentRepository,
             PostRepository postRepository,
-            UserRepository userRepository
+            UserRepository userRepository,
+            CommentResponseMapper commentResponseMapper
     ) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.commentResponseMapper = commentResponseMapper;
     }
 
     public List<CommentResponse> getComments(String postId) {
@@ -47,9 +50,7 @@ public class CommentService {
         Map<String, User> userMap = userRepository.findAll().stream()
                 .collect(Collectors.toMap(User::getId, Function.identity()));
 
-        return comments.stream()
-                .map(comment -> toResponse(comment, userMap))
-                .collect(Collectors.toList());
+        return commentResponseMapper.toResponseList(comments, userMap);
     }
 
     public void createComment(String postId, String authorId, CreateCommentRequest request) {
@@ -92,21 +93,6 @@ public class CommentService {
 
         commentRepository.delete(postId, commentId);
         updatePostCommentCount(postId);
-    }
-
-    private CommentResponse toResponse(Comment comment, Map<String, User> userMap) {
-        User author = userMap.get(comment.getAuthorId());
-        if (author == null) {
-            throw new ServiceException(ErrorCode.USER_NOT_FOUND);
-        }
-
-        CommentAuthorResponse authorResponse = new CommentAuthorResponse(
-                author.getId(),
-                author.getNickname(),
-                author.getProfileImageUrl()
-        );
-
-        return CommentResponse.of(comment, authorResponse);
     }
 
     private void updatePostCommentCount(String postId) {
