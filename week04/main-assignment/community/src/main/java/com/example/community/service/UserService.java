@@ -59,7 +59,7 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
-        user.updateProfile(request.getNickname(), request.getProfileImageUrl());
+        user.updateProfile(request.nickname(), request.profileImageUrl());
         return userRepository.save(user);
     }
 
@@ -68,7 +68,7 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
-        user.updatePassword(request.getPassword());
+        user.updatePassword(request.password());
         userRepository.save(user);
     }
 

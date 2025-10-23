@@ -63,7 +63,7 @@ public class CommentService {
                 .commentId(UUID.randomUUID().toString())
                 .postId(postId)
                 .authorId(authorId)
-                .content(request.getContent())
+                .content(request.content())
                 .createdAt(now)
                 .updatedAt(now)
                 .build();
@@ -80,7 +80,7 @@ public class CommentService {
             throw new ServiceException(ErrorCode.UNAUTHORIZED);
         }
 
-        comment.updateContent(request.getContent(), Instant.now().toString());
+        comment.updateContent(request.content(), Instant.now().toString());
         commentRepository.save(comment);
     }
 

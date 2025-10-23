@@ -47,7 +47,7 @@ public class PostController {
             @RequestAttribute("authUser") User authUser,
             @RequestBody CreatePostRequest request
     ) {
-        postService.createPost(authUser.getId(), request.getTitle(), request.getContent());
+        postService.createPost(authUser.getId(), request.title(), request.content());
         return ResponseEntity.status(201).body(ApiResponse.success("create_success"));
     }
 
@@ -60,7 +60,7 @@ public class PostController {
             @PathVariable String postId,
             @RequestBody UpdatePostRequest request
     ) {
-        postService.updatePost(postId, authUser.getId(), request.getTitle(), request.getContent());
+        postService.updatePost(postId, authUser.getId(), request.title(), request.content());
         return ResponseEntity.ok(ApiResponse.success("update_success"));
     }
 
