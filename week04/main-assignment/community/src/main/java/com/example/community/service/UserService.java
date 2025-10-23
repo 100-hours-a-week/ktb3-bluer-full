@@ -3,7 +3,10 @@ package com.example.community.service;
 import com.example.community.common.ErrorCode;
 import com.example.community.common.exception.ServiceException;
 import com.example.community.domain.User;
-import com.example.community.dto.*;
+import com.example.community.dto.SignInRequest;
+import com.example.community.dto.SignUpRequest;
+import com.example.community.dto.UpdatePasswordRequest;
+import com.example.community.dto.UpdateProfileRequest;
 import com.example.community.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,13 +18,15 @@ import java.util.UUID;
 public class UserService {
     private final UserRepository userRepository;
     private final AuthService authService;
+    private final TokenService tokenService;
 
-    public UserService(UserRepository userRepository, AuthService authService) {
+    public UserService(UserRepository userRepository, AuthService authService, TokenService tokenService) {
         this.userRepository = userRepository;
         this.authService = authService;
+        this.tokenService = tokenService;
     }
 
-    public User signup(SignUpRequest request) {
+    public void signup(SignUpRequest request) {
         if (authService.isExistedEmail(request.email())) {
             throw new ServiceException(ErrorCode.DUPLICATED_EMAIL);
         }
@@ -34,7 +39,7 @@ public class UserService {
                 .profileImageUrl(request.profileImageUrl())
                 .build();
 
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 
     public String signIn(SignInRequest request) {
@@ -45,7 +50,7 @@ public class UserService {
             throw new ServiceException(ErrorCode.LOGIN_FAILED);
         }
 
-        return authService.issueToken(user);
+        return tokenService.issueToken(user);
     }
 
     @Transactional
@@ -58,13 +63,12 @@ public class UserService {
     }
 
     @Transactional
-    public UserProfileResponse updatePassword(String userId, UpdatePasswordRequest request) {
+    public void updatePassword(String userId, UpdatePasswordRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         user.updatePassword(request.getPassword());
         userRepository.save(user);
-        return UserProfileResponse.from(user);
     }
 
     @Transactional
@@ -73,7 +77,7 @@ public class UserService {
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         user.markAsDeleted();
-        authService.invalidateUserTokens(user.getId());
+        tokenService.removeToken(user.getId());
         userRepository.save(user);
     }
 }

@@ -3,7 +3,7 @@ package com.example.community.common.auth;
 import com.example.community.common.ErrorCode;
 import com.example.community.common.exception.ServiceException;
 import com.example.community.domain.User;
-import com.example.community.service.AuthService;
+import com.example.community.service.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
@@ -13,10 +13,11 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
 
-    private final AuthService authService;
 
-    public AuthInterceptor(AuthService authService) {
-        this.authService = authService;
+    private final TokenService tokenService;
+
+    public AuthInterceptor(TokenService tokenService) {
+        this.tokenService = tokenService;
     }
 
     @Override
@@ -39,7 +40,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         String token = header.replace("Bearer ", "").trim();
-        User user = authService.findByToken(token)
+        User user = tokenService.findByToken(token)
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         request.setAttribute("authUser", user);

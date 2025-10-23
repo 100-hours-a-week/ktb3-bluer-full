@@ -24,6 +24,10 @@ public class TokenService {
         return token;
     }
 
+    public void removeToken(String userId) {
+        tokenStore.values().removeIf(id -> id.equals(userId));
+    }
+
     public Optional<User> findByToken(String token) {
         String userId = tokenStore.get(token);
         if (userId == null) {
@@ -32,7 +36,4 @@ public class TokenService {
         return userRepository.findById(userId);
     }
 
-    public void invalidateUserTokens(String userId) {
-        tokenStore.values().removeIf(id -> id.equals(userId));
-    }
 }
