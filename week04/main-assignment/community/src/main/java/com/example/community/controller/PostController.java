@@ -2,12 +2,14 @@ package com.example.community.controller;
 
 import com.example.community.common.ApiResponse;
 import com.example.community.common.auth.AuthRequired;
+import com.example.community.docs.PostApiDoc;
 import com.example.community.domain.Post;
 import com.example.community.domain.User;
 import com.example.community.dto.CreatePostRequest;
 import com.example.community.dto.PostListResponse;
 import com.example.community.dto.UpdatePostRequest;
 import com.example.community.service.PostService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +22,7 @@ public class PostController {
         this.postService = postService;
     }
 
+    @PostApiDoc.GetPosts
     @GetMapping
     public ResponseEntity<ApiResponse<PostListResponse>> getPosts(
             @RequestParam(name = "cursor", defaultValue = "0") int cursor,
@@ -29,6 +32,7 @@ public class PostController {
         return ResponseEntity.ok(ApiResponse.success("fetch_success", response));
     }
 
+    @PostApiDoc.GetPost
     @GetMapping("/{postId}")
     public ResponseEntity<ApiResponse<Post>> getPost(@PathVariable String postId) {
         Post post = postService.getPostById(postId);
@@ -36,27 +40,33 @@ public class PostController {
     }
 
     @AuthRequired
+    @PostApiDoc.CreatePost
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> createPost(
             @RequestAttribute("authUser") User authUser,
             @RequestBody CreatePostRequest request
     ) {
-        postService.createPost(authUser.getId(), request.getTitle(), request.getContent());
+        postService.createPost(authUser.getId(), request.title(), request.content());
         return ResponseEntity.status(201).body(ApiResponse.success("create_success"));
     }
 
     @AuthRequired
+    @PostApiDoc.UpdatePost
+    @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> updatePost(
             @RequestAttribute("authUser") User authUser,
             @PathVariable String postId,
             @RequestBody UpdatePostRequest request
     ) {
-        postService.updatePost(postId, authUser.getId(), request.getTitle(), request.getContent());
+        postService.updatePost(postId, authUser.getId(), request.title(), request.content());
         return ResponseEntity.ok(ApiResponse.success("update_success"));
     }
 
     @AuthRequired
+    @PostApiDoc.DeletePost
+    @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> deletePost(
             @RequestAttribute("authUser") User authUser,

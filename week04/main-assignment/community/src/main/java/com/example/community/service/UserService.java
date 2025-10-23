@@ -3,36 +3,33 @@ package com.example.community.service;
 import com.example.community.common.ErrorCode;
 import com.example.community.common.exception.ServiceException;
 import com.example.community.domain.User;
+import com.example.community.domain.validator.UserValidator;
 import com.example.community.dto.SignInRequest;
 import com.example.community.dto.SignUpRequest;
 import com.example.community.dto.UpdatePasswordRequest;
 import com.example.community.dto.UpdateProfileRequest;
-import com.example.community.dto.UserProfileResponse;
 import com.example.community.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
+
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final Map<String, String> tokenStore = new HashMap<>();
+    private final UserValidator userValidator;
+    private final TokenService tokenService;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, UserValidator userValidator, TokenService tokenService) {
         this.userRepository = userRepository;
+        this.userValidator = userValidator;
+        this.tokenService = tokenService;
     }
 
-    /*
-        TODO: 유효성 검사
-
-     */
-    public User signup(SignUpRequest request) {
-        if (userRepository.findByEmail(request.email()).isPresent()) {
-            throw new ServiceException(ErrorCode.DUPLICATE_EMAIL);
+    public void signup(SignUpRequest request) {
+        if (userValidator.isExistedEmail(request.email())) {
+            throw new ServiceException(ErrorCode.DUPLICATED_EMAIL);
         }
 
         User user = User.builder()
@@ -43,7 +40,7 @@ public class UserService {
                 .profileImageUrl(request.profileImageUrl())
                 .build();
 
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 
     public String signIn(SignInRequest request) {
@@ -54,28 +51,7 @@ public class UserService {
             throw new ServiceException(ErrorCode.LOGIN_FAILED);
         }
 
-        String token = UUID.randomUUID().toString();
-
-        tokenStore.put(token, user.getId());
-
-        return token;
-    }
-
-    public Optional<User> findByToken(String token) {
-        String userId = tokenStore.get(token);
-        if (userId == null) {
-            return Optional.empty();
-        }
-
-        return userRepository.findById(userId);
-    }
-
-    public boolean isExistedEmail(String email) {
-        return userRepository.findByEmail(email).isPresent();
-    }
-
-    public boolean isExistedNickname(String nickname) {
-        return userRepository.findByNickname(nickname).isPresent();
+        return tokenService.issueToken(user);
     }
 
     @Transactional
@@ -83,18 +59,17 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
-        user.updateProfile(request.getNickname(), request.getProfileImageUrl());
+        user.updateProfile(request.nickname(), request.profileImageUrl());
         return userRepository.save(user);
     }
 
     @Transactional
-    public UserProfileResponse updatePassword(String userId, UpdatePasswordRequest request) {
+    public void updatePassword(String userId, UpdatePasswordRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
-        user.updatePassword(request.getPassword());
+        user.updatePassword(request.password());
         userRepository.save(user);
-        return UserProfileResponse.from(user);
     }
 
     @Transactional
@@ -103,7 +78,7 @@ public class UserService {
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         user.markAsDeleted();
-        tokenStore.values().removeIf(id -> id.equals(user.getId()));
+        tokenService.removeToken(user.getId());
         userRepository.save(user);
     }
 }

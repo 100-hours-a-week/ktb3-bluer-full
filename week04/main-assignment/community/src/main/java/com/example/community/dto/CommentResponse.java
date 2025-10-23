@@ -1,18 +1,14 @@
 package com.example.community.dto;
 
 import com.example.community.domain.Comment;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
-@Getter
-@AllArgsConstructor
-public class CommentResponse {
-    private final String commentId;
-    private final String content;
-    private final CommentAuthorResponse author;
-    private final String createdAt;
-    private final String updatedAt;
-
+public record CommentResponse(
+        String commentId,
+        String content,
+        CommentAuthorResponse author,
+        String createdAt,
+        String updatedAt
+) {
     public static CommentResponse of(Comment comment, CommentAuthorResponse author) {
         String updatedAt = comment.getUpdatedAt() != null ? comment.getUpdatedAt() : comment.getCreatedAt();
         return new CommentResponse(

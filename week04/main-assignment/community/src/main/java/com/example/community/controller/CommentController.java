@@ -2,11 +2,13 @@ package com.example.community.controller;
 
 import com.example.community.common.ApiResponse;
 import com.example.community.common.auth.AuthRequired;
+import com.example.community.docs.CommentApiDoc;
 import com.example.community.domain.User;
 import com.example.community.dto.CommentResponse;
 import com.example.community.dto.CreateCommentRequest;
 import com.example.community.dto.UpdateCommentRequest;
 import com.example.community.service.CommentService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +25,7 @@ public class CommentController {
         this.commentService = commentService;
     }
 
+    @CommentApiDoc.GetComments
     @GetMapping
     public ResponseEntity<ApiResponse<List<CommentResponse>>> getComments(
             @PathVariable String postId
@@ -32,6 +35,8 @@ public class CommentController {
     }
 
     @AuthRequired
+    @CommentApiDoc.CreateComment
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> createComment(
             @PathVariable String postId,
@@ -43,6 +48,8 @@ public class CommentController {
     }
 
     @AuthRequired
+    @CommentApiDoc.UpdateComment
+    @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/{commentId}")
     public ResponseEntity<ApiResponse<Void>> updateComment(
             @PathVariable String postId,
@@ -55,6 +62,8 @@ public class CommentController {
     }
 
     @AuthRequired
+    @CommentApiDoc.DeleteComment
+    @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/{commentId}")
     public ResponseEntity<ApiResponse<Void>> deleteComment(
             @PathVariable String postId,
