@@ -33,6 +33,10 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         AuthRequired authRequired = handlerMethod.getMethodAnnotation(AuthRequired.class);
+        // NOTE: Swagger 포함 인증 필요 없는 요청은 통과
+        if (authRequired == null) {
+            return true;
+        }
 
         String header = request.getHeader("Authorization");
         if (header == null || !header.startsWith("Bearer ")) {
