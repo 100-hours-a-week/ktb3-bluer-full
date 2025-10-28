@@ -4,21 +4,21 @@ import com.example.community.common.ErrorCode;
 import com.example.community.common.exception.ServiceException;
 import com.example.community.domain.Comment;
 import com.example.community.domain.User;
-import com.example.community.dto.CommentResponse;
-import com.example.community.dto.CreateCommentRequest;
-import com.example.community.dto.UpdateCommentRequest;
-import com.example.community.dto.mapper.CommentResponseMapper;
 import com.example.community.domain.validator.PostValidator;
+import com.example.community.dto.mapper.CommentResponseMapper;
+import com.example.community.dto.request.CreateCommentRequest;
+import com.example.community.dto.request.UpdateCommentRequest;
+import com.example.community.dto.response.CommentResponse;
 import com.example.community.repository.CommentRepository;
 import com.example.community.repository.PostRepository;
 import com.example.community.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.function.Function;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service

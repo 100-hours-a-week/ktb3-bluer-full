@@ -1,4 +1,4 @@
-package com.example.community.dto;
+package com.example.community.dto.response;
 
 import com.example.community.domain.Comment;
 

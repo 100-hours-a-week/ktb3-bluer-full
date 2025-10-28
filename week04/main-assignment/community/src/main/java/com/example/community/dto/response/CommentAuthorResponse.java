@@ -1,4 +1,4 @@
-package com.example.community.dto;
+package com.example.community.dto.response;
 
 public record CommentAuthorResponse(
         String id,

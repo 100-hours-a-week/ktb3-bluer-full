@@ -3,12 +3,12 @@ package com.example.community.service;
 import com.example.community.common.ErrorCode;
 import com.example.community.common.exception.ServiceException;
 import com.example.community.domain.Post;
-import com.example.community.dto.PostListResponse;
+import com.example.community.dto.response.PostListResponse;
 import com.example.community.repository.PostRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
