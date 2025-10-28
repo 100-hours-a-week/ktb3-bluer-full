@@ -3,19 +3,21 @@ package com.example.community.service;
 import com.example.community.common.ErrorCode;
 import com.example.community.common.exception.ServiceException;
 import com.example.community.domain.Comment;
-import com.example.community.domain.Post;
 import com.example.community.domain.User;
-import com.example.community.dto.CommentAuthorResponse;
 import com.example.community.dto.CommentResponse;
 import com.example.community.dto.CreateCommentRequest;
 import com.example.community.dto.UpdateCommentRequest;
+import com.example.community.dto.mapper.CommentResponseMapper;
+import com.example.community.domain.validator.PostValidator;
 import com.example.community.repository.CommentRepository;
 import com.example.community.repository.PostRepository;
 import com.example.community.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.function.Function;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -23,38 +25,45 @@ import java.util.stream.Collectors;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
+    private final CommentResponseMapper commentResponseMapper;
+    private final PostValidator postValidator;
 
     public CommentService(
             CommentRepository commentRepository,
+            UserRepository userRepository,
             PostRepository postRepository,
-            UserRepository userRepository
+            CommentResponseMapper commentResponseMapper,
+            PostValidator postValidator
     ) {
         this.commentRepository = commentRepository;
-        this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.postRepository = postRepository;
+        this.commentResponseMapper = commentResponseMapper;
+        this.postValidator = postValidator;
     }
 
     public List<CommentResponse> getComments(String postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.POST_NOT_FOUND));
+        postValidator.validateExists(postId);
 
-        return commentRepository.findByPostId(post.getPostId()).stream()
-                .map(this::toResponse)
-                .collect(Collectors.toList());
+        List<Comment> comments = commentRepository.findByPostId(postId);
+
+        Map<String, User> userMap = userRepository.findAll().stream()
+                .collect(Collectors.toMap(User::getId, Function.identity()));
+
+        return commentResponseMapper.toResponseList(comments, userMap);
     }
 
     public void createComment(String postId, String authorId, CreateCommentRequest request) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.POST_NOT_FOUND));
+        postValidator.validateExists(postId);
 
         String now = Instant.now().toString();
         Comment comment = Comment.builder()
                 .commentId(UUID.randomUUID().toString())
                 .postId(postId)
                 .authorId(authorId)
-                .content(request.getContent())
+                .content(request.content())
                 .createdAt(now)
                 .updatedAt(now)
                 .build();
@@ -71,7 +80,7 @@ public class CommentService {
             throw new ServiceException(ErrorCode.UNAUTHORIZED);
         }
 
-        comment.updateContent(request.getContent(), Instant.now().toString());
+        comment.updateContent(request.content(), Instant.now().toString());
         commentRepository.save(comment);
     }
 
@@ -87,24 +96,12 @@ public class CommentService {
         updatePostCommentCount(postId);
     }
 
-    private CommentResponse toResponse(Comment comment) {
-        User author = userRepository.findById(comment.getAuthorId())
-                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
-
-        CommentAuthorResponse authorResponse = new CommentAuthorResponse(
-                author.getId(),
-                author.getNickname(),
-                author.getProfileImageUrl()
-        );
-
-        return CommentResponse.of(comment, authorResponse);
-    }
-
     private void updatePostCommentCount(String postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.POST_NOT_FOUND));
         int commentCount = commentRepository.countByPostId(postId);
-        post.updateCommentCount(commentCount);
-        postRepository.save(post);
+        postRepository.findById(postId)
+                .ifPresent(post -> {
+                    post.updateCommentCount(commentCount);
+                    postRepository.save(post);
+                });
     }
 }

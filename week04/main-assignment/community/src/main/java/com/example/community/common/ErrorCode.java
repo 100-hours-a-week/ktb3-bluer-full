@@ -5,8 +5,8 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public enum ErrorCode {
-    DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "duplicate_email"),
-    DUPLICATE_NICKNAME(HttpStatus.BAD_REQUEST, "duplicate_nickname"),
+    DUPLICATED_EMAIL(HttpStatus.BAD_REQUEST, "duplicated_email"),
+    DUPLICATED_NICKNAME(HttpStatus.BAD_REQUEST, "duplicated_nickname"),
     INVALID_REQUEST(HttpStatus.BAD_REQUEST, "invalid_request"),
     LOGIN_FAILED(HttpStatus.BAD_REQUEST, "login_failed"),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "internal_server_error"),

@@ -3,15 +3,14 @@ package com.example.community.controller;
 import com.example.community.common.ApiResponse;
 import com.example.community.common.ErrorCode;
 import com.example.community.common.SuccessCode;
-import com.example.community.common.exception.ServiceException;
 import com.example.community.common.auth.AuthRequired;
+import com.example.community.common.exception.ServiceException;
+import com.example.community.docs.UserApiDoc;
 import com.example.community.domain.User;
-import com.example.community.dto.SignInRequest;
-import com.example.community.dto.SignUpRequest;
-import com.example.community.dto.UpdatePasswordRequest;
-import com.example.community.dto.UpdateProfileRequest;
-import com.example.community.dto.UserProfileResponse;
+import com.example.community.domain.validator.UserValidator;
+import com.example.community.dto.*;
 import com.example.community.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,11 +22,14 @@ import java.util.Map;
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
+    private final UserValidator userValidator;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserValidator userValidator) {
         this.userService = userService;
+        this.userValidator = userValidator;
     }
 
+    @UserApiDoc.SignUp
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<Void>> signup(@Valid @RequestBody SignUpRequest requestData) {
         userService.signup(
@@ -41,6 +43,7 @@ public class UserController {
         );
     }
 
+    @UserApiDoc.SignIn
     @PostMapping("/signin")
     public ResponseEntity<ApiResponse<Map<String, String>>> signin(@Valid @RequestBody SignInRequest requestData) {
         String token = userService.signIn(requestData);
@@ -51,8 +54,9 @@ public class UserController {
         );
     }
 
+    @UserApiDoc.CheckDuplicated
     @GetMapping("/check")
-    public ResponseEntity<ApiResponse<Map<String, Boolean>>> checkDuplicate(
+    public ResponseEntity<ApiResponse<Map<String, Boolean>>> checkDuplicated(
             @RequestParam(required = false) String email,
             @RequestParam(required = false) String nickname
     ) {
@@ -65,8 +69,8 @@ public class UserController {
 
         // Email
         if (email != null) {
-            isExisted = userService.isExistedEmail(email);
-            message = isExisted ? ErrorCode.DUPLICATE_EMAIL.getMessage() : SuccessCode.EMAIL_AVAILABLE.getMessage();
+            isExisted = userValidator.isExistedEmail(email);
+            message = isExisted ? ErrorCode.DUPLICATED_EMAIL.getMessage() : SuccessCode.EMAIL_AVAILABLE.getMessage();
 
             return ResponseEntity.ok(
                     ApiResponse.success(message, Map.of("available", !isExisted))
@@ -74,8 +78,8 @@ public class UserController {
         }
 
         // Nickname
-        isExisted = userService.isExistedNickname(nickname);
-        message = isExisted ? ErrorCode.DUPLICATE_NICKNAME.getMessage() : SuccessCode.NICKNAME_AVAILABLE.getMessage();
+        isExisted = userValidator.isExistedNickname(nickname);
+        message = isExisted ? ErrorCode.DUPLICATED_NICKNAME.getMessage() : SuccessCode.NICKNAME_AVAILABLE.getMessage();
 
         return ResponseEntity.ok(
                 ApiResponse.success(message, Map.of("available", !isExisted))
@@ -83,6 +87,8 @@ public class UserController {
     }
 
     @AuthRequired
+    @UserApiDoc.GetProfile
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/profile")
     public ResponseEntity<ApiResponse<UserProfileResponse>> getProfile(
             @RequestAttribute("authUser") User authUser
@@ -95,7 +101,9 @@ public class UserController {
         );
     }
 
+    @UserApiDoc.UpdateProfile
     @AuthRequired
+    @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/profile")
     public ResponseEntity<ApiResponse<UserProfileResponse>> updateProfile(
             @RequestAttribute("authUser") User authUser,
@@ -111,7 +119,9 @@ public class UserController {
         );
     }
 
+    @UserApiDoc.UpdatePassword
     @AuthRequired
+    @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/password")
     public ResponseEntity<ApiResponse<Void>> updatePassword(
             @RequestAttribute("authUser") User authUser,
@@ -124,7 +134,9 @@ public class UserController {
         );
     }
 
+    @UserApiDoc.DeleteProfile
     @AuthRequired
+    @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/profile")
     public ResponseEntity<ApiResponse<Void>> deleteProfile(
             @RequestAttribute("authUser") User authUser
