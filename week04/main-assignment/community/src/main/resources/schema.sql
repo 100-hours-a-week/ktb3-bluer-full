@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `post`
     CONSTRAINT `pk_post` PRIMARY KEY (`post_id`)
 );
 
-CREATE TABLE IF NOT EXISTS `user`
+CREATE TABLE IF NOT EXISTS `users`
 (
     `user_id`           VARCHAR(50)  NOT NULL,
     `email`             VARCHAR(100) NOT NULL,
