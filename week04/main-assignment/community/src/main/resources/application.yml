@@ -1,15 +1,25 @@
-spring.application.name=community
-spring.datasource.url=jdbc:h2:file:${H2_DB_PATH:~/test}
-spring.datasource.driver-class-name=org.h2.Driver
-spring.datasource.username=sa
+spring:
+  application:
+    name: community
+  datasource:
+    url: jdbc:h2:file:${H2_DB_PATH}/test
+    driver-class-name: org.h2.Driver
+    username: sa
 
-spring.h2.console.enabled=true
-spring.h2.console.path=/h2-console
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
 
-spring.sql.init.mode=always
+  sql:
+    init.mode: always
 
-spring.jpa.show-sql=true
-spring.jpa.hibernate.ddl-auto=none
+  jpa:
+    show-sql: true
+    hibernate.ddl-auto: none
 
-logging.level.org.springframework.jdbc.core.JdbcTemplate=DEBUG
-logging.level.org.springframework.jdbc.core.StatementCreatorUtils=TRACE
+logging:
+  level:
+    org.springframework.jdbc.core.JdbcTemplate: DEBUG
+    org.springframework.jdbc.core.StatementCreatorUtils: TRACE
+
