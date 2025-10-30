@@ -1,8 +1,8 @@
 package com.example.community.repository;
 
 import com.example.community.domain.User;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.community.entity.UserEntity;
+import com.example.community.mapper.UserMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -10,56 +10,43 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
-public class UserRepository extends JsonFileRepository<User> {
-    private static final String FILE_PATH = "data/users.json";
+public class UserRepository {
 
-    public UserRepository() {
-        super(
-                FILE_PATH,
-                new ObjectMapper(),
-                new TypeReference<List<User>>() {
-                },
-                "사용자 데이터 읽기 실패",
-                "사용자 데이터 저장 실패"
-        );
+    private final UserJpaRepository userJpaRepository;
+    private final UserMapper userMapper;
+
+    public UserRepository(UserJpaRepository userJpaRepository, UserMapper userMapper) {
+        this.userJpaRepository = userJpaRepository;
+        this.userMapper = userMapper;
     }
 
     public User save(User user) {
-        List<User> users = readAll();
+        UserEntity entity = userJpaRepository.findById(user.getId())
+                .map(existing -> userMapper.updateExisting(existing, user))
+                .orElseGet(() -> userMapper.createNew(user));
 
-        users = users.stream()
-                .filter(u -> !u.getId().equals(user.getId()))
-                .collect(Collectors.toList());
-        users.add(user);
-        writeAll(users);
-
-        return user;
+        UserEntity saved = userJpaRepository.save(entity);
+        return userMapper.toDomain(saved);
     }
 
     public Optional<User> findById(String id) {
-        return readAll().stream()
-                .filter(u -> !u.isDeleted())
-                .filter(u -> u.getId().equals(id))
-                .findFirst();
+        return userJpaRepository.findByIdAndDeletedFalse(id)
+                .map(userMapper::toDomain);
     }
 
     public Optional<User> findByEmail(String email) {
-        return readAll().stream()
-                .filter(u -> !u.isDeleted())
-                .filter(u -> u.getEmail().equals(email))
-                .findFirst();
+        return userJpaRepository.findByEmailAndDeletedFalse(email)
+                .map(userMapper::toDomain);
     }
 
     public Optional<User> findByNickname(String nickname) {
-        return readAll().stream()
-                .filter(u -> !u.isDeleted())
-                .filter(u -> u.getNickname().equals(nickname))
-                .findFirst();
+        return userJpaRepository.findByNicknameAndDeletedFalse(nickname)
+                .map(userMapper::toDomain);
     }
 
     public List<User> findAll() {
-        return readAll().stream()
-                .filter(u -> !u.isDeleted())
+        return userJpaRepository.findByDeletedFalse().stream()
+                .map(userMapper::toDomain)
                 .collect(Collectors.toList());
     }
 }
