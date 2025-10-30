@@ -2,10 +2,7 @@ package com.example.community.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -16,31 +13,29 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Comment")
+@Table(name = "comment")
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class CommentEntity {
 
     @Id
-    @Column(name = "댓글 ID", length = 50, nullable = false)
-    private String id;
+    @Column(name = "comment_id", length = 50, nullable = false)
+    private String commentId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "댓글 작성자 ID", nullable = false)
-    private UserEntity author;
+    @Column(name = "author_id", length = 50, nullable = false)
+    private String authorId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "댓글이 작성된 포스트 ID", nullable = false)
-    private PostEntity post;
+    @Column(name = "post_id", length = 50, nullable = false)
+    private String postId;
 
-    @Column(name = "댓글 내용", columnDefinition = "TEXT", nullable = false)
+    @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @Column(name = "댓글 생성일시", nullable = false)
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "댓글 수정일시")
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 }

@@ -2,11 +2,7 @@ package com.example.community.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -15,51 +11,43 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
-@Table(name = "Post")
+@Table(name = "post")
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class PostEntity {
 
     @Id
-    @Column(name = "포스트 ID", length = 50, nullable = false)
-    private String id;
+    @Column(name = "post_id", length = 50, nullable = false)
+    private String postId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "포스트 작성자 유저 ID", nullable = false)
-    private UserEntity author;
+    @Column(name = "author_id", length = 50, nullable = false)
+    private String authorId;
 
-    @Column(name = "포스트 제목", length = 255, nullable = false)
+    @Column(name = "title", length = 255, nullable = false)
     private String title;
 
-    @Column(name = "포스트 본문", columnDefinition = "TEXT", nullable = false)
+    @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @Column(name = "포스트 좋아요 수", nullable = false)
-    private Integer likeCount;
+    @Builder.Default
+    @Column(name = "like_count", nullable = false)
+    private Integer likeCount = 0;
 
-    @Column(name = "포스트 댓글 수", nullable = false)
-    private Integer commentCount;
+    @Builder.Default
+    @Column(name = "comment", nullable = false)
+    private Integer commentCount = 0;
 
-    @Column(name = "포스트 조회수", nullable = false)
-    private Integer viewCount;
+    @Builder.Default
+    @Column(name = "view_count", nullable = false)
+    private Integer viewCount = 0;
 
-    @Column(name = "포스트 생성일시", nullable = false)
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "포스트 수정 일시")
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-    @Builder.Default
-    @OneToMany(mappedBy = "post")
-    private List<CommentEntity> comments = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "post")
-    private List<PostLikeEntity> postLikes = new ArrayList<>();
 }

@@ -2,10 +2,7 @@ package com.example.community.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -16,31 +13,30 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "PostLike")
+@Table(name = "post_like")
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class PostLikeEntity {
 
     @Id
-    @Column(name = "좋아요 ID", length = 50, nullable = false)
-    private String id;
+    @Column(name = "like_id", length = 50, nullable = false)
+    private String likeId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "좋아요한 포스트 ID", nullable = false)
-    private PostEntity post;
+    @Column(name = "post_id", length = 50, nullable = false)
+    private String postId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "좋아요 한 유저ID", nullable = false)
-    private UserEntity user;
+    @Column(name = "user_id", length = 50, nullable = false)
+    private String userId;
 
-    @Column(name = "좋아요 여부")
-    private Boolean liked;
+    @Builder.Default
+    @Column(name = "is_active")
+    private Boolean active = true;
 
-    @Column(name = "좋아요 생성일시", nullable = false)
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "좋아요 업데이트 일시")
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 }
