@@ -1,4 +1,4 @@
-package com.example.community.dto.mapper;
+package com.example.community.mapper;
 
 import com.example.community.common.ErrorCode;
 import com.example.community.common.exception.ServiceException;
