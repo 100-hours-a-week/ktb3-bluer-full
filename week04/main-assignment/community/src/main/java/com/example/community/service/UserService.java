@@ -2,6 +2,7 @@ package com.example.community.service;
 
 import com.example.community.common.ErrorCode;
 import com.example.community.common.exception.ServiceException;
+import com.example.community.common.util.DateTimeUtils;
 import com.example.community.domain.User;
 import com.example.community.domain.validator.UserValidator;
 import com.example.community.dto.request.SignInRequest;
@@ -38,6 +39,7 @@ public class UserService {
                 .password(request.password())
                 .nickname(request.nickname())
                 .profileImageUrl(request.profileImageUrl())
+                .createdAt(DateTimeUtils.currentUtc())
                 .build();
 
         userRepository.save(user);
