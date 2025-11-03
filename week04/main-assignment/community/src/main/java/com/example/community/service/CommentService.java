@@ -13,6 +13,7 @@ import com.example.community.repository.CommentRepository;
 import com.example.community.repository.PostRepository;
 import com.example.community.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
@@ -55,6 +56,7 @@ public class CommentService {
         return commentResponseMapper.toResponseList(comments, userMap);
     }
 
+    @Transactional
     public void createComment(String postId, String authorId, CreateCommentRequest request) {
         postValidator.validateExists(postId);
 
@@ -72,6 +74,7 @@ public class CommentService {
         updatePostCommentCount(postId);
     }
 
+    @Transactional
     public void updateComment(String postId, String commentId, String authorId, UpdateCommentRequest request) {
         Comment comment = commentRepository.findByIds(postId, commentId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.COMMENT_NOT_FOUND));
@@ -84,6 +87,7 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
+    @Transactional
     public void deleteComment(String postId, String commentId, String authorId) {
         Comment comment = commentRepository.findByIds(postId, commentId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.COMMENT_NOT_FOUND));
