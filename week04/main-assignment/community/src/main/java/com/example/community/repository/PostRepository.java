@@ -3,11 +3,11 @@ package com.example.community.repository;
 import com.example.community.domain.Post;
 import com.example.community.entity.PostEntity;
 import com.example.community.mapper.PostMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 public class PostRepository {
@@ -20,11 +20,9 @@ public class PostRepository {
         this.postMapper = postMapper;
     }
 
-    public List<Post> findAll() {
-        return postJpaRepository.findAllByOrderByCreatedAtDesc()
-                .stream()
-                .map(postMapper::mapToDomain)
-                .collect(Collectors.toList());
+    public Page<Post> findAll(Pageable pageable) {
+        return postJpaRepository.findAllByOrderByCreatedAtDesc(pageable)
+                .map(postMapper::mapToDomain);
     }
 
     public Optional<Post> findById(String postId) {
