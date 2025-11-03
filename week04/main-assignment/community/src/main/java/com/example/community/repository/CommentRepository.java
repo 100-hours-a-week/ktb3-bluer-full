@@ -1,119 +1,51 @@
 package com.example.community.repository;
 
 import com.example.community.domain.Comment;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.community.entity.CommentEntity;
+import com.example.community.mapper.CommentMapper;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
-public class CommentRepository extends JsonFileRepository<CommentRepository.PostCommentsData> {
+public class CommentRepository {
 
-    private static final String FILE_PATH = "data/comments.json";
+    private final CommentJpaRepository commentJpaRepository;
+    private final CommentMapper commentMapper;
 
-    public CommentRepository() {
-        super(
-                FILE_PATH,
-                new ObjectMapper(),
-                new TypeReference<List<PostCommentsData>>() {
-                },
-                "댓글 데이터 읽기 실패",
-                "댓글 데이터 저장 실패"
-        );
+    public CommentRepository(CommentJpaRepository commentJpaRepository, CommentMapper commentMapper) {
+        this.commentJpaRepository = commentJpaRepository;
+        this.commentMapper = commentMapper;
     }
 
     public List<Comment> findByPostId(String postId) {
-        return readAll().stream()
-                .filter(postComments -> postComments.postId.equals(postId))
-                .findFirst()
-                .map(postComments -> postComments.comments.stream()
-                        .map(commentData -> toDomain(postId, commentData))
-                        .collect(Collectors.toList()))
-                .orElse(Collections.emptyList());
+        return commentJpaRepository.findByPostIdOrderByCreatedAtAsc(postId).stream()
+                .map(commentMapper::mapToDomain)
+                .toList();
     }
 
     public Optional<Comment> findByIds(String postId, String commentId) {
-        return readAll().stream()
-                .filter(postComments -> postComments.postId.equals(postId))
-                .findFirst()
-                .flatMap(postComments -> postComments.comments.stream()
-                        .filter(commentData -> commentData.commentId.equals(commentId))
-                        .findFirst()
-                        .map(commentData -> toDomain(postId, commentData)));
+        return commentJpaRepository.findByCommentIdAndPostId(commentId, postId)
+                .map(commentMapper::mapToDomain);
     }
 
     public Comment save(Comment comment) {
-        List<PostCommentsData> all = readAll();
-        PostCommentsData postComments = all.stream()
-                .filter(data -> data.postId.equals(comment.getPostId()))
-                .findFirst()
-                .orElseGet(() -> {
-                    PostCommentsData data = new PostCommentsData();
-                    data.postId = comment.getPostId();
-                    all.add(data);
-                    return data;
-                });
+        CommentEntity entity = commentJpaRepository.findById(comment.getCommentId())
+                .map(existing -> commentMapper.mapToEntity(comment, existing))
+                .orElseGet(() -> commentMapper.mapToEntity(comment, null));
 
-        postComments.comments.removeIf(existing -> existing.commentId.equals(comment.getCommentId()));
-        postComments.comments.add(toData(comment));
-        writeAll(all);
-        return comment;
+        CommentEntity saved = commentJpaRepository.save(entity);
+        return commentMapper.mapToDomain(saved);
     }
 
     public void delete(String postId, String commentId) {
-        List<PostCommentsData> all = readAll();
-        Iterator<PostCommentsData> iterator = all.iterator();
-        while (iterator.hasNext()) {
-            PostCommentsData data = iterator.next();
-            if (!data.postId.equals(postId)) {
-                continue;
-            }
-            data.comments.removeIf(comment -> comment.commentId.equals(commentId));
-            if (data.comments.isEmpty()) {
-                iterator.remove();
-            }
-            break;
-        }
-        writeAll(all);
+        commentJpaRepository.findByCommentIdAndPostId(commentId, postId)
+                .ifPresent(commentJpaRepository::delete);
     }
 
     public int countByPostId(String postId) {
-        return findByPostId(postId).size();
-    }
-
-    private Comment toDomain(String postId, CommentData commentData) {
-        return Comment.builder()
-                .commentId(commentData.commentId)
-                .postId(postId)
-                .authorId(commentData.authorId)
-                .content(commentData.content)
-                .createdAt(commentData.createdAt)
-                .updatedAt(commentData.updatedAt)
-                .build();
-    }
-
-    private CommentData toData(Comment comment) {
-        CommentData data = new CommentData();
-        data.commentId = comment.getCommentId();
-        data.authorId = comment.getAuthorId();
-        data.content = comment.getContent();
-        data.createdAt = comment.getCreatedAt();
-        data.updatedAt = comment.getUpdatedAt();
-        return data;
-    }
-
-    public static class PostCommentsData {
-        public String postId;
-        public List<CommentData> comments = new ArrayList<>();
-    }
-
-    private static class CommentData {
-        public String commentId;
-        public String authorId;
-        public String content;
-        public String createdAt;
-        public String updatedAt;
+        return Math.toIntExact(commentJpaRepository.countByPostId(postId));
     }
 }
+
