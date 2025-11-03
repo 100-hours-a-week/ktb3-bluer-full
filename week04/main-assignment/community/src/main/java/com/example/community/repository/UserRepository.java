@@ -5,6 +5,7 @@ import com.example.community.entity.UserEntity;
 import com.example.community.mapper.UserMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,6 +47,15 @@ public class UserRepository {
 
     public List<User> findAll() {
         return userJpaRepository.findByDeletedFalse().stream()
+                .map(userMapper::mapToDomain)
+                .collect(Collectors.toList());
+    }
+
+    public List<User> findAllByIds(Collection<String> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return List.of();
+        }
+        return userJpaRepository.findByIdInAndDeletedFalse(ids).stream()
                 .map(userMapper::mapToDomain)
                 .collect(Collectors.toList());
     }

@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -50,7 +51,11 @@ public class CommentService {
 
         List<Comment> comments = commentRepository.findByPostId(postId);
 
-        Map<String, User> userMap = userRepository.findAll().stream()
+        Set<String> authorIds = comments.stream()
+                .map(Comment::getAuthorId)
+                .collect(Collectors.toSet());
+
+        Map<String, User> userMap = userRepository.findAllByIds(authorIds).stream()
                 .collect(Collectors.toMap(User::getId, Function.identity()));
 
         return commentResponseMapper.toResponseList(comments, userMap);
