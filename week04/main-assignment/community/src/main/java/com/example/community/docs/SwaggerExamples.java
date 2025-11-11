@@ -170,6 +170,8 @@ public final class SwaggerExamples {
                 "postId": "post-123",
                 "title": "첫 번째 게시글",
                 "authorId": "user-123",
+                "authorName": "홍길동",
+                "authorProfileImageUrl": "https://cdn.example.com/profile.jpg",
                 "content": "게시글 내용입니다.",
                 "likeCount": 12,
                 "commentCount": 3,

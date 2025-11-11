@@ -3,10 +3,10 @@ package com.example.community.controller;
 import com.example.community.common.ApiResponse;
 import com.example.community.common.auth.AuthRequired;
 import com.example.community.docs.PostApiDoc;
-import com.example.community.domain.Post;
 import com.example.community.domain.User;
 import com.example.community.dto.request.CreatePostRequest;
 import com.example.community.dto.request.UpdatePostRequest;
+import com.example.community.dto.response.PostDetailResponse;
 import com.example.community.dto.response.PostListResponse;
 import com.example.community.service.PostService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -34,9 +34,9 @@ public class PostController {
 
     @PostApiDoc.GetPost
     @GetMapping("/{postId}")
-    public ResponseEntity<ApiResponse<Post>> getPost(@PathVariable String postId) {
-        Post post = postService.getPostById(postId);
-        return ResponseEntity.ok(ApiResponse.success("fetch_success", post));
+    public ResponseEntity<ApiResponse<PostDetailResponse>> getPost(@PathVariable String postId) {
+        PostDetailResponse response = postService.getPostById(postId);
+        return ResponseEntity.ok(ApiResponse.success("fetch_success", response));
     }
 
     @AuthRequired

@@ -3,8 +3,11 @@ package com.example.community.service;
 import com.example.community.common.ErrorCode;
 import com.example.community.common.exception.ServiceException;
 import com.example.community.domain.Post;
+import com.example.community.domain.User;
+import com.example.community.dto.response.PostDetailResponse;
 import com.example.community.dto.response.PostListResponse;
 import com.example.community.repository.PostRepository;
+import com.example.community.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -15,9 +18,11 @@ import java.util.UUID;
 @Service
 public class PostService {
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepository postRepository, UserRepository userRepository) {
         this.postRepository = postRepository;
+        this.userRepository = userRepository;
     }
 
     public PostListResponse getPosts(int cursor, int size) {
@@ -34,11 +39,16 @@ public class PostService {
         return new PostListResponse(page.getContent(), nextCursor, hasNext);
     }
 
-    public Post getPostById(String postId) {
+    public PostDetailResponse getPostById(String postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.POST_NOT_FOUND));
         post.increaseViewCount();
-        return postRepository.save(post);
+        Post savedPost = postRepository.save(post);
+
+        User author = userRepository.findById(savedPost.getAuthorId())
+                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+
+        return PostDetailResponse.of(savedPost, author);
     }
 
     public Post createPost(String authorId, String title, String content) {
