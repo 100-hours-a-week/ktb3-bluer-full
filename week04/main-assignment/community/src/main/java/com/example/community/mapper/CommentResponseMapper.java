@@ -1,11 +1,11 @@
-package com.example.community.dto.mapper;
+package com.example.community.mapper;
 
 import com.example.community.common.ErrorCode;
 import com.example.community.common.exception.ServiceException;
 import com.example.community.domain.Comment;
 import com.example.community.domain.User;
-import com.example.community.dto.CommentAuthorResponse;
-import com.example.community.dto.CommentResponse;
+import com.example.community.dto.response.CommentAuthorResponse;
+import com.example.community.dto.response.CommentResponse;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

@@ -1,55 +1,45 @@
 package com.example.community.repository;
 
 import com.example.community.domain.Post;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.community.entity.PostEntity;
+import com.example.community.mapper.PostMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
-public class PostRepository extends JsonFileRepository<Post> {
-    private static final String FILE_PATH = "data/posts.json";
+public class PostRepository {
 
-    public PostRepository() {
-        super(
-                FILE_PATH,
-                new ObjectMapper(),
-                new TypeReference<List<Post>>() {
-                },
-                "게시글 데이터 읽기 실패",
-                "게시글 데이터 저장 실패"
-        );
+    private final PostJpaRepository postJpaRepository;
+    private final PostMapper postMapper;
+
+    public PostRepository(PostJpaRepository postJpaRepository, PostMapper postMapper) {
+        this.postJpaRepository = postJpaRepository;
+        this.postMapper = postMapper;
     }
 
-    public List<Post> findAll() {
-        return readAll().stream()
-                .sorted(Comparator.comparing(Post::getCreatedAt).reversed())
-                .collect(Collectors.toList());
+    public Page<Post> findAll(Pageable pageable) {
+        return postJpaRepository.findAllByOrderByCreatedAtDesc(pageable)
+                .map(postMapper::mapToDomain);
     }
 
     public Optional<Post> findById(String postId) {
-        return readAll().stream()
-                .filter(p -> p.getPostId().equals(postId))
-                .findFirst();
+        return postJpaRepository.findById(postId)
+                .map(postMapper::mapToDomain);
     }
 
     public Post save(Post post) {
-        List<Post> posts = readAll();
-        posts = posts.stream()
-                .filter(p -> !p.getPostId().equals(post.getPostId()))
-                .collect(Collectors.toList());
-        posts.add(post);
-        writeAll(posts);
-        return post;
+        PostEntity entity = postJpaRepository.findById(post.getPostId())
+                .map(existing -> postMapper.mapToEntity(post, existing))
+                .orElseGet(() -> postMapper.mapToEntity(post, null));
+
+        PostEntity saved = postJpaRepository.save(entity);
+        return postMapper.mapToDomain(saved);
     }
 
     public void delete(String postId) {
-        List<Post> posts = readAll();
-        posts.removeIf(p -> p.getPostId().equals(postId));
-        writeAll(posts);
+        postJpaRepository.deleteById(postId);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.community.dto;
+package com.example.community.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

@@ -4,21 +4,23 @@ import com.example.community.common.ErrorCode;
 import com.example.community.common.exception.ServiceException;
 import com.example.community.domain.Comment;
 import com.example.community.domain.User;
-import com.example.community.dto.CommentResponse;
-import com.example.community.dto.CreateCommentRequest;
-import com.example.community.dto.UpdateCommentRequest;
-import com.example.community.dto.mapper.CommentResponseMapper;
 import com.example.community.domain.validator.PostValidator;
+import com.example.community.dto.request.CreateCommentRequest;
+import com.example.community.dto.request.UpdateCommentRequest;
+import com.example.community.dto.response.CommentResponse;
+import com.example.community.mapper.CommentResponseMapper;
 import com.example.community.repository.CommentRepository;
 import com.example.community.repository.PostRepository;
 import com.example.community.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.function.Function;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,12 +51,17 @@ public class CommentService {
 
         List<Comment> comments = commentRepository.findByPostId(postId);
 
-        Map<String, User> userMap = userRepository.findAll().stream()
+        Set<String> authorIds = comments.stream()
+                .map(Comment::getAuthorId)
+                .collect(Collectors.toSet());
+
+        Map<String, User> userMap = userRepository.findAllByIds(authorIds).stream()
                 .collect(Collectors.toMap(User::getId, Function.identity()));
 
         return commentResponseMapper.toResponseList(comments, userMap);
     }
 
+    @Transactional
     public void createComment(String postId, String authorId, CreateCommentRequest request) {
         postValidator.validateExists(postId);
 
@@ -72,6 +79,7 @@ public class CommentService {
         updatePostCommentCount(postId);
     }
 
+    @Transactional
     public void updateComment(String postId, String commentId, String authorId, UpdateCommentRequest request) {
         Comment comment = commentRepository.findByIds(postId, commentId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.COMMENT_NOT_FOUND));
@@ -84,6 +92,7 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
+    @Transactional
     public void deleteComment(String postId, String commentId, String authorId) {
         Comment comment = commentRepository.findByIds(postId, commentId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.COMMENT_NOT_FOUND));

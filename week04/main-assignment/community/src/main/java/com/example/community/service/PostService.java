@@ -3,13 +3,13 @@ package com.example.community.service;
 import com.example.community.common.ErrorCode;
 import com.example.community.common.exception.ServiceException;
 import com.example.community.domain.Post;
-import com.example.community.dto.PostListResponse;
+import com.example.community.dto.response.PostListResponse;
 import com.example.community.repository.PostRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -25,15 +25,13 @@ public class PostService {
             throw new ServiceException(ErrorCode.INVALID_REQUEST);
         }
 
-        List<Post> posts = postRepository.findAll();
-        int fromIndex = Math.min(cursor, posts.size());
-        int toIndex = Math.min(fromIndex + size, posts.size());
+        PageRequest pageable = PageRequest.of(cursor, size);
+        Page<Post> page = postRepository.findAll(pageable);
 
-        List<Post> page = new ArrayList<>(posts.subList(fromIndex, toIndex));
-        boolean hasNext = toIndex < posts.size();
-        Integer nextCursor = hasNext ? toIndex : null;
+        boolean hasNext = page.hasNext();
+        Integer nextCursor = hasNext ? page.getNumber() + 1 : null;
 
-        return new PostListResponse(page, nextCursor, hasNext);
+        return new PostListResponse(page.getContent(), nextCursor, hasNext);
     }
 
     public Post getPostById(String postId) {

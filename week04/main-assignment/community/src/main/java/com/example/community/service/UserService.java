@@ -2,12 +2,13 @@ package com.example.community.service;
 
 import com.example.community.common.ErrorCode;
 import com.example.community.common.exception.ServiceException;
+import com.example.community.common.util.DateTimeUtils;
 import com.example.community.domain.User;
 import com.example.community.domain.validator.UserValidator;
-import com.example.community.dto.SignInRequest;
-import com.example.community.dto.SignUpRequest;
-import com.example.community.dto.UpdatePasswordRequest;
-import com.example.community.dto.UpdateProfileRequest;
+import com.example.community.dto.request.SignInRequest;
+import com.example.community.dto.request.SignUpRequest;
+import com.example.community.dto.request.UpdatePasswordRequest;
+import com.example.community.dto.request.UpdateProfileRequest;
 import com.example.community.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +39,7 @@ public class UserService {
                 .password(request.password())
                 .nickname(request.nickname())
                 .profileImageUrl(request.profileImageUrl())
+                .createdAt(DateTimeUtils.currentUtc())
                 .build();
 
         userRepository.save(user);

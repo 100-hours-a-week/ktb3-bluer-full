@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -16,6 +18,7 @@ public class User {
     private String nickname;
     private String profileImageUrl;
     private boolean deleted;
+    private LocalDateTime createdAt;
 
     public void markAsDeleted() {
         this.deleted = true;
