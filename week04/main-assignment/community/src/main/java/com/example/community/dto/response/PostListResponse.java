@@ -1,11 +1,9 @@
 package com.example.community.dto.response;
 
-import com.example.community.domain.Post;
-
 import java.util.List;
 
 public record PostListResponse(
-        List<Post> posts,
+        List<PostSummaryResponse> posts,
         Integer nextCursor,
         boolean hasNext
 ) {
