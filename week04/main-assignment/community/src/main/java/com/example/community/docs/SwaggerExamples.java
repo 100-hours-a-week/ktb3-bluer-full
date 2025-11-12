@@ -179,7 +179,8 @@ public final class SwaggerExamples {
                 "likeCount": 12,
                 "commentCount": 3,
                 "viewCount": 58,
-                "createdAt": "2025-02-18T12:35:10Z"
+                "createdAt": "2025-02-18T12:35:10Z",
+                "likedByMe": true
               }
             }
             """;
@@ -187,6 +188,27 @@ public final class SwaggerExamples {
     public static final String POST_NOT_FOUND_RESPONSE = """
             {
               "message": "post_not_found",
+              "data": null
+            }
+            """;
+
+    public static final String POST_ALREADY_LIKED_RESPONSE = """
+            {
+              "message": "post_already_liked",
+              "data": null
+            }
+            """;
+
+    public static final String POST_NOT_LIKED_RESPONSE = """
+            {
+              "message": "post_not_liked",
+              "data": null
+            }
+            """;
+
+    public static final String POST_UNLIKE_RESPONSE_SUCCESS = """
+            {
+              "message": "unlike_success",
               "data": null
             }
             """;
@@ -222,6 +244,13 @@ public final class SwaggerExamples {
     public static final String DELETE_POST_RESPONSE_SUCCESS = """
             {
               "message": "delete_success",
+              "data": null
+            }
+            """;
+
+    public static final String POST_LIKE_RESPONSE_SUCCESS = """
+            {
+              "message": "like_success",
               "data": null
             }
             """;

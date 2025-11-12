@@ -33,12 +33,14 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         AuthRequired authRequired = handlerMethod.getMethodAnnotation(AuthRequired.class);
+        String header = request.getHeader("Authorization");
+
         // NOTE: Swagger 포함 인증 필요 없는 요청은 통과
         if (authRequired == null) {
+            attachUserIfPresent(header, request);
             return true;
         }
 
-        String header = request.getHeader("Authorization");
         if (header == null || !header.startsWith("Bearer ")) {
             writeErrorResponse(response, ErrorCode.UNAUTHORIZED);
             return false;
@@ -50,6 +52,15 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         request.setAttribute("authUser", user);
         return true;
+    }
+
+    private void attachUserIfPresent(String header, HttpServletRequest request) {
+        if (header == null || !header.startsWith("Bearer ")) {
+            return;
+        }
+        String token = header.replace("Bearer ", "").trim();
+        tokenService.findByToken(token)
+                .ifPresent(user -> request.setAttribute("authUser", user));
     }
 
     private void writeErrorResponse(HttpServletResponse response, ErrorCode errorCode) throws IOException {

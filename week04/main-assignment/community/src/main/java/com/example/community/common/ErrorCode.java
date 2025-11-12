@@ -14,7 +14,9 @@ public enum ErrorCode {
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "unauthorized"),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "invalid_token"),
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "post_not_found"),
-    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "comment_not_found");
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "comment_not_found"),
+    POST_ALREADY_LIKED(HttpStatus.BAD_REQUEST, "post_already_liked"),
+    POST_NOT_LIKED(HttpStatus.BAD_REQUEST, "post_not_liked");
 
 
     private final HttpStatus status;

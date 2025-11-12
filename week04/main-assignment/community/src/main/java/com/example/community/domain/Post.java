@@ -23,6 +23,16 @@ public class Post {
         this.viewCount++;
     }
 
+    public void increaseLikeCount() {
+        this.likeCount++;
+    }
+
+    public void decreaseLikeCount() {
+        if (this.likeCount > 0) {
+            this.likeCount--;
+        }
+    }
+
     public void update(String title, String content) {
         if (title != null && !title.isBlank()) {
             this.title = title;

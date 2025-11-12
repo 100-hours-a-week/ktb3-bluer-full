@@ -7,11 +7,14 @@ import com.example.community.domain.User;
 import com.example.community.dto.response.PostDetailResponse;
 import com.example.community.dto.response.PostListResponse;
 import com.example.community.dto.response.PostSummaryResponse;
+import com.example.community.entity.PostLikeEntity;
+import com.example.community.repository.PostLikeRepository;
 import com.example.community.repository.PostRepository;
 import com.example.community.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
@@ -25,10 +28,12 @@ import java.util.stream.Collectors;
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final PostLikeRepository postLikeRepository;
 
-    public PostService(PostRepository postRepository, UserRepository userRepository) {
+    public PostService(PostRepository postRepository, UserRepository userRepository, PostLikeRepository postLikeRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.postLikeRepository = postLikeRepository;
     }
 
     public PostListResponse getPosts(int cursor, int size) {
@@ -63,7 +68,7 @@ public class PostService {
         return new PostListResponse(postResponses, nextCursor, hasNext);
     }
 
-    public PostDetailResponse getPostById(String postId) {
+    public PostDetailResponse getPostById(String postId, String viewerId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.POST_NOT_FOUND));
         post.increaseViewCount();
@@ -72,7 +77,9 @@ public class PostService {
         User author = userRepository.findById(savedPost.getAuthorId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
-        return PostDetailResponse.of(savedPost, author);
+        boolean likedByViewer = viewerId != null && postLikeRepository.existsByPostIdAndUserId(postId, viewerId);
+
+        return PostDetailResponse.of(savedPost, author, likedByViewer);
     }
 
     public Post createPost(String authorId, String title, String content) {
@@ -111,5 +118,33 @@ public class PostService {
         }
 
         postRepository.delete(postId);
+    }
+
+    @Transactional
+    public void likePost(String postId, String userId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ServiceException(ErrorCode.POST_NOT_FOUND));
+
+        boolean alreadyLiked = postLikeRepository.existsByPostIdAndUserId(postId, userId);
+        if (alreadyLiked) {
+            throw new ServiceException(ErrorCode.POST_ALREADY_LIKED);
+        }
+
+        post.increaseLikeCount();
+        postRepository.save(post);
+        postLikeRepository.save(postId, userId);
+    }
+
+    @Transactional
+    public void unlikePost(String postId, String userId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ServiceException(ErrorCode.POST_NOT_FOUND));
+
+        PostLikeEntity likeEntity = postLikeRepository.findActiveByPostIdAndUserId(postId, userId)
+                .orElseThrow(() -> new ServiceException(ErrorCode.POST_NOT_LIKED));
+
+        post.decreaseLikeCount();
+        postRepository.save(post);
+        postLikeRepository.deactivate(likeEntity);
     }
 }

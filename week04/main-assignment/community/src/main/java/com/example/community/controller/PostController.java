@@ -34,9 +34,37 @@ public class PostController {
 
     @PostApiDoc.GetPost
     @GetMapping("/{postId}")
-    public ResponseEntity<ApiResponse<PostDetailResponse>> getPost(@PathVariable String postId) {
-        PostDetailResponse response = postService.getPostById(postId);
+    public ResponseEntity<ApiResponse<PostDetailResponse>> getPost(
+            @PathVariable String postId,
+            @RequestAttribute(value = "authUser", required = false) User authUser
+    ) {
+        String viewerId = authUser != null ? authUser.getId() : null;
+        PostDetailResponse response = postService.getPostById(postId, viewerId);
         return ResponseEntity.ok(ApiResponse.success("fetch_success", response));
+    }
+
+    @AuthRequired
+    @PostApiDoc.LikePost
+    @SecurityRequirement(name = "bearerAuth")
+    @PostMapping("/{postId}/likes")
+    public ResponseEntity<ApiResponse<Void>> likePost(
+            @RequestAttribute("authUser") User authUser,
+            @PathVariable String postId
+    ) {
+        postService.likePost(postId, authUser.getId());
+        return ResponseEntity.ok(ApiResponse.success("like_success"));
+    }
+
+    @AuthRequired
+    @PostApiDoc.UnlikePost
+    @SecurityRequirement(name = "bearerAuth")
+    @DeleteMapping("/{postId}/likes")
+    public ResponseEntity<ApiResponse<Void>> unlikePost(
+            @RequestAttribute("authUser") User authUser,
+            @PathVariable String postId
+    ) {
+        postService.unlikePost(postId, authUser.getId());
+        return ResponseEntity.ok(ApiResponse.success("unlike_success"));
     }
 
     @AuthRequired

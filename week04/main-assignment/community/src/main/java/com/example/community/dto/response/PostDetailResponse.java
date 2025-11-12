@@ -13,9 +13,10 @@ public record PostDetailResponse(
         int likeCount,
         int commentCount,
         int viewCount,
-        String createdAt
+        String createdAt,
+        boolean likedByMe
 ) {
-    public static PostDetailResponse of(Post post, User author) {
+    public static PostDetailResponse of(Post post, User author, boolean likedByMe) {
         return new PostDetailResponse(
                 post.getPostId(),
                 post.getTitle(),
@@ -26,7 +27,8 @@ public record PostDetailResponse(
                 post.getLikeCount(),
                 post.getCommentCount(),
                 post.getViewCount(),
-                post.getCreatedAt()
+                post.getCreatedAt(),
+                likedByMe
         );
     }
 }
