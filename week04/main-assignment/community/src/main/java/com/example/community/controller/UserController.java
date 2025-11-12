@@ -12,6 +12,7 @@ import com.example.community.dto.request.SignInRequest;
 import com.example.community.dto.request.SignUpRequest;
 import com.example.community.dto.request.UpdatePasswordRequest;
 import com.example.community.dto.request.UpdateProfileRequest;
+import com.example.community.dto.response.SignInResponse;
 import com.example.community.dto.response.UserProfileResponse;
 import com.example.community.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -49,10 +50,8 @@ public class UserController {
 
     @UserApiDoc.SignIn
     @PostMapping("/signin")
-    public ResponseEntity<ApiResponse<Map<String, String>>> signin(@Valid @RequestBody SignInRequest requestData) {
-        String token = userService.signIn(requestData);
-        Map<String, String> response = Map.of("token", token);
-
+    public ResponseEntity<ApiResponse<SignInResponse>> signin(@Valid @RequestBody SignInRequest requestData) {
+        SignInResponse response = userService.signIn(requestData);
         return ResponseEntity.ok(
                 ApiResponse.success(SuccessCode.SIGNIN_SUCCESS.getMessage(), response)
         );

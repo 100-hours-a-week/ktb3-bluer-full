@@ -16,6 +16,7 @@ public final class SwaggerExamples {
             {
               "message": "success",
               "data": {
+                "userId": "user-123",
                 "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
               }
             }

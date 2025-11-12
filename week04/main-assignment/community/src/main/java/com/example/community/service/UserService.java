@@ -9,6 +9,7 @@ import com.example.community.dto.request.SignInRequest;
 import com.example.community.dto.request.SignUpRequest;
 import com.example.community.dto.request.UpdatePasswordRequest;
 import com.example.community.dto.request.UpdateProfileRequest;
+import com.example.community.dto.response.SignInResponse;
 import com.example.community.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,7 +46,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public String signIn(SignInRequest request) {
+    public SignInResponse signIn(SignInRequest request) {
         User user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new ServiceException(ErrorCode.LOGIN_FAILED));
 
@@ -53,7 +54,8 @@ public class UserService {
             throw new ServiceException(ErrorCode.LOGIN_FAILED);
         }
 
-        return tokenService.issueToken(user);
+        String token = tokenService.issueToken(user);
+        return SignInResponse.of(user.getId(), token);
     }
 
     @Transactional
