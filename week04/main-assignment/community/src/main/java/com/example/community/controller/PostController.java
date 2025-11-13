@@ -75,7 +75,7 @@ public class PostController {
             @RequestAttribute("authUser") User authUser,
             @RequestBody CreatePostRequest request
     ) {
-        postService.createPost(authUser.getId(), request.title(), request.content());
+        postService.createPost(authUser.getId(), request.title(), request.content(), request.imageUrl());
         return ResponseEntity.status(201).body(ApiResponse.success("create_success"));
     }
 
@@ -88,7 +88,7 @@ public class PostController {
             @PathVariable String postId,
             @RequestBody UpdatePostRequest request
     ) {
-        postService.updatePost(postId, authUser.getId(), request.title(), request.content());
+        postService.updatePost(postId, authUser.getId(), request.title(), request.content(), request.imageUrl());
         return ResponseEntity.ok(ApiResponse.success("update_success"));
     }
 

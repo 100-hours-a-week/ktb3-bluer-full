@@ -33,6 +33,9 @@ public class PostEntity {
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
 
+    @Column(name = "post_image_url")
+    private String postImageUrl;
+
     @Builder.Default
     @Column(name = "like_count", nullable = false)
     private Integer likeCount = 0;

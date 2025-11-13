@@ -82,12 +82,13 @@ public class PostService {
         return PostDetailResponse.of(savedPost, author, likedByViewer);
     }
 
-    public Post createPost(String authorId, String title, String content) {
+    public Post createPost(String authorId, String title, String content, String postImageUrl) {
         Post post = Post.builder()
                 .postId(UUID.randomUUID().toString())
                 .title(title)
                 .authorId(authorId)
                 .content(content)
+                .postImageUrl(postImageUrl)
                 .likeCount(0)
                 .commentCount(0)
                 .viewCount(0)
@@ -97,7 +98,7 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public Post updatePost(String postId, String authorId, String title, String content) {
+    public Post updatePost(String postId, String authorId, String title, String content, String postImageUrl) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.POST_NOT_FOUND));
 
@@ -105,7 +106,7 @@ public class PostService {
             throw new ServiceException(ErrorCode.UNAUTHORIZED);
         }
 
-        post.update(title, content);
+        post.update(title, content, postImageUrl);
         return postRepository.save(post);
     }
 

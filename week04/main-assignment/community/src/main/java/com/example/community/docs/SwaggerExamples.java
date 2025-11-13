@@ -147,6 +147,7 @@ public final class SwaggerExamples {
                     "authorName": "홍길동",
                     "authorProfileImageUrl": "https://cdn.example.com/profile.jpg",
                     "content": "게시글 내용입니다.",
+                    "postImageUrl": "https://cdn.example.com/post-image.jpg",
                     "likeCount": 12,
                     "commentCount": 3,
                     "viewCount": 57,
@@ -176,6 +177,7 @@ public final class SwaggerExamples {
                 "authorName": "홍길동",
                 "authorProfileImageUrl": "https://cdn.example.com/profile.jpg",
                 "content": "게시글 내용입니다.",
+                "postImageUrl": "https://cdn.example.com/post-image.jpg",
                 "likeCount": 12,
                 "commentCount": 3,
                 "viewCount": 58,
@@ -216,7 +218,8 @@ public final class SwaggerExamples {
     public static final String CREATE_POST_REQUEST = """
             {
               "title": "새로운 게시글 제목",
-              "content": "게시글 본문 내용입니다."
+              "content": "게시글 본문 내용입니다.",
+              "imageUrl": "https://cdn.example.com/post-image.jpg"
             }
             """;
 
@@ -230,7 +233,8 @@ public final class SwaggerExamples {
     public static final String UPDATE_POST_REQUEST = """
             {
               "title": "수정된 게시글 제목",
-              "content": "수정된 게시글 본문 내용입니다."
+              "content": "수정된 게시글 본문 내용입니다.",
+              "imageUrl": "https://cdn.example.com/post-image-new.jpg"
             }
             """;
 

@@ -11,6 +11,9 @@ public record CreatePostRequest(
 
         @Schema(description = "게시글 내용", example = "게시글 본문 내용입니다.")
         @NotBlank
-        String content
+        String content,
+
+        @Schema(description = "게시글 대표 이미지 URL", example = "https://cdn.example.com/post-image.jpg", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+        String imageUrl
 ) {
 }

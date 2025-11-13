@@ -14,6 +14,7 @@ public class Post {
     private String title;
     private String authorId;
     private String content;
+    private String postImageUrl;
     private int likeCount;
     private int commentCount;
     private int viewCount;
@@ -33,12 +34,15 @@ public class Post {
         }
     }
 
-    public void update(String title, String content) {
+    public void update(String title, String content, String postImageUrl) {
         if (title != null && !title.isBlank()) {
             this.title = title;
         }
         if (content != null && !content.isBlank()) {
             this.content = content;
+        }
+        if (postImageUrl != null) {
+            this.postImageUrl = postImageUrl;
         }
     }
 
