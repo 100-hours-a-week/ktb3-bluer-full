@@ -21,6 +21,11 @@ public class UserRepository {
         this.userMapper = userMapper;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
     public User save(User user) {
         UserEntity entity = userJpaRepository.findById(user.getId())
                 .map(existing -> userMapper.mapToEntity(user, existing))

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -23,6 +24,12 @@ public class PostRepository {
     public Page<Post> findAll(Pageable pageable) {
         return postJpaRepository.findAllByOrderByCreatedAtDesc(pageable)
                 .map(postMapper::mapToDomain);
+    }
+
+    public List<Post> findByAuthorId(String authorId) {
+        return postJpaRepository.findByAuthorId(authorId).stream()
+                .map(postMapper::mapToDomain)
+                .toList();
     }
 
     public Optional<Post> findById(String postId) {

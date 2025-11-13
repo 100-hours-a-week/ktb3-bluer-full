@@ -45,4 +45,8 @@ public class PostLikeRepository {
                 .build();
         postLikeJpaRepository.save(updated);
     }
+
+    public void deleteByPostId(String postId) {
+        postLikeJpaRepository.deleteByPostId(postId);
+    }
 }
