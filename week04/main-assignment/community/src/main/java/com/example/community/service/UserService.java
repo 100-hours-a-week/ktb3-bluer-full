@@ -16,6 +16,12 @@ import com.example.community.repository.CommentRepository;
 import com.example.community.repository.PostLikeRepository;
 import com.example.community.repository.PostRepository;
 import com.example.community.repository.UserRepository;
+import com.example.community.security.AuthenticatedUser;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +39,8 @@ public class UserService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final PostLikeRepository postLikeRepository;
+    private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
 
     public UserService(
             UserRepository userRepository,
@@ -40,7 +48,9 @@ public class UserService {
             TokenService tokenService,
             PostRepository postRepository,
             CommentRepository commentRepository,
-            PostLikeRepository postLikeRepository
+            PostLikeRepository postLikeRepository,
+            AuthenticationManager authenticationManager,
+            PasswordEncoder passwordEncoder
     ) {
         this.userRepository = userRepository;
         this.userValidator = userValidator;
@@ -48,6 +58,8 @@ public class UserService {
         this.postRepository = postRepository;
         this.commentRepository = commentRepository;
         this.postLikeRepository = postLikeRepository;
+        this.authenticationManager = authenticationManager;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public void signup(SignUpRequest request) {
@@ -58,7 +70,7 @@ public class UserService {
         User user = User.builder()
                 .id(UUID.randomUUID().toString())
                 .email(request.email())
-                .password(request.password())
+                .password(passwordEncoder.encode(request.password()))
                 .nickname(request.nickname())
                 .profileImageUrl(request.profileImageUrl())
                 .createdAt(DateTimeUtils.currentUtc())
@@ -68,15 +80,18 @@ public class UserService {
     }
 
     public SignInResponse signIn(SignInRequest request) {
-        User user = userRepository.findByEmail(request.email())
-                .orElseThrow(() -> new ServiceException(ErrorCode.LOGIN_FAILED));
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.email(), request.password())
+            );
 
-        if (!user.getPassword().equals(request.password())) {
+            AuthenticatedUser principal = (AuthenticatedUser) authentication.getPrincipal();
+            User user = principal.getUser();
+            String token = tokenService.issueToken(user);
+            return SignInResponse.of(user.getId(), token);
+        } catch (AuthenticationException e) {
             throw new ServiceException(ErrorCode.LOGIN_FAILED);
         }
-
-        String token = tokenService.issueToken(user);
-        return SignInResponse.of(user.getId(), token);
     }
 
     @Transactional
@@ -93,7 +108,7 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
-        user.updatePassword(request.password());
+        user.updatePassword(passwordEncoder.encode(request.password()));
         userRepository.save(user);
     }
 

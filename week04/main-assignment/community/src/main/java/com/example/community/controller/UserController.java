@@ -3,7 +3,6 @@ package com.example.community.controller;
 import com.example.community.common.ApiResponse;
 import com.example.community.common.ErrorCode;
 import com.example.community.common.SuccessCode;
-import com.example.community.common.auth.AuthRequired;
 import com.example.community.common.exception.ServiceException;
 import com.example.community.docs.UserApiDoc;
 import com.example.community.domain.User;
@@ -14,10 +13,12 @@ import com.example.community.dto.request.UpdatePasswordRequest;
 import com.example.community.dto.request.UpdateProfileRequest;
 import com.example.community.dto.response.SignInResponse;
 import com.example.community.dto.response.UserProfileResponse;
+import com.example.community.security.AuthenticatedUser;
 import com.example.community.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -89,13 +90,13 @@ public class UserController {
         );
     }
 
-    @AuthRequired
     @UserApiDoc.GetProfile
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/profile")
     public ResponseEntity<ApiResponse<UserProfileResponse>> getProfile(
-            @RequestAttribute("authUser") User authUser
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser
     ) {
+        User authUser = authenticatedUser.getUser();
         return ResponseEntity.ok(
                 ApiResponse.success(
                         SuccessCode.REQUEST_SUCCESS.getMessage(),
@@ -105,14 +106,13 @@ public class UserController {
     }
 
     @UserApiDoc.UpdateProfile
-    @AuthRequired
     @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/profile")
     public ResponseEntity<ApiResponse<UserProfileResponse>> updateProfile(
-            @RequestAttribute("authUser") User authUser,
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
             @Valid @RequestBody UpdateProfileRequest requestData
     ) {
-        User updatedUser = userService.updateProfile(authUser.getId(), requestData);
+        User updatedUser = userService.updateProfile(authenticatedUser.getUserId(), requestData);
 
         return ResponseEntity.ok(
                 ApiResponse.success(
@@ -123,14 +123,13 @@ public class UserController {
     }
 
     @UserApiDoc.UpdatePassword
-    @AuthRequired
     @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/password")
     public ResponseEntity<ApiResponse<Void>> updatePassword(
-            @RequestAttribute("authUser") User authUser,
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
             @Valid @RequestBody UpdatePasswordRequest requestData
     ) {
-        userService.updatePassword(authUser.getId(), requestData);
+        userService.updatePassword(authenticatedUser.getUserId(), requestData);
 
         return ResponseEntity.ok(
                 ApiResponse.success(SuccessCode.UPDATE_SUCCESS.getMessage())
@@ -138,13 +137,12 @@ public class UserController {
     }
 
     @UserApiDoc.DeleteProfile
-    @AuthRequired
     @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/profile")
     public ResponseEntity<ApiResponse<Void>> deleteProfile(
-            @RequestAttribute("authUser") User authUser
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser
     ) {
-        userService.deleteProfile(authUser.getId());
+        userService.deleteProfile(authenticatedUser.getUserId());
 
         return ResponseEntity.ok(
                 ApiResponse.success(SuccessCode.DELETE_SUCCESS.getMessage())

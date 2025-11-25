@@ -36,7 +36,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             tokenService.findByToken(token).ifPresent(user -> {
                 UsernamePasswordAuthenticationToken authenticationToken = buildAuthentication(user, request);
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                request.setAttribute("authUser", user);
             });
         }
 
