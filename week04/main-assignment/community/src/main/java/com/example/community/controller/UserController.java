@@ -13,9 +13,11 @@ import com.example.community.dto.request.UpdatePasswordRequest;
 import com.example.community.dto.request.UpdateProfileRequest;
 import com.example.community.dto.response.SignInResponse;
 import com.example.community.dto.response.UserProfileResponse;
+import com.example.community.security.AuthCookieProvider;
 import com.example.community.security.AuthenticatedUser;
 import com.example.community.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,10 +31,12 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
     private final UserValidator userValidator;
+    private final AuthCookieProvider authCookieProvider;
 
-    public UserController(UserService userService, UserValidator userValidator) {
+    public UserController(UserService userService, UserValidator userValidator, AuthCookieProvider authCookieProvider) {
         this.userService = userService;
         this.userValidator = userValidator;
+        this.authCookieProvider = authCookieProvider;
     }
 
     @UserApiDoc.SignUp
@@ -51,8 +55,12 @@ public class UserController {
 
     @UserApiDoc.SignIn
     @PostMapping("/signin")
-    public ResponseEntity<ApiResponse<SignInResponse>> signin(@Valid @RequestBody SignInRequest requestData) {
+    public ResponseEntity<ApiResponse<SignInResponse>> signin(
+            @Valid @RequestBody SignInRequest requestData,
+            HttpServletResponse httpServletResponse
+    ) {
         SignInResponse response = userService.signIn(requestData);
+        httpServletResponse.addHeader("Set-Cookie", authCookieProvider.createTokenCookie(response.token()).toString());
         return ResponseEntity.ok(
                 ApiResponse.success(SuccessCode.SIGNIN_SUCCESS.getMessage(), response)
         );
