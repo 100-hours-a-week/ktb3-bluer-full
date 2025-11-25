@@ -10,6 +10,7 @@ public enum ErrorCode {
     INVALID_REQUEST(HttpStatus.BAD_REQUEST, "invalid_request"),
     LOGIN_FAILED(HttpStatus.BAD_REQUEST, "login_failed"),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "internal_server_error"),
+    FORBIDDEN(HttpStatus.FORBIDDEN, "forbidden"),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "user_not_found"),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "unauthorized"),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "invalid_token"),
