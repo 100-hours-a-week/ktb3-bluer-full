@@ -7,6 +7,7 @@ import com.example.community.common.exception.ServiceException;
 import com.example.community.docs.UserApiDoc;
 import com.example.community.domain.User;
 import com.example.community.domain.validator.UserValidator;
+import com.example.community.dto.request.CheckPasswordRequest;
 import com.example.community.dto.request.SignInRequest;
 import com.example.community.dto.request.SignUpRequest;
 import com.example.community.dto.request.UpdatePasswordRequest;
@@ -63,6 +64,23 @@ public class UserController {
         httpServletResponse.addHeader("Set-Cookie", authCookieProvider.createTokenCookie(response.token()).toString());
         return ResponseEntity.ok(
                 ApiResponse.success(SuccessCode.SIGNIN_SUCCESS.getMessage(), response)
+        );
+    }
+
+    @UserApiDoc.CheckPassword
+    @SecurityRequirement(name = "bearerAuth")
+    @PostMapping("/password/check")
+    public ResponseEntity<ApiResponse<Map<String, Boolean>>> checkPassword(
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
+            @Valid @RequestBody CheckPasswordRequest requestData
+    ) {
+        boolean matched = userService.isPasswordMatched(authenticatedUser.getUserId(), requestData.password());
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        SuccessCode.REQUEST_SUCCESS.getMessage(),
+                        Map.of("match", matched)
+                )
         );
     }
 

@@ -235,6 +235,49 @@ public final class UserApiDoc {
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
     @Operation(
+            summary = "현재 비밀번호 확인",
+            description = "입력한 비밀번호가 현재 비밀번호와 일치하는지 확인합니다.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "성공 요청",
+                                    value = SwaggerExamples.CHECK_PASSWORD_REQUEST
+                            )
+                    )
+            )
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "비밀번호 일치 여부 반환",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "성공 응답",
+                                    value = SwaggerExamples.CHECK_PASSWORD_RESPONSE_SUCCESS
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "권한이 없습니다.",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "인증 실패",
+                                    value = SwaggerExamples.UNAUTHORIZED_RESPONSE
+                            )
+                    )
+            )
+    })
+    public @interface CheckPassword {
+    }
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @Operation(
             summary = "비밀번호 변경",
             description = "기존 비밀번호를 확인하고 새 비밀번호로 변경합니다.",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(

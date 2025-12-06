@@ -36,6 +36,21 @@ public final class SwaggerExamples {
             }
             """;
 
+    public static final String CHECK_PASSWORD_REQUEST = """
+            {
+              "password": "currentP@ssw0rd"
+            }
+            """;
+
+    public static final String CHECK_PASSWORD_RESPONSE_SUCCESS = """
+            {
+              "message": "success",
+              "data": {
+                "match": true
+              }
+            }
+            """;
+
     public static final String SIGNUP_REQUEST = """
             {
               "email": "new-user@example.com",

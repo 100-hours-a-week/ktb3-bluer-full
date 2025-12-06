@@ -94,6 +94,13 @@ public class UserService {
         }
     }
 
+    public boolean isPasswordMatched(String userId, String rawPassword) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+
+        return passwordEncoder.matches(rawPassword, user.getPassword());
+    }
+
     public void signOut(String userId) {
         tokenService.removeToken(userId);
     }
