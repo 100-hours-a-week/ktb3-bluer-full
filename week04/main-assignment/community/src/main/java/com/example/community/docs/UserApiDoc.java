@@ -193,7 +193,7 @@ public final class UserApiDoc {
     @Retention(RetentionPolicy.RUNTIME)
     @Operation(
             summary = "프로필 수정",
-            description = "닉네임, 프로필 이미지를 수정합니다.",
+            description = "닉네임과/또는 프로필 이미지를 수정합니다. 두 필드를 모두 비울 수는 없습니다.",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
                     content = @Content(

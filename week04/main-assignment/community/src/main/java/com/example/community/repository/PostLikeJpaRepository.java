@@ -7,11 +7,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.List;
 
 @Repository
 public interface PostLikeJpaRepository extends JpaRepository<PostLikeEntity, String> {
     boolean existsByPostIdAndUserIdAndActiveTrue(String postId, String userId);
     Optional<PostLikeEntity> findByPostIdAndUserIdAndActiveTrue(String postId, String userId);
+    List<PostLikeEntity> findByPostIdInAndUserIdAndActiveTrue(List<String> postIds, String userId);
 
     @Transactional
     @Modifying

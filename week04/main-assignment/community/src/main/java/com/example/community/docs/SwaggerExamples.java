@@ -173,7 +173,8 @@ public final class SwaggerExamples {
                     "likeCount": 12,
                     "commentCount": 3,
                     "viewCount": 57,
-                    "createdAt": "2025-02-18T12:34:56Z"
+                    "createdAt": "2025-02-18T12:34:56Z",
+                    "likedByMe": true
                   }
                 ],
                 "nextCursor": 5,

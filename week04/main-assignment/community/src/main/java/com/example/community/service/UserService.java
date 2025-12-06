@@ -110,6 +110,13 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
+        boolean hasNickname = request.nickname() != null && !request.nickname().isBlank();
+        boolean hasProfileImageUrl = request.profileImageUrl() != null && !request.profileImageUrl().isBlank();
+
+        if (!hasNickname && !hasProfileImageUrl) {
+            throw new ServiceException(ErrorCode.INVALID_REQUEST);
+        }
+
         user.updateProfile(request.nickname(), request.profileImageUrl());
         return userRepository.save(user);
     }

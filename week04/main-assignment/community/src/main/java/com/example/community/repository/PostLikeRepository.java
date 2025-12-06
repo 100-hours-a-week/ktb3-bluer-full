@@ -5,7 +5,11 @@ import com.example.community.entity.PostLikeEntity;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.UUID;
 
 @Repository
@@ -23,6 +27,16 @@ public class PostLikeRepository {
 
     public Optional<PostLikeEntity> findActiveByPostIdAndUserId(String postId, String userId) {
         return postLikeJpaRepository.findByPostIdAndUserIdAndActiveTrue(postId, userId);
+    }
+
+    public Set<String> findLikedPostIdsByUser(String userId, List<String> postIds) {
+        if (userId == null || postIds == null || postIds.isEmpty()) {
+            return Collections.emptySet();
+        }
+        return postLikeJpaRepository.findByPostIdInAndUserIdAndActiveTrue(postIds, userId)
+                .stream()
+                .map(PostLikeEntity::getPostId)
+                .collect(Collectors.toSet());
     }
 
     public void save(String postId, String userId) {

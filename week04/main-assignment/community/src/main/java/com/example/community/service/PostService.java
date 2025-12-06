@@ -36,7 +36,7 @@ public class PostService {
         this.postLikeRepository = postLikeRepository;
     }
 
-    public PostListResponse getPosts(int cursor, int size) {
+    public PostListResponse getPosts(int cursor, int size, String viewerId) {
         if (cursor < 0 || size <= 0) {
             throw new ServiceException(ErrorCode.INVALID_REQUEST);
         }
@@ -52,13 +52,20 @@ public class PostService {
         Map<String, User> userMap = userRepository.findAllByIds(authorIds).stream()
                 .collect(Collectors.toMap(User::getId, Function.identity()));
 
+        List<String> postIds = posts.stream()
+                .map(Post::getPostId)
+                .toList();
+
+        Set<String> likedPostIds = postLikeRepository.findLikedPostIdsByUser(viewerId, postIds);
+
         List<PostSummaryResponse> postResponses = posts.stream()
                 .map(post -> {
                     User author = userMap.get(post.getAuthorId());
                     if (author == null) {
                         throw new ServiceException(ErrorCode.USER_NOT_FOUND);
                     }
-                    return PostSummaryResponse.of(post, author);
+                    boolean likedByMe = likedPostIds.contains(post.getPostId());
+                    return PostSummaryResponse.of(post, author, likedByMe);
                 })
                 .toList();
 
@@ -77,9 +84,9 @@ public class PostService {
         User author = userRepository.findById(savedPost.getAuthorId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
-        boolean likedByViewer = viewerId != null && postLikeRepository.existsByPostIdAndUserId(postId, viewerId);
+        boolean likedByMe = viewerId != null && postLikeRepository.existsByPostIdAndUserId(postId, viewerId);
 
-        return PostDetailResponse.of(savedPost, author, likedByViewer);
+        return PostDetailResponse.of(savedPost, author, likedByMe);
     }
 
     public Post createPost(String authorId, String title, String content, String postImageUrl) {

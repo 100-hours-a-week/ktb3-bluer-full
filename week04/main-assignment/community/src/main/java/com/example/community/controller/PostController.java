@@ -26,9 +26,11 @@ public class PostController {
     @GetMapping
     public ResponseEntity<ApiResponse<PostListResponse>> getPosts(
             @RequestParam(name = "cursor", defaultValue = "0") int cursor,
-            @RequestParam(name = "size", defaultValue = "5") int size
+            @RequestParam(name = "size", defaultValue = "5") int size,
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser
     ) {
-        PostListResponse response = postService.getPosts(cursor, size);
+        String viewerId = authenticatedUser != null ? authenticatedUser.getUserId() : null;
+        PostListResponse response = postService.getPosts(cursor, size, viewerId);
         return ResponseEntity.ok(ApiResponse.success("fetch_success", response));
     }
 
