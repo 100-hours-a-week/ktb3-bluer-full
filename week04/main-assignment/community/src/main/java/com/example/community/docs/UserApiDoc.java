@@ -97,6 +97,39 @@ public final class UserApiDoc {
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
     @Operation(
+            summary = "사용자 로그아웃",
+            description = "발급된 액세스 토큰을 만료합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "로그아웃 성공",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "성공 응답",
+                                    value = SwaggerExamples.SIGNOUT_RESPONSE_SUCCESS
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "권한이 없습니다.",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "인증 실패",
+                                    value = SwaggerExamples.UNAUTHORIZED_RESPONSE
+                            )
+                    )
+            )
+    })
+    public @interface SignOut {
+    }
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @Operation(
             summary = "이메일/닉네임 중복 검사",
             description = "이메일 또는 닉네임이 이미 존재하는지 확인합니다. (query params: email, nickname)"
     )

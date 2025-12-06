@@ -29,6 +29,13 @@ public final class SwaggerExamples {
             }
             """;
 
+    public static final String SIGNOUT_RESPONSE_SUCCESS = """
+            {
+              "message": "logout_success",
+              "data": null
+            }
+            """;
+
     public static final String SIGNUP_REQUEST = """
             {
               "email": "new-user@example.com",

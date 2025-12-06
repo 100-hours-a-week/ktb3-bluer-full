@@ -94,6 +94,10 @@ public class UserService {
         }
     }
 
+    public void signOut(String userId) {
+        tokenService.removeToken(userId);
+    }
+
     @Transactional
     public User updateProfile(String userId, UpdateProfileRequest request) {
         User user = userRepository.findById(userId)

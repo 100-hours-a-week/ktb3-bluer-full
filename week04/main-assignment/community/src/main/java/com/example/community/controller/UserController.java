@@ -66,6 +66,21 @@ public class UserController {
         );
     }
 
+    @UserApiDoc.SignOut
+    @SecurityRequirement(name = "bearerAuth")
+    @PostMapping("/signout")
+    public ResponseEntity<ApiResponse<Void>> signout(
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
+            HttpServletResponse httpServletResponse
+    ) {
+        userService.signOut(authenticatedUser.getUserId());
+        httpServletResponse.addHeader("Set-Cookie", authCookieProvider.createExpiredCookie().toString());
+
+        return ResponseEntity.ok(
+                ApiResponse.success(SuccessCode.SIGNOUT_SUCCESS.getMessage())
+        );
+    }
+
     @UserApiDoc.CheckDuplicated
     @GetMapping("/check")
     public ResponseEntity<ApiResponse<Map<String, Boolean>>> checkDuplicated(

@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum SuccessCode {
     SIGNUP_SUCCESS("register_success"),
     SIGNIN_SUCCESS("success"),
+    SIGNOUT_SUCCESS("logout_success"),
 
     EMAIL_AVAILABLE("success"),
     NICKNAME_AVAILABLE("available"),
