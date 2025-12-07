@@ -97,6 +97,39 @@ public final class UserApiDoc {
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
     @Operation(
+            summary = "사용자 로그아웃",
+            description = "발급된 액세스 토큰을 만료합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "로그아웃 성공",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "성공 응답",
+                                    value = SwaggerExamples.SIGNOUT_RESPONSE_SUCCESS
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "권한이 없습니다.",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "인증 실패",
+                                    value = SwaggerExamples.UNAUTHORIZED_RESPONSE
+                            )
+                    )
+            )
+    })
+    public @interface SignOut {
+    }
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @Operation(
             summary = "이메일/닉네임 중복 검사",
             description = "이메일 또는 닉네임이 이미 존재하는지 확인합니다. (query params: email, nickname)"
     )
@@ -160,7 +193,7 @@ public final class UserApiDoc {
     @Retention(RetentionPolicy.RUNTIME)
     @Operation(
             summary = "프로필 수정",
-            description = "닉네임, 프로필 이미지를 수정합니다.",
+            description = "닉네임과/또는 프로필 이미지를 수정합니다. 두 필드를 모두 비울 수는 없습니다.",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
                     content = @Content(
@@ -197,6 +230,49 @@ public final class UserApiDoc {
             )
     })
     public @interface UpdateProfile {
+    }
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @Operation(
+            summary = "현재 비밀번호 확인",
+            description = "입력한 비밀번호가 현재 비밀번호와 일치하는지 확인합니다.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "성공 요청",
+                                    value = SwaggerExamples.CHECK_PASSWORD_REQUEST
+                            )
+                    )
+            )
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "비밀번호 일치 여부 반환",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "성공 응답",
+                                    value = SwaggerExamples.CHECK_PASSWORD_RESPONSE_SUCCESS
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "권한이 없습니다.",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "인증 실패",
+                                    value = SwaggerExamples.UNAUTHORIZED_RESPONSE
+                            )
+                    )
+            )
+    })
+    public @interface CheckPassword {
     }
 
     @Target(ElementType.METHOD)

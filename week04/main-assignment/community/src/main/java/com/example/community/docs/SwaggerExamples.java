@@ -16,6 +16,7 @@ public final class SwaggerExamples {
             {
               "message": "success",
               "data": {
+                "userId": "user-123",
                 "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
               }
             }
@@ -25,6 +26,28 @@ public final class SwaggerExamples {
             {
               "message": "login_failed",
               "data": null
+            }
+            """;
+
+    public static final String SIGNOUT_RESPONSE_SUCCESS = """
+            {
+              "message": "logout_success",
+              "data": null
+            }
+            """;
+
+    public static final String CHECK_PASSWORD_REQUEST = """
+            {
+              "password": "currentP@ssw0rd"
+            }
+            """;
+
+    public static final String CHECK_PASSWORD_RESPONSE_SUCCESS = """
+            {
+              "message": "success",
+              "data": {
+                "match": true
+              }
             }
             """;
 
@@ -143,11 +166,15 @@ public final class SwaggerExamples {
                     "postId": "post-123",
                     "title": "첫 번째 게시글",
                     "authorId": "user-123",
+                    "authorName": "홍길동",
+                    "authorProfileImageUrl": "https://cdn.example.com/profile.jpg",
                     "content": "게시글 내용입니다.",
+                    "postImageUrl": "https://cdn.example.com/post-image.jpg",
                     "likeCount": 12,
                     "commentCount": 3,
                     "viewCount": 57,
-                    "createdAt": "2025-02-18T12:34:56Z"
+                    "createdAt": "2025-02-18T12:34:56Z",
+                    "likedByMe": true
                   }
                 ],
                 "nextCursor": 5,
@@ -170,11 +197,15 @@ public final class SwaggerExamples {
                 "postId": "post-123",
                 "title": "첫 번째 게시글",
                 "authorId": "user-123",
+                "authorName": "홍길동",
+                "authorProfileImageUrl": "https://cdn.example.com/profile.jpg",
                 "content": "게시글 내용입니다.",
+                "postImageUrl": "https://cdn.example.com/post-image.jpg",
                 "likeCount": 12,
                 "commentCount": 3,
                 "viewCount": 58,
-                "createdAt": "2025-02-18T12:35:10Z"
+                "createdAt": "2025-02-18T12:35:10Z",
+                "likedByMe": true
               }
             }
             """;
@@ -186,10 +217,32 @@ public final class SwaggerExamples {
             }
             """;
 
+    public static final String POST_ALREADY_LIKED_RESPONSE = """
+            {
+              "message": "post_already_liked",
+              "data": null
+            }
+            """;
+
+    public static final String POST_NOT_LIKED_RESPONSE = """
+            {
+              "message": "post_not_liked",
+              "data": null
+            }
+            """;
+
+    public static final String POST_UNLIKE_RESPONSE_SUCCESS = """
+            {
+              "message": "unlike_success",
+              "data": null
+            }
+            """;
+
     public static final String CREATE_POST_REQUEST = """
             {
               "title": "새로운 게시글 제목",
-              "content": "게시글 본문 내용입니다."
+              "content": "게시글 본문 내용입니다.",
+              "imageUrl": "https://cdn.example.com/post-image.jpg"
             }
             """;
 
@@ -203,7 +256,8 @@ public final class SwaggerExamples {
     public static final String UPDATE_POST_REQUEST = """
             {
               "title": "수정된 게시글 제목",
-              "content": "수정된 게시글 본문 내용입니다."
+              "content": "수정된 게시글 본문 내용입니다.",
+              "imageUrl": "https://cdn.example.com/post-image-new.jpg"
             }
             """;
 
@@ -217,6 +271,13 @@ public final class SwaggerExamples {
     public static final String DELETE_POST_RESPONSE_SUCCESS = """
             {
               "message": "delete_success",
+              "data": null
+            }
+            """;
+
+    public static final String POST_LIKE_RESPONSE_SUCCESS = """
+            {
+              "message": "like_success",
               "data": null
             }
             """;

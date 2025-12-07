@@ -47,5 +47,14 @@ public class CommentRepository {
     public int countByPostId(String postId) {
         return Math.toIntExact(commentJpaRepository.countByPostId(postId));
     }
-}
 
+    public List<Comment> findByAuthorId(String authorId) {
+        return commentJpaRepository.findByAuthorId(authorId).stream()
+                .map(commentMapper::mapToDomain)
+                .toList();
+    }
+
+    public void deleteByPostId(String postId) {
+        commentJpaRepository.deleteByPostId(postId);
+    }
+}

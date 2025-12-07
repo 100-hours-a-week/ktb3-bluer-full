@@ -240,4 +240,110 @@ public final class PostApiDoc {
     })
     public @interface DeletePost {
     }
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @Operation(summary = "게시글 좋아요", description = "로그인한 사용자가 게시글에 좋아요를 남깁니다. 중복 좋아요는 허용되지 않습니다.")
+    @Parameter(name = "postId", description = "좋아요할 게시글 ID", required = true, example = "post-123")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "게시글 좋아요 성공",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "성공 응답",
+                                    value = SwaggerExamples.POST_LIKE_RESPONSE_SUCCESS
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "이미 좋아요를 누른 게시글",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "중복 요청",
+                                    value = SwaggerExamples.POST_ALREADY_LIKED_RESPONSE
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "인증되지 않은 사용자",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "인증 실패",
+                                    value = SwaggerExamples.UNAUTHORIZED_RESPONSE
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "게시글을 찾을 수 없음",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "존재하지 않음",
+                                    value = SwaggerExamples.POST_NOT_FOUND_RESPONSE
+                            )
+                    )
+            )
+    })
+    public @interface LikePost {
+    }
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @Operation(summary = "게시글 좋아요 취소", description = "사용자가 이전에 눌렀던 게시글 좋아요를 취소합니다.")
+    @Parameter(name = "postId", description = "좋아요 취소할 게시글 ID", required = true, example = "post-123")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "게시글 좋아요 취소 성공",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "성공 응답",
+                                    value = SwaggerExamples.POST_UNLIKE_RESPONSE_SUCCESS
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "좋아요하지 않은 게시글",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "잘못된 요청",
+                                    value = SwaggerExamples.POST_NOT_LIKED_RESPONSE
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "인증되지 않은 사용자",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "인증 실패",
+                                    value = SwaggerExamples.UNAUTHORIZED_RESPONSE
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "게시글을 찾을 수 없음",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "존재하지 않음",
+                                    value = SwaggerExamples.POST_NOT_FOUND_RESPONSE
+                            )
+                    )
+            )
+    })
+    public @interface UnlikePost {
+    }
 }
