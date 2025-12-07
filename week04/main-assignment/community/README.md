@@ -35,8 +35,7 @@ DB를 사용합니다.
    mkdir -p /Users/foo/Documents/projects/h2-local-db
    ```
    기본 설정은 `application.yml`의 `jdbc:h2:file:/Users/foo/Documents/projects/h2-local-db/test`를 사용합니다. 다른 위치를 쓰고
-   싶다면 `application.yml` 혹은 `.env`의 `H2_DB_PATH`를 수정하세요.
-3. (선택) `.env` 파일에 `H2_DB_PATH`를 정의하면 IDE/런처에서 환경변수를 쉽게 넘길 수 있습니다.
+   싶다면 `application.yml` 혹은 `.env`의 `H2_DB_PATH`를 수정해야 합니다.
 
 ## 로컬 실행
 
@@ -58,19 +57,6 @@ DB를 사용합니다.
 3. `TokenAuthenticationFilter`가 쿠키에서 토큰을 읽어 `SecurityContext`에 인증 객체를 주입합니다.
 4. 로그아웃 혹은 회원 탈퇴 시 토큰 삭제 후 만료 쿠키를 내려 쿠키를 정리하도록 구현하면 됩니다. (`AuthCookieProvider#createExpiredCookie`)
 
-## 테스트
-
-```bash
-./gradlew test
-```
-
-## FAQ
-
-- **왜 로그인 후에도 인증이 안 될까요?**  
-  쿠키가 전달되지 않았을 가능성이 큽니다. `Set-Cookie` 헤더를 확인하고, 클라이언트 요청에 `credentials: 'include'`가 설정되어 있는지 점검하세요.
-
-- **토큰 저장소는 어디인가요?**  
-  `TokenService`는 인메모리 `ConcurrentHashMap`을 사용합니다. 여러 서버가 필요하면 Redis 등 외부 저장소로 교체해야 합니다.
 
 ## 주요 패키지 구조
 
